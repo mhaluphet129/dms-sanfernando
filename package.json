@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "server-dev": "nodemon index.js",
-    "client-dev": "npm start --prefix client",
+    "client-dev": "npm start --prefix clients",
     "dev": "concurrently \"npm run server-dev\" \"npm run client-dev\""
   },
   "keywords": [],
