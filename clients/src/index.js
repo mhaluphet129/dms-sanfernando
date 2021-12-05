@@ -1,10 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Home } from "./views/views";
+import Nav from "./views/components/NavBar";
+import "./css/main.css";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router>
+    <Nav />
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
+  </Router>,
   document.getElementById("root")
 );

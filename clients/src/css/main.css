@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
+/* ¯\_(ツ)_/¯ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --padding: 10px;
+  --margin: 10px;
+  --f-wdith: 100vw;
+  --f-height: 100vh;
+  --font-family: "PT Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+}
+
+nav.header {
+  display: grid;
+  grid-template-columns: 0.075fr 1fr 0.1fr;
+  background: lightblue;
+  width: var(--f-wdith);
+  font-size: 1.5rem;
+}
+
+nav.header > div {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+nav.header button {
+  padding: 0.7rem;
+  border: none;
+}
+
+nav.header img {
+  padding: 0.25rem;
+}
+
+nav.header input[type="text"] {
+  width: 20%;
+  padding: 5px;
+  height: 1.5rem;
+}
+
+nav.header span.user-name {
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+}
+
+nav.header span.user-name:hover {
+  cursor: pointer;
+  border-bottom: 1px solid #000;
+}
+
+/* nav buttons */
+.searchBtn {
+  background: lime;
+}
+
+.QrBtn {
+  background: lightsteelblue;
+}
+
+.searchBtn:hover {
+  background: rgba(0, 255, 0, 0.5);
+  cursor: pointer;
+}
+
+.QrBtn:hover {
+  background: rgba(176, 196, 222, 0.5);
+  cursor: pointer;
+}

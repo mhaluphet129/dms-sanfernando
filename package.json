@@ -12,11 +12,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hapi/hapi": "^20.2.1",
+    "@hapi/inert": "^6.0.4",
+    "@hapi/vision": "^6.1.0",
     "concurrently": "^6.4.0",
-    "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "hbs": "^4.2.0",
+    "mongoose": "^6.0.14",
+    "path": "^0.12.7"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.15"
   }
 }

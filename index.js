@@ -1,15 +1,14 @@
-const express = require("express"); //Line 1
-const cors = require("cors");
-const app = express(); //Line 2
-const port = process.env.PORT || 5000; //Line 3
+"use strict";
 
-// This displays message that the server running and listening to specified port
-app.listen(port, () => console.log(`Listening on http://localhost:${port}`)); //Line 6
+const Hapi = require("./clients/src/config/hapi");
 
-app.use(cors());
+require("./clients/src/database/mongodb");
 
-// create a GET route
-app.get("/express_backend", (req, res) => {
-  //Line 9
-  res.send({ express: "naka pass ug data gikan sa backend" }); //Line 10
-}); //Line 11
+const init = async () => {
+  const server = await Hapi.deploy();
+
+  console.log(`Server started @ ${server.info.uri}`);
+  await server.start();
+};
+
+init();
