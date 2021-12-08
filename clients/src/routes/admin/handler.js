@@ -1,9 +1,14 @@
 const User = require("../../database/models/Users");
-
 const internals = {};
 
-internals.home = async (req, res) => {
-  return res.view("home.html");
+internals.get_user = async (req, res) => {
+  return await User.find({ username: req.params.username })
+    .then((doc) => {
+      return { success: true, user: doc };
+    })
+    .catch(() => {
+      return { success: false };
+    });
 };
 
 internals.add_user = async (req, res) => {
@@ -22,7 +27,11 @@ internals.add_user = async (req, res) => {
   return await newUser
     .save()
     .then(() => {
-      return { success: true, message: "User added successfully" };
+      return {
+        success: true,
+        message: "User added successfully",
+        user: newUser,
+      };
     })
     .catch((err) => {
       return { success: false, message: "Error: " + err };

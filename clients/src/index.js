@@ -9,7 +9,7 @@ ReactDOM.render(
   <Router>
     <Nav />
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   </Router>,
   document.getElementById("root")
