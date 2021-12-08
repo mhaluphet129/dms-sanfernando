@@ -2,9 +2,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { useEffect } from "react";
+import Cookies from "universal-cookie";
+import { useEffect, useState } from "react";
 
 let userInfo = {};
+const cookie = new Cookies();
 
 function login() {
   Swal.fire({
@@ -18,24 +20,32 @@ function login() {
         >signup</small>`,
     confirmButtonText: "Sign in",
     focusConfirm: false,
-    preConfirm: () => {
-      const login = Swal.getPopup().querySelector("#login").value;
+    preConfirm: async () => {
+      const username = Swal.getPopup().querySelector("#login").value;
       const password = Swal.getPopup().querySelector("#password").value;
-      if (!login || !password) {
+      if (!username || !password) {
         Swal.showValidationMessage(`Please enter login and password`);
       }
-      return { login: login, password: password };
+      Swal.showLoading();
+      let response = await axios.get(`/get-user/${username}`);
+      let res = response.data;
+
+      if (res.success) {
+        if (res.user[0].password == password) {
+          cookie.set(
+            "session",
+            JSON.stringify({ name: res.user[0].firstname }),
+            {
+              path: "/",
+            }
+          );
+        }
+      } else {
+        Swal.hideLoading();
+        Swal.showValidationMessage(`Username or Password is incorrect`);
+      }
     },
-  })
-    .then((result) => {
-      Swal.fire(
-        `
-          Login: ${result.value.login}
-          Password: ${result.value.password}
-        `.trim()
-      );
-    })
-    .catch((err) => console.log("Error: ", err));
+  });
   document
     .getElementById("signup")
     .addEventListener("click", () => registration());
@@ -121,8 +131,15 @@ async function registration() {
 
                 let res = response.data;
 
-                if (res.success) console.log(res.message);
-                else alert(res.message);
+                if (res.success) {
+                  cookie.set(
+                    "session",
+                    JSON.stringify({ name: res.firstname }),
+                    {
+                      path: "/",
+                    }
+                  );
+                } else alert(res.message);
                 return { res };
               }
             },
@@ -146,9 +163,12 @@ async function registration() {
 }
 
 function NavBar() {
-  // useEffect(()=>{
-
-  // },[])
+  const [name, setName] = useState(null);
+  useEffect(() => {
+    if (cookie.get("session") !== undefined)
+      setName(cookie.get("session").name);
+    else setName("LOG IN");
+  }, [name]);
   return (
     <nav className="header">
       <img width="50" height="50" src="https://picsum.photos/50" alt="logo" />
@@ -159,9 +179,27 @@ function NavBar() {
       </div>
       <div>
         <FontAwesomeIcon icon={faUser} />
-        <span className="user-name" onClick={() => login()}>
-          LOG IN
+        <span
+          className="user-name"
+          onClick={() => {
+            if (cookie.get("session") !== undefined) {
+              //nothing as of now
+            } else login();
+          }}
+        >
+          {name}
         </span>
+        {name != "LOG IN" && (
+          <span
+            className="logout"
+            onClick={() => {
+              cookie.remove("session");
+              setName(null);
+            }}
+          >
+            LOGOUT
+          </span>
+        )}
       </div>
     </nav>
   );

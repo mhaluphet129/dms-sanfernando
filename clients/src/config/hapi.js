@@ -1,25 +1,14 @@
 const Hapi = require("@hapi/hapi");
-//const Path = require("path");
-const Vision = require("@hapi/vision");
-//const Handlebars = require("hbs");
 const Routes = require("./routes");
+
+require("dotenv").config();
 let internals = {};
 
 exports.deploy = async () => {
   internals.server = new Hapi.Server({
     host: "localhost",
-    port: 5000,
+    port: process.env.SERVER_PORT,
   });
-
-  await internals.server.register(Vision);
-
-  /* internals.server.views({
-    engines: {
-      html: Handlebars,
-    },
-    relativeTo: __dirname,
-    path: "../views",
-  }); */
 
   Routes.init(internals.server);
 
