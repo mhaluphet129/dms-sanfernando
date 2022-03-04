@@ -41,11 +41,17 @@ export default () => {
         flexDirection: "column",
         overflow: "auto",
         minHeight: "100vh",
+        background: "#eee",
       }}
     >
       <Typography.Title>Ngalan samo system</Typography.Title>
       <Form
-        style={{ width: 255, padding: 30, boxShadow: "0 0 10px 3px" }}
+        style={{
+          width: 255,
+          padding: 30,
+          boxShadow: "0 0 5px 1px",
+          background: "#fff",
+        }}
         onFinish={handleLogin}
       >
         <Tabs activeKey={type} onChange={setType} type='card'>
