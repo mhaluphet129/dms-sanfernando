@@ -2,21 +2,25 @@ let mongoose = require("mongoose");
 
 let UserSchema = new mongoose.Schema(
   {
-    name: {
+    email: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      required: false,
     },
     lastname: {
       type: String,
-      required: true,
+      required: false,
     },
     username: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     role: {
       type: String,
@@ -24,7 +28,7 @@ let UserSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

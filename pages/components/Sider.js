@@ -1,4 +1,6 @@
-import { Menu, Layout } from "antd";
+import { Menu, Layout, Typography, Row, Col } from "antd";
+import { AdminAddForm } from "./Admin/AdminForm";
+import AdminList from "./Admin/AdminList";
 const { Sider } = Layout;
 
 export const SidePane = ({ setPage }) => {
@@ -14,20 +16,35 @@ export const SidePane = ({ setPage }) => {
           paddingTop: 30,
         }}
       >
-        LOGO
+        <Typography.Text keyboard>LOGO</Typography.Text>
       </div>
       <Menu defaultSelectedKeys={["1"]} mode='inline'>
         <Menu.Item
           key='1'
           onClick={() => {
-            setPage({ title: "This is my dashboard, walay mag buot" });
+            setPage({
+              children: <>TEST</>,
+            });
           }}
         >
           Dashboard
         </Menu.Item>
         <Menu.Item
           key='2'
-          onClick={() => setPage({ title: "Mga admin ni diri ha" })}
+          onClick={() =>
+            setPage({
+              children: (
+                <Row justify='space-around'>
+                  <Col span={6}>
+                    <AdminAddForm />
+                  </Col>
+                  <Col span={16}>
+                    <AdminList />
+                  </Col>
+                </Row>
+              ),
+            })
+          }
         >
           Admins
         </Menu.Item>

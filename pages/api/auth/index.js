@@ -7,13 +7,20 @@ export default async function handler(req, res) {
   const { username, password } = req.body.payload;
   switch (method) {
     case "GET":
-      try {
-        const users = await User.find();
-        res.status(200).json({ success: true, data: users });
-      } catch (error) {
-        res.status(400).json({ success: false });
-      }
-      break;
+      return new Promise(async (resolve, reject) => {
+        await User.find()
+          .then((resp) => {
+            res.status(200).end({
+              success: true,
+              data: resp,
+            });
+            resolve();
+          })
+          .catch((error) => {
+            res.end(JSON.stringify(error));
+            resolve();
+          });
+      });
     case "POST":
       return new Promise(async (resolve, reject) => {
         await User.find()
@@ -54,7 +61,6 @@ export default async function handler(req, res) {
             resolve();
           });
       });
-      break;
     default:
       res.status(400).end(JSON.stringify({ success: false }));
       break;

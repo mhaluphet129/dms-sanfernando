@@ -21,7 +21,7 @@ export default () => {
         password: val.password,
       };
     }
-    let { data } = await axios.post("/api/login", {
+    let { data } = await axios.post("/api/auth", {
       payload,
     });
     if (data.success) {

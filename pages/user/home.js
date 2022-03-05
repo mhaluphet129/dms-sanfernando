@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Layout } from "antd";
-const { Header, Footer, Content } = Layout;
-import Page from "../components/Homepage";
+const { Footer, Content } = Layout;
+import Page from "../components/Page";
 import { SidePane } from "../components/Sider";
 import Cookies from "js-cookie";
 
 export default () => {
-  const init = { title: "This is my dashboard, walay mag buot" };
-  const [page, setPage] = useState(init);
+  const [page, setPage] = useState();
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -16,7 +15,6 @@ export default () => {
         <Content>
           <Page {...page} />
         </Content>
-        <Footer>Footer</Footer>
       </Layout>
     </Layout>
   );
