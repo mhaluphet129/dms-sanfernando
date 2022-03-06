@@ -1,6 +1,9 @@
 import { Menu, Layout, Typography, Row, Col } from "antd";
 import { AdminAddForm } from "./Admin/AdminForm";
 import AdminList from "./Admin/AdminList";
+import RecentTable from "./Admin/RecentTable";
+import FarmersAddForm from "./Clients/Farmers/AddForm";
+import AddForm from "./Clients/AddForm";
 const { Sider } = Layout;
 
 export const SidePane = ({ setPage }) => {
@@ -41,6 +44,10 @@ export const SidePane = ({ setPage }) => {
                   <Col span={16}>
                     <AdminList />
                   </Col>
+                  <Col span={6}></Col>
+                  <Col span={16}>
+                    <RecentTable />
+                  </Col>
                 </Row>
               ),
             })
@@ -48,12 +55,37 @@ export const SidePane = ({ setPage }) => {
         >
           Admins
         </Menu.Item>
-        <Menu.SubMenu key='4' title='User'></Menu.SubMenu>
-        <Menu.SubMenu key='5' title='Team'>
-          <Menu.Item key='a'>Team 1</Menu.Item>
-          <Menu.Item key='b'>Team 2</Menu.Item>
+        <Menu.SubMenu key='3' title='Clients'>
+          <Menu.Item
+            key='a'
+            onClick={() => {
+              setPage({
+                children: (
+                  <>
+                    <FarmersAddForm />
+                  </>
+                ),
+              });
+            }}
+          >
+            Farmers
+          </Menu.Item>
+          <Menu.Item key='b'>Fisheries</Menu.Item>
+          <Menu.Item
+            key='c'
+            onClick={() => {
+              setPage({
+                children: (
+                  <>
+                    <AddForm />
+                  </>
+                ),
+              });
+            }}
+          >
+            Add
+          </Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key='6'>Files</Menu.Item>
       </Menu>
     </Sider>
   );

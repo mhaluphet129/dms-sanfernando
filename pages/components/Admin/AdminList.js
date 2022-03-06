@@ -27,7 +27,6 @@ export default () => {
     if (data.success) {
       setData(data.users);
       setTotal(data.total);
-
       notification["success"]({
         placement: "bottomRight",
         description: data.message,

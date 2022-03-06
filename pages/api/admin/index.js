@@ -31,6 +31,18 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
+        } else if (mode == "recent") {
+          await User.find({ role: "admin" })
+            .sort({ $natural: -1 })
+            .limit(2)
+            .then((data) => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  users: data,
+                })
+              );
+            });
         } else {
           const { id } = req.query;
           await User.findOneAndDelete({ _id: id })
