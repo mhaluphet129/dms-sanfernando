@@ -128,33 +128,61 @@ export default async function handler(req, res) {
     }
     case "PUT": {
       return await new Promise(async (resolve, reject) => {
-        const { id } = req.body.payload;
-        let obj = {};
-        obj["$set"] = { ...req.body.payload };
+        const { mode } = req.body.payload;
+        if (mode == "edit" || mode == "changepassword") {
+          const { id } = req.body.payload;
+          let obj = {};
+          obj["$set"] = { ...req.body.payload };
 
-        if (req.body.payload.hasOwnProperty("addtimeline")) {
-          const { time, label } = req.body.payload.addtimeline;
-          obj["$push"] = {
-            timeline: { time, label },
-          };
+          if (req.body.payload.hasOwnProperty("addtimeline")) {
+            const { time, label } = req.body.payload.addtimeline;
+            obj["$push"] = {
+              timeline: { time, label },
+            };
+          }
+
+          await User.findOneAndUpdate({ _id: id }, obj)
+            .then(() => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Updated successfully",
+                })
+              );
+
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        } else if (mode == "tosuperadmin") {
+          const { id, addtimeline } = req.body.payload;
+          const { time, label } = addtimeline;
+          await User.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: { role: "superadmin" },
+              $push: { timeline: { time, label } },
+            }
+          )
+            .then(() => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Updated successfully",
+                })
+              );
+
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
         }
-
-        await User.findOneAndUpdate({ _id: id }, obj)
-          .then(() => {
-            res.status(200).end(
-              JSON.stringify({
-                success: true,
-                message: "Updated successfully",
-              })
-            );
-
-            resolve();
-          })
-          .catch((err) => {
-            res.end(
-              JSON.stringify({ success: false, message: "Error: " + err })
-            );
-          });
       });
     }
     default: {

@@ -8,6 +8,7 @@ import {
   Input,
   Badge,
   Typography,
+  Popconfirm,
   notification,
   message,
 } from "antd";
@@ -62,6 +63,7 @@ export default ({ type, visibility, onClose, data }) => {
     await axios
       .put("api/admin", {
         payload: {
+          mode: "changepassword",
           id: data?._id,
           password: newPass,
           addtimeline: {
@@ -77,7 +79,7 @@ export default ({ type, visibility, onClose, data }) => {
 
   const handleSave = async () => {
     let flag = [false, false, false, false];
-    let obj = { id: data?._id };
+    let obj = { id: data?._id, mode: "edit" };
     if (_name.length != 0) {
       obj.name = _name;
       flag[0] = true;
@@ -104,6 +106,22 @@ export default ({ type, visibility, onClose, data }) => {
 
     let res = await axios.put("/api/admin", {
       payload: obj,
+    });
+    let resp = res.data;
+    if (resp.success) {
+      notification["success"]({
+        message: resp.message,
+      });
+    } else message.error(resp.message);
+  };
+
+  const changeToSuperadmin = async () => {
+    let res = await axios.put("/api/admin", {
+      payload: {
+        mode: "tosuperadmin",
+        id: data?._id,
+        addtimeline: { time: moment(), label: "Upgraded to Superadmin" },
+      },
     });
     let resp = res.data;
     if (resp.success) {
@@ -174,9 +192,16 @@ export default ({ type, visibility, onClose, data }) => {
             <Button style={{ width: "100%", marginBottom: 5 }}>Timeline</Button>
 
             {type == "superadmin" && data?.role != "superadmin" && (
-              <Button style={{ width: "100%" }}>
-                Grant Super Admin access
-              </Button>
+              <Popconfirm
+                icon={null}
+                title='Proceed to the operation?'
+                okText='Yes'
+                onConfirm={() => changeToSuperadmin()}
+              >
+                <Button style={{ width: "100%" }}>
+                  Grant Super Admin access
+                </Button>
+              </Popconfirm>
             )}
           </Col>
           <Col span={13}>
@@ -264,6 +289,8 @@ export default ({ type, visibility, onClose, data }) => {
           </Col>
         </Row>
       </Modal>
+
+      {/* will separate this soon hehehe */}
       <Modal
         title='Change your password'
         visible={viewModalPass}
