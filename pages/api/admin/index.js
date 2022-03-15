@@ -106,7 +106,8 @@ export default async function handler(req, res) {
     }
     case "POST": {
       return await new Promise(async (resolve, reject) => {
-        let user = User({ email: req.body.payload.email });
+        const { email, timeline } = req.body.payload;
+        let user = User({ email, timeline });
         await user
           .save()
           .then(() => {
@@ -127,14 +128,18 @@ export default async function handler(req, res) {
     }
     case "PUT": {
       return await new Promise(async (resolve, reject) => {
-        await User.findOneAndUpdate(
-          { _id: req.body.payload.id },
-          {
-            $set: {
-              ...req.body.payload,
-            },
-          }
-        )
+        const { id } = req.body.payload;
+        let obj = {};
+        obj["$set"] = { ...req.body.payload };
+
+        if (req.body.payload.hasOwnProperty("addtimeline")) {
+          const { time, label } = req.body.payload.addtimeline;
+          obj["$push"] = {
+            timeline: { time, label },
+          };
+        }
+
+        await User.findOneAndUpdate({ _id: id }, obj)
           .then(() => {
             res.status(200).end(
               JSON.stringify({

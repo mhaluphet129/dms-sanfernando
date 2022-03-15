@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Form,
   Typography,
@@ -11,9 +10,9 @@ import {
   message,
 } from "antd";
 import axios from "axios";
+import moment from "moment";
 
 export const AdminAddForm = () => {
-  const [show, setShow] = useState(false);
   return (
     <Card title='Add an admin' hoverable>
       <Form
@@ -28,6 +27,10 @@ export const AdminAddForm = () => {
           let { data } = await axios.post("/api/admin", {
             payload: {
               email: val.email,
+              timeline: {
+                time: moment(),
+                label: "Account is created",
+              },
             },
           });
 

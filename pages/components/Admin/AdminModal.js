@@ -13,6 +13,8 @@ import {
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import FloatLabel from "../../assets/js/FloatLabel";
+import { Label01 } from "../../assets/js/Labels";
+import moment from "moment";
 import axios from "axios";
 
 export default ({ type, visibility, onClose, data }) => {
@@ -36,16 +38,18 @@ export default ({ type, visibility, onClose, data }) => {
       },
     });
     let resp = res?.data;
-    console.log(resp.user[0].password, currentPass);
     if (!resp.success) {
       notification["warn"]({
         placement: "bottomLeft",
-        description: data.message,
+        description: data?.message,
       });
       return;
     }
 
-    if (resp.user[0].password != currentPass) {
+    if (
+      resp.user[0].password != currentPass &&
+      data?.hasOwnProperty("password")
+    ) {
       message.error("Current password is wrong");
       return;
     }
@@ -60,9 +64,53 @@ export default ({ type, visibility, onClose, data }) => {
         payload: {
           id: data?._id,
           password: newPass,
+          addtimeline: {
+            time: moment(),
+            label: data?.hasOwnProperty("password")
+              ? "Password is changed."
+              : "Password is set",
+          },
         },
       })
       .then(() => message.success("Successfully change the password"));
+  };
+
+  const handleSave = async () => {
+    let flag = [false, false, false, false];
+    let obj = { id: data?._id };
+    if (_name.length != 0) {
+      obj.name = _name;
+      flag[0] = true;
+    }
+    if (_lastname.length != 0) {
+      obj.lastname = _lastname;
+      flag[1] = true;
+    }
+    if (_username.length != 0) {
+      obj.username = _username;
+      flag[2] = true;
+    }
+    if (_email.length != 0) {
+      obj.email = _email;
+      flag[3] = true;
+    }
+    const editTimeline = Label01(flag);
+    if (editTimeline.length > 0) {
+      obj.addtimeline = {
+        time: moment(),
+        label: editTimeline,
+      };
+    }
+
+    let res = await axios.put("/api/admin", {
+      payload: obj,
+    });
+    let resp = res.data;
+    if (resp.success) {
+      notification["success"]({
+        message: resp.message,
+      });
+    } else message.error(resp.message);
   };
 
   return (
@@ -77,22 +125,7 @@ export default ({ type, visibility, onClose, data }) => {
           setEmail("");
           setIsEditing(false);
         }}
-        onOk={async () => {
-          let obj = { id: data?._id };
-          if (_name.length != 0) obj.name = _name;
-          if (_lastname.length != 0) obj.lastname = _lastname;
-          if (_username.length != 0) obj.username = _username;
-          if (_email.length != 0) obj.email = _email;
-
-          let { data } = await axios.put("/api/admin", {
-            payload: obj,
-          });
-          if (data.success) {
-            notification["success"]({
-              message: data.message,
-            });
-          } else message.error(data.message);
-        }}
+        onOk={() => handleSave()}
         okButtonProps={{
           disabled: !isEditing,
         }}
@@ -134,7 +167,9 @@ export default ({ type, visibility, onClose, data }) => {
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => setViewModalPass(true)}
             >
-              Change Password
+              {data?.hasOwnProperty("password")
+                ? "Change Password"
+                : "Set Password"}
             </Button>
             <Button style={{ width: "100%", marginBottom: 5 }}>Timeline</Button>
 
@@ -238,12 +273,14 @@ export default ({ type, visibility, onClose, data }) => {
         onOk={handleChangePass}
         destroyOnClose
       >
-        <FloatLabel label='Current Password' value={currentPass}>
-          <Input
-            type='password'
-            onChange={(el) => setCurrentPass(el.target.value)}
-          />
-        </FloatLabel>
+        {data?.hasOwnProperty("password") ? (
+          <FloatLabel label='Current Password' value={currentPass}>
+            <Input
+              type='password'
+              onChange={(el) => setCurrentPass(el.target.value)}
+            />
+          </FloatLabel>
+        ) : null}
         <FloatLabel label='New Password' value={newPass}>
           <Input
             type='password'
