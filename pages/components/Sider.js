@@ -1,8 +1,7 @@
 import { Menu, Layout, Typography, Row, Col } from "antd";
-import { AdminAddForm } from "./Admin/AdminForm";
-import AdminList from "./Admin/AdminList";
-import RecentTable from "./Admin/RecentTable";
-import FarmersAddForm from "./Clients/Farmers/AddForm";
+import Admin from "../components/Admin/Admin";
+import ListOfFarmers from "./Clients/Farmers/ListOfFarmers";
+import SearchFarmer from "./Clients/Farmers/SearchFarmer";
 import AddForm from "./Clients/AddForm";
 const { Sider } = Layout;
 
@@ -36,20 +35,7 @@ export const SidePane = ({ setPage }) => {
           key='2'
           onClick={() =>
             setPage({
-              children: (
-                <Row justify='space-around'>
-                  <Col span={6}>
-                    <AdminAddForm />
-                  </Col>
-                  <Col span={16}>
-                    <AdminList />
-                  </Col>
-                  <Col span={6}></Col>
-                  <Col span={16}>
-                    <RecentTable />
-                  </Col>
-                </Row>
-              ),
+              children: <Admin />,
             })
           }
         >
@@ -61,9 +47,14 @@ export const SidePane = ({ setPage }) => {
             onClick={() => {
               setPage({
                 children: (
-                  <>
-                    <FarmersAddForm />
-                  </>
+                  <Row justify='space-around'>
+                    <Col span={14}>
+                      <SearchFarmer />
+                    </Col>
+                    <Col span={7}>
+                      <ListOfFarmers />
+                    </Col>
+                  </Row>
                 ),
               });
             }}

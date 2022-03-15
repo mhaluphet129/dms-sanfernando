@@ -11,8 +11,11 @@ export default async function handler(req, res) {
         const { mode } = req.query;
         if (mode == "fetch") {
           const { current, pageSize } = req.query;
-          let total = await User.countDocuments({ role: "admin" });
-          await User.find({ role: "admin" })
+          let totalAdmins = await User.countDocuments({ role: "admin" });
+          let totalSuperAdmin = await User.countDocuments({
+            role: "superadmin",
+          });
+          await User.find()
             .limit(parseInt(pageSize, 10))
             .skip((parseInt(current, 10) - 1) * parseInt(pageSize, 10))
             .then((data) => {
@@ -21,7 +24,8 @@ export default async function handler(req, res) {
                   success: true,
                   message: "Fetch successfully",
                   users: data,
-                  total,
+                  total: totalAdmins,
+                  totalSA: totalSuperAdmin,
                 })
               );
               resolve();
@@ -34,7 +38,7 @@ export default async function handler(req, res) {
         } else if (mode == "recent") {
           await User.find({ role: "admin" })
             .sort({ $natural: -1 })
-            .limit(2)
+            .limit(3)
             .then((data) => {
               res.status(200).end(
                 JSON.stringify({
@@ -86,15 +90,12 @@ export default async function handler(req, res) {
     }
     case "PUT": {
       return await new Promise(async (resolve, reject) => {
-        const { id, name, lastname, username, password } = req.body.payload;
+        console.log(req.body.payload);
         await User.findOneAndUpdate(
-          { _id: id },
+          { _id: req.body.payload.id },
           {
             $set: {
-              name,
-              lastname,
-              username,
-              password,
+              ...req.body.payload,
             },
           }
         )

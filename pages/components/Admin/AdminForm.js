@@ -6,7 +6,7 @@ import {
   Button,
   Space,
   Modal,
-  Collapse,
+  Card,
   notification,
   message,
 } from "antd";
@@ -15,56 +15,44 @@ import axios from "axios";
 export const AdminAddForm = () => {
   const [show, setShow] = useState(false);
   return (
-    <Collapse onChange={() => setShow(!show)}>
-      <Collapse.Panel
-        header={
-          <div style={{ textAlign: "center", width: "100%" }}>
-            Add admin <br />
-            <Typography.Text type='secondary'>
-              ( {show ? "hide" : "show"} )
-            </Typography.Text>
-          </div>
-        }
-        showArrow={false}
-      >
-        <Form
-          layout='horizontal'
-          onFinish={async (val) => {
-            if (!val.email) {
-              notification["warning"]({
-                message: "Input is empty",
-              });
-              return;
-            }
-            let { data } = await axios.post("/api/admin", {
-              payload: {
-                email: val.email,
-              },
+    <Card title='Add an admin' hoverable>
+      <Form
+        layout='horizontal'
+        onFinish={async (val) => {
+          if (!val.email) {
+            notification["warning"]({
+              message: "Input is empty",
             });
+            return;
+          }
+          let { data } = await axios.post("/api/admin", {
+            payload: {
+              email: val.email,
+            },
+          });
 
-            if (data.success) message.success(data.message);
-            else message.error(data.message);
-          }}
+          if (data.success) message.success(data.message);
+          else message.error(data.message);
+        }}
+      >
+        <Form.Item
+          name='email'
+          rules={[
+            {
+              type: "email",
+              message: "The input is not a valid E-mail!",
+            },
+          ]}
         >
-          <Form.Item
-            name='email'
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-            ]}
-          >
-            <Input type='email' placeholder='Enter an email...' allowClear />
-          </Form.Item>
-          <Form.Item>
-            <Button style={{ width: "100%" }} type='primary' htmlType='submit'>
-              Add Admin
-            </Button>
-          </Form.Item>
-        </Form>
-      </Collapse.Panel>
-    </Collapse>
+          <Input type='email' placeholder='Enter an email...' allowClear />
+        </Form.Item>
+        <Form.Item>
+          <Button style={{ width: "100%" }} type='primary' htmlType='submit'>
+            Add Admin
+          </Button>
+        </Form.Item>
+      </Form>
+    </Card>
   );
 };
 
@@ -91,16 +79,15 @@ export const UpdateModal = ({ visible, onCancel, datas }) => {
         wrapperCol={{ span: 18 }}
         layout='horizontal'
         onFinish={async (val) => {
-          let obj = { ...val, id: datas._id };
-          let { data } = await axios.put("/api/admin", {
-            payload: obj,
-          });
-
-          if (data.success) {
-            notification["success"]({
-              message: data.message,
-            });
-          } else message.error(data.message);
+          // let obj = { ...val, id: datas._id };
+          // let { data } = await axios.put("/api/admin", {
+          //   payload: obj,
+          // });
+          // if (data.success) {
+          //   notification["success"]({
+          //     message: data.message,
+          //   });
+          // } else message.error(data.message);
         }}
       >
         <Space direction='vertical' style={{ width: "100%" }}>

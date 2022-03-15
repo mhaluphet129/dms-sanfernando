@@ -11,6 +11,7 @@ export default () => {
     if (data.success) setRecentData(data.users);
     else
       notification["danger"]({
+        placement: "bottomRight",
         description: "Error in the server",
       });
   }, []);
