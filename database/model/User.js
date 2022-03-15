@@ -27,6 +27,10 @@ let UserSchema = new mongoose.Schema(
       default: "admin",
       required: true,
     },
+    timeline: {
+      type: Array,
+      required: false,
+    },
   },
   { timestamps: true }
 );

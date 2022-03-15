@@ -47,7 +47,7 @@ export default async function handler(req, res) {
                 })
               );
             });
-        } else {
+        } else if (mode == "delete") {
           const { id } = req.query;
           await User.findOneAndDelete({ _id: id })
             .then(() => {
@@ -55,6 +55,43 @@ export default async function handler(req, res) {
                 JSON.stringify({
                   success: true,
                   message: "Successfully deleted",
+                })
+              );
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        } else if (mode == "fetchall") {
+          const { role } = req.query;
+          await User.find({ role })
+            .then((data) => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Fetch successfully",
+                  users: data,
+                })
+              );
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        } else if (mode == "changepass") {
+          const { _id } = req.query;
+
+          await User.find({ _id })
+            .then((data) => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Fetch successfully",
+                  user: data,
                 })
               );
               resolve();
@@ -90,7 +127,6 @@ export default async function handler(req, res) {
     }
     case "PUT": {
       return await new Promise(async (resolve, reject) => {
-        console.log(req.body.payload);
         await User.findOneAndUpdate(
           { _id: req.body.payload.id },
           {
