@@ -5,13 +5,10 @@ import {
   Spin,
   Tag,
   Card,
-  Dropdown,
-  Menu,
+  Button,
   notification,
   message,
 } from "antd";
-import { EllipsisOutlined } from "@ant-design/icons";
-import { UpdateModal } from "./AdminForm";
 import AdminModal from "./AdminModal";
 import axios from "axios";
 
@@ -23,7 +20,6 @@ export default ({
   setData,
   type,
 }) => {
-  const [openModal, setOpenModal] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -72,6 +68,7 @@ export default ({
   const columns = [
     {
       title: "Username",
+      align: "center",
       render: (_, row) => {
         return row.username ? (
           <Typography.Text onClick={() => openAdminModal(row)}>
@@ -90,20 +87,23 @@ export default ({
     },
     {
       title: "Email",
-      render: (_, row) =>
-        row?.role == "admin" ? (
-          <Typography.Text onClick={() => openAdminModal(row)} type='link'>
-            {row.email}
-          </Typography.Text>
-        ) : (
-          <Typography.Text
-            onClick={() => openAdminModal(row)}
-            type='secondary'
-            italic
-          >
-            Superadmin email can only be viewed on settings
-          </Typography.Text>
-        ),
+      render: (_, row) => (
+        <div style={{ width: 220 }}>
+          {row?.role == "admin" ? (
+            <Typography.Text onClick={() => openAdminModal(row)} type='link'>
+              {row.email}
+            </Typography.Text>
+          ) : (
+            <Typography.Text
+              onClick={() => openAdminModal(row)}
+              type='secondary'
+              italic
+            >
+              Superadmin email can only be viewed on settings
+            </Typography.Text>
+          )}
+        </div>
+      ),
     },
     {
       title: "role",
@@ -137,39 +137,12 @@ export default ({
     },
     {
       title: "Action",
+      align: "center",
       render: (_, row) => {
         return (
-          <div style={{ textAlign: "center" }}>
-            <Dropdown
-              placement='topRight'
-              overlay={
-                <Menu>
-                  <Menu.Item>
-                    <Typography.Link
-                      type='link'
-                      style={{ color: "#df4759" }}
-                      onClick={() => handleDelete(row._id)}
-                    >
-                      Remove
-                    </Typography.Link>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Typography.Link
-                      type='text'
-                      onClick={() => {
-                        setOpenModal(true);
-                        setModalData(row);
-                      }}
-                    >
-                      Update
-                    </Typography.Link>
-                  </Menu.Item>
-                </Menu>
-              }
-            >
-              <EllipsisOutlined />
-            </Dropdown>
-          </div>
+          <Button type='danger' onClick={() => handleDelete(row._id)}>
+            Remove
+          </Button>
         );
       },
     },
@@ -185,11 +158,6 @@ export default ({
 
   return (
     <>
-      <UpdateModal
-        visible={openModal}
-        onCancel={() => setOpenModal(false)}
-        datas={modalData}
-      />
       <AdminModal
         visibility={modalVisible}
         onClose={() => setModalVisible(false)}
