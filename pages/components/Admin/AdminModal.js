@@ -15,6 +15,7 @@ import {
 import { UserOutlined } from "@ant-design/icons";
 import FloatLabel from "../../assets/js/FloatLabel";
 import { Label01 } from "../../assets/js/Labels";
+import TimelineDisplay from "../../assets/js/TimelineDisplay";
 import moment from "moment";
 import axios from "axios";
 
@@ -25,6 +26,7 @@ export default ({ type, visibility, onClose, data }) => {
   const [_email, setEmail] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [viewModalPass, setViewModalPass] = useState(false);
+  const [viewTimeline, setViewTimeline] = useState(false);
 
   //for passwords
   const [currentPass, setCurrentPass] = useState();
@@ -189,7 +191,14 @@ export default ({ type, visibility, onClose, data }) => {
                 ? "Change Password"
                 : "Set Password"}
             </Button>
-            <Button style={{ width: "100%", marginBottom: 5 }}>Timeline</Button>
+            <Button
+              style={{ width: "100%", marginBottom: 5 }}
+              onClick={() => {
+                setViewTimeline(true);
+              }}
+            >
+              Timeline
+            </Button>
 
             {type == "superadmin" && data?.role != "superadmin" && (
               <Popconfirm
@@ -291,6 +300,17 @@ export default ({ type, visibility, onClose, data }) => {
       </Modal>
 
       {/* will separate this soon hehehe */}
+      <Modal
+        title='Admins Timeline/History'
+        visible={viewTimeline}
+        onCancel={() => setViewTimeline(false)}
+        footer={<Button onClick={() => setViewTimeline(false)}>Close</Button>}
+        closable={false}
+        bodyStyle={{ height: 500, overflowY: "scroll" }}
+        destroyOnClose
+      >
+        <TimelineDisplay data={data?.timeline} />
+      </Modal>
       <Modal
         title='Change your password'
         visible={viewModalPass}

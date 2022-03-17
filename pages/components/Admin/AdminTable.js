@@ -12,14 +12,7 @@ import {
 import AdminModal from "./AdminModal";
 import axios from "axios";
 
-export default ({
-  setTotalAdmin,
-  setTotalSuperAdmin,
-  setFetching,
-  data,
-  setData,
-  type,
-}) => {
+export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -28,13 +21,12 @@ export default ({
 
   const fetch = async (params) => {
     setIsFetching(true);
-    setFetching(true);
     let { data } = await axios.get("/api/admin", {
       params: { ...params },
     });
     if (data.success) {
       setData(data.users);
-      setTotal(data.total);
+      setTotal(data.total + data.totalSA);
       setTotalAdmin(data.total);
       setTotalSuperAdmin(data.totalSA);
       notification["success"]({
@@ -43,7 +35,6 @@ export default ({
       });
     } else message.error(data.message);
     setIsFetching(false);
-    setFetching(false);
   };
 
   const handleDelete = async (id) => {
@@ -151,7 +142,7 @@ export default ({
   useEffect(() => {
     fetch({
       current: 1,
-      pageSize: 5,
+      pageSize: 8,
       mode: "fetch",
     });
   }, []);
@@ -170,8 +161,10 @@ export default ({
           <Table
             columns={columns}
             dataSource={data}
+            style={{ height: "85vh" }}
             pagination={{
-              pageSize: 5,
+              pageSize: 8,
+              position: ["bottomCenter"],
               total,
             }}
             onChange={(params) => fetch({ ...params, mode: "fetch" })}

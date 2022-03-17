@@ -8,7 +8,6 @@ import Cookie from "js-cookie";
 export default () => {
   const [totalAdmin, setTotalAdmin] = useState(0);
   const [totalSuperAdmin, setTotalSuperAdmin] = useState(0);
-  const [fetching, setFetching] = useState(false);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState();
   const [data2, setData2] = useState();
@@ -37,11 +36,19 @@ export default () => {
         onClose={() => setVisible(false)}
       />
       <Row gutter={[16, 16]}>
+        <Col span={16}>
+          <AdminTable
+            setTotalAdmin={setTotalAdmin}
+            setTotalSuperAdmin={setTotalSuperAdmin}
+            data={data}
+            setData={setData}
+            type={type}
+          />
+        </Col>
         <Col span={8}>
           <Row justify='space-around' gutter={[16, 16]}>
             <Col span={9}>
               <Card
-                loading={fetching}
                 onClick={() => {
                   fetch("admin");
                 }}
@@ -59,7 +66,6 @@ export default () => {
             </Col>
             <Col span={13}>
               <Card
-                loading={fetching}
                 onClick={() => {
                   fetch("superadmin");
                 }}
@@ -79,16 +85,6 @@ export default () => {
               <AdminAddForm />
             </Col>
           </Row>
-        </Col>
-        <Col span={16}>
-          <AdminTable
-            setTotalAdmin={setTotalAdmin}
-            setTotalSuperAdmin={setTotalSuperAdmin}
-            setFetching={setFetching}
-            data={data}
-            setData={setData}
-            type={type}
-          />
         </Col>
       </Row>
     </>
