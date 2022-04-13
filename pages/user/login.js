@@ -2,6 +2,10 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import { Form, Tabs, Input, Button, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
+
+import QrSample from "../components/QR";
+import QRwithCamera from "../components/QRwithCamera";
+import { isBrowser } from "react-device-detect";
 import axios from "axios";
 
 export default () => {
@@ -32,73 +36,81 @@ export default () => {
     } else message.error(data.message);
   };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-        overflow: "auto",
-        minHeight: "100vh",
-        background: "#eee",
-      }}
-    >
-      <Typography.Title>Ngalan samo system</Typography.Title>
-      <Form
+  if (!isBrowser) {
+    if (!JSON.parse(Cookies.get("redirectedToQR") || false)) {
+      Cookies.set("redirectedToQR", "true");
+      window.location.href = "https://192.168.254.113:3001/";
+    } else Cookies.remove("redirectedToQR");
+
+    return <QRwithCamera />;
+  } else
+    return (
+      <div
         style={{
-          width: 255,
-          padding: 30,
-          boxShadow: "0 0 5px 1px",
-          background: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          overflow: "auto",
+          minHeight: "100vh",
+          background: "#eee",
         }}
-        onFinish={handleLogin}
       >
-        <Tabs activeKey={type} onChange={setType} type='card'>
-          <Tabs.TabPane key='admin' tab='Admin'>
-            <Form.Item
-              name='username'
-              rules={[
-                {
-                  required: type == "admin" ? true : false,
-                  message: "Please input your Username!",
-                },
-              ]}
-            >
-              <Input prefix={<UserOutlined />} />
-            </Form.Item>
-            <Form.Item
-              name='password'
-              rules={[
-                {
-                  required: type == "admin" ? true : false,
-                  message: "Please input your password!",
-                },
-              ]}
-            >
-              <Input prefix={<LockOutlined />} type='password' />
-            </Form.Item>
-          </Tabs.TabPane>
-          <Tabs.TabPane key='superadmin' tab='Super Admin'>
-            <Form.Item
-              name='superpassword'
-              rules={[
-                {
-                  required: type == "superadmin" ? true : false,
-                  message: "Please input your password!",
-                },
-              ]}
-            >
-              <Input prefix={<LockOutlined />} type='password' />
-            </Form.Item>
-          </Tabs.TabPane>
-        </Tabs>
-        <Form.Item>
-          <Button type='primary' style={{ width: "100%" }} htmlType='submit'>
-            Log In
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
+        <Typography.Title>Ngalan samo system</Typography.Title>
+        <Form
+          style={{
+            width: 255,
+            padding: 30,
+            boxShadow: "0 0 5px 1px",
+            background: "#fff",
+          }}
+          onFinish={handleLogin}
+        >
+          <Tabs activeKey={type} onChange={setType} type='card'>
+            <Tabs.TabPane key='admin' tab='Admin'>
+              <Form.Item
+                name='username'
+                rules={[
+                  {
+                    required: type == "admin" ? true : false,
+                    message: "Please input your Username!",
+                  },
+                ]}
+              >
+                <Input prefix={<UserOutlined />} />
+              </Form.Item>
+              <Form.Item
+                name='password'
+                rules={[
+                  {
+                    required: type == "admin" ? true : false,
+                    message: "Please input your password!",
+                  },
+                ]}
+              >
+                <Input prefix={<LockOutlined />} type='password' />
+              </Form.Item>
+            </Tabs.TabPane>
+            <Tabs.TabPane key='superadmin' tab='Super Admin'>
+              <Form.Item
+                name='superpassword'
+                rules={[
+                  {
+                    required: type == "superadmin" ? true : false,
+                    message: "Please input your password!",
+                  },
+                ]}
+              >
+                <Input prefix={<LockOutlined />} type='password' />
+              </Form.Item>
+            </Tabs.TabPane>
+          </Tabs>
+          <Form.Item>
+            <Button type='primary' style={{ width: "100%" }} htmlType='submit'>
+              Log In
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
 };

@@ -1,8 +1,7 @@
 import { Menu, Layout, Typography, Row, Col } from "antd";
 import Admin from "../components/Admin/Admin";
-import ListOfFarmers from "./Clients/Farmers/ListOfFarmers";
-import SearchFarmer from "./Clients/Farmers/SearchFarmer";
-import AddForm from "./Clients/AddForm";
+// import Dashboard from "../components/dashboard";
+import Livelihood from "./Livelihood/AddForm";
 const { Sider } = Layout;
 
 export const SidePane = ({ setPage }) => {
@@ -42,34 +41,16 @@ export const SidePane = ({ setPage }) => {
           Admins
         </Menu.Item>
         <Menu.SubMenu key='3' title='Clients'>
-          <Menu.Item
-            key='a'
-            onClick={() => {
-              setPage({
-                children: (
-                  <Row justify='space-around'>
-                    <Col span={14}>
-                      <SearchFarmer />
-                    </Col>
-                    <Col span={7}>
-                      <ListOfFarmers />
-                    </Col>
-                  </Row>
-                ),
-              });
-            }}
-          >
-            Farmers
-          </Menu.Item>
+          <Menu.Item key='a'>Farmers</Menu.Item>
           <Menu.Item key='b'>Fisheries</Menu.Item>
           <Menu.Item
             key='c'
             onClick={() => {
               setPage({
                 children: (
-                  <>
-                    <AddForm />
-                  </>
+                  <div style={{ margin: 10 }}>
+                    <Livelihood />
+                  </div>
                 ),
               });
             }}
