@@ -3,7 +3,6 @@ import { Layout } from "antd";
 const { Footer, Content } = Layout;
 import Page from "../components/Page";
 import { SidePane } from "../components/Sider";
-import Cookies from "js-cookie";
 
 export default () => {
   const [page, setPage] = useState();

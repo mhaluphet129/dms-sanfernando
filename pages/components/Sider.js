@@ -1,10 +1,34 @@
+import { useEffect } from "react";
 import { Menu, Layout, Typography, Row, Col } from "antd";
-import Admin from "../components/Admin/Admin";
-// import Dashboard from "../components/dashboard";
+import io from "socket.io-client";
+
+import Admin from "./Admin/Admin";
+// import Dashboard from "./dashboard";
+import QRSample from "./QR";
 import Livelihood from "./Livelihood/AddForm";
 const { Sider } = Layout;
 
+let socket;
+
 export const SidePane = ({ setPage }) => {
+  useEffect(() => {
+    fetch("/api/socketio").finally(() => {
+      socket = io();
+
+      socket.on("connect", () => {
+        console.log("socket connection established");
+      });
+
+      socket.on("alert", (data) => {
+        alert(data);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("socket connection is disconnected");
+      });
+    });
+  }, []);
+
   return (
     <Sider collapsible theme='light'>
       <div
@@ -24,7 +48,7 @@ export const SidePane = ({ setPage }) => {
           key='1'
           onClick={() => {
             setPage({
-              children: <>TEST</>,
+              children: <QRSample />,
             });
           }}
         >

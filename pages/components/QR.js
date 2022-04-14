@@ -11,5 +11,5 @@ export default () => {
       setQr(parse(url));
     });
   }, []);
-  return <>{qr}</>;
+  return <div style={{ width: 300 }}>{qr}</div>;
 };
