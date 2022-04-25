@@ -14,12 +14,9 @@ import io from "socket.io-client";
 
 import Page from "../components/Page";
 import { SidePane } from "../components/Sider";
-<<<<<<< HEAD
 
 const { Content, Header } = Layout;
 let socket;
-=======
->>>>>>> 62dd386 (added websockets for logs)
 
 export default () => {
   const [page, setPage] = useState();

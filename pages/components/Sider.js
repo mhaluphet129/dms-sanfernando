@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { Menu, Layout, message } from "antd";
 
 import Admin from "./Admin/Admin";
-=======
-import { useEffect } from "react";
-import { Menu, Layout, Typography, Row, Col } from "antd";
-import io from "socket.io-client";
-
-import Admin from "./Admin/Admin";
-// import Dashboard from "./dashboard";
->>>>>>> 62dd386 (added websockets for logs)
 import QRSample from "./QR";
 import Livelihood from "./Livelihood/AddForm";
 const { Sider } = Layout;
