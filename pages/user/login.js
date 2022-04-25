@@ -2,11 +2,9 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import { Form, Tabs, Input, Button, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
-
-import QrSample from "../components/QR";
-import QRwithCamera from "../components/QRwithCamera";
 import { isBrowser } from "react-device-detect";
 import axios from "axios";
+import QRwithCamera from "../components/QRwithCamera";
 
 export default () => {
   const [type, setType] = useState("admin");
