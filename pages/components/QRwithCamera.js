@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { Typography, Card, Tag, Button, message } from "antd";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import io from "socket.io-client";
@@ -9,10 +10,20 @@ let socket;
 
 export default ({ setIsConnected, isConnected }) => {
   const [keys, setKeys] = useState([]);
+=======
+import { message } from "antd";
+import { Html5QrcodeScanner } from "html5-qrcode";
+import io from "socket.io-client";
+
+export default () => {
+  let socket;
+  function onScanError(errorMessage) {}
+>>>>>>> 62dd386 (added websockets for logs)
 
   function onScanError(errorMessage) {}
   function onScanSuccess(qrCodeMessage) {
     message.success("Successfully scanned!");
+    socket.emit("hello", qrCodeMessage);
   }
 
   useEffect(() => {
@@ -26,15 +37,19 @@ export default ({ setIsConnected, isConnected }) => {
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
+<<<<<<< HEAD
 
       socket.on("update-connection", (_keys) => {
         setKeys(_keys);
       });
+=======
+>>>>>>> 62dd386 (added websockets for logs)
     });
   }, []);
 
   return (
     <>
+<<<<<<< HEAD
       <Prompt
         setIsConnected={setIsConnected}
         isConnected={isConnected}
@@ -82,6 +97,12 @@ export default ({ setIsConnected, isConnected }) => {
             </Typography.Text>
             <br />
           </Card>
+=======
+      <style></style>
+      <div class='row'>
+        <div class='col'>
+          <div style={{ width: 500 }} id='reader'></div>
+>>>>>>> 62dd386 (added websockets for logs)
         </div>
       </div>
     </>

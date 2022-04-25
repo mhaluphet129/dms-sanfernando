@@ -4,12 +4,16 @@ import { Form, Tabs, Input, Button, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
 import { isBrowser } from "react-device-detect";
 import axios from "axios";
+<<<<<<< HEAD
 import io from "socket.io-client";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 import { keyGenerator } from "../assets/js/KeyGenerator";
 import QRScanner from "../components/QRwithCamera";
 let socket;
+=======
+import QRwithCamera from "../components/QRwithCamera";
+>>>>>>> 62dd386 (added websockets for logs)
 
 export default () => {
   const [type, setType] = useState("admin");

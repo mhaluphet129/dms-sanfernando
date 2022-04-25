@@ -1,6 +1,9 @@
 import { Server } from "Socket.IO";
 
+<<<<<<< HEAD
 let keyPairs = []; // for user unique key
+=======
+>>>>>>> 62dd386 (added websockets for logs)
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
     console.log("Socket is already running");
@@ -9,6 +12,7 @@ const SocketHandler = (req, res) => {
     const io = new Server(res.socket.server);
     res.socket.server.io = io;
     io.on("connection", (socket) => {
+<<<<<<< HEAD
       // key stuffs
       socket.on("push-new-system-key", (key) => {
         keyPairs.push({ systemKey: key, deviceId: null });
@@ -46,6 +50,13 @@ const SocketHandler = (req, res) => {
         socket.broadcast.emit("update-connection", keyPairs);
         let _key = keyPairs.filter((el) => el.deviceId == id);
         socket.broadcast.emit("get-key", _key);
+=======
+      socket.on("hello", (msg) => {
+        socket.broadcast.emit("alert", msg);
+      });
+      socket.on("input-change", (msg) => {
+        socket.broadcast.emit("update-input", msg);
+>>>>>>> 62dd386 (added websockets for logs)
       });
     });
   }
