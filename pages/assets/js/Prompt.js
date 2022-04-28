@@ -7,6 +7,7 @@ let socket;
 
 export default ({ setIsConnected, isConnected, setKeys, keys }) => {
   const [value, setValue] = useState("");
+  const [keys, setKeys] = useState([]);
 
   const handleConnect = () => {
     let a = keys.filter((el) => el.systemKey == value);
@@ -15,7 +16,7 @@ export default ({ setIsConnected, isConnected, setKeys, keys }) => {
       let _key = keyGenerator(6);
       setIsConnected(true);
       socket.emit("notify", a[0].systemKey);
-      socket.emit("push-new-device-key", {
+      socket.emit("push-new-device", {
         key: a[0].systemKey,
         deviceKey: _key,
       });
@@ -27,9 +28,9 @@ export default ({ setIsConnected, isConnected, setKeys, keys }) => {
     fetch("/api/socketio").finally(() => {
       socket = io();
 
-      socket.emit("get-all-keys");
-      socket.on("get-keys", (_keys) => {
-        setKeys(_keys);
+      socket.emit("get-all");
+      socket.on("on-get-all", (_) => {
+        setKeys(_);
       });
     });
   }, []);

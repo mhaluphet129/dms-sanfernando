@@ -39,7 +39,7 @@ export default () => {
       Cookies.set("loggedIn", "true");
       Cookies.set("key", key);
 
-      socket.emit("push-new-system-key", key);
+      socket.emit("push-new-system", key);
 
       message.success(data.message);
       window.location.href = "/";

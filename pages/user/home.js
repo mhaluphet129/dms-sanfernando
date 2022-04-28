@@ -50,7 +50,7 @@ export default () => {
           onClick={() => {
             Cookies.remove("user");
             Cookies.set("loggedIn", "false");
-            socket.emit("remove-system-key", key);
+            socket.emit("remove-system", key);
             window.location.href = "/user/login";
           }}
         >

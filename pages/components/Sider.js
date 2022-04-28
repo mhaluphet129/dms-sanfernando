@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, Layout, message } from "antd";
+import Cookie from "js-cookie";
 
 import Admin from "./Admin/Admin";
 import QRSample from "./QR";
@@ -13,16 +14,11 @@ export const SidePane = ({ setPage }) => {
     fetch("/api/socketio").finally(() => {
       socket = io();
 
-      socket.on("connect", () => {
-        console.log("socket connection established");
-      });
-
-      socket.on("alert", (data) => {
-        alert(data);
-      });
-
-      socket.on("disconnect", () => {
-        console.log("socket connection is disconnected");
+      socket.on("connected-to-system", (key, deviceID) => {
+        if (Cookie.get("key") == key)
+          message.success(
+            `A device with a key ${deviceID} is successfully connected`
+          );
       });
     });
   }, []);

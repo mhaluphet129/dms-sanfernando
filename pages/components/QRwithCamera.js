@@ -8,40 +8,33 @@ import Prompt from "../assets/js/Prompt";
 let socket;
 
 export default ({ setIsConnected, isConnected }) => {
-  const [keys, setKeys] = useState([]);
-
-  function onScanError(errorMessage) {}
-  function onScanSuccess(qrCodeMessage) {
-    message.success("Successfully scanned!");
-    socket.emit("hello", qrCodeMessage);
-  }
+  const [connectionText, setConnectionText] = useState(
+    keys[0]?.deviceId ? "DISCONNECT" : "CONNECT"
+  );
 
   useEffect(() => {
     let html5QrcodeScanner = new Html5QrcodeScanner("reader", {
       fps: 10,
       qrbox: 300,
     });
-    html5QrcodeScanner.render(onScanSuccess, onScanError);
+    html5QrcodeScanner.render(() => {
+      message.success("Successfully scanned!");
+    });
   }, []);
 
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
 
-      socket.on("update-connection", (_keys) => {
-        setKeys(_keys);
+      socket.on("update-connection", (status) => {
+        setConnectionText(!status ? "DISCONNECT" : "CONNECT");
       });
     });
   }, []);
 
   return (
     <>
-      <Prompt
-        setIsConnected={setIsConnected}
-        isConnected={isConnected}
-        setKeys={setKeys}
-        keys={keys}
-      />
+      <Prompt setIsConnected={setIsConnected} isConnected={isConnected} />
       <div class='row'>
         <div class='col'>
           <div style={{ width: 500 }} id='reader'></div>
@@ -51,10 +44,12 @@ export default ({ setIsConnected, isConnected }) => {
               <Button
                 danger={keys[0]?.deviceId ? true : false}
                 onClick={() => {
-                  socket.emit("disconnect-connection", keys[0].deviceId);
+                  if (connectionText == "CONNECT")
+                    socket.emit("disconnect", keys[0].deviceId);
+                  else socket.emit("connect", keys[0].deviceId);
                 }}
               >
-                {keys[0]?.deviceId ? "DISCONNECT" : "CONNECT"}
+                {connectionText}
               </Button>,
             ]}
             hoverable
