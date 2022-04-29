@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { keyGenerator } from "../js/KeyGenerator";
 let socket;
 
-export default ({ setIsConnected, isConnected, setKeys, keys }) => {
+export default ({ setIsConnected, isConnected }) => {
   const [value, setValue] = useState("");
   const [keys, setKeys] = useState([]);
 

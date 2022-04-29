@@ -9,6 +9,7 @@ export default async function handler(req, res) {
     case "GET": {
       return await new Promise(async (resolve, reject) => {
         const { mode } = req.query;
+
         if (mode == "fetch") {
           const { current, pageSize } = req.query;
           let totalAdmins = await User.countDocuments({ role: "admin" });
@@ -35,7 +36,9 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
-        } else if (mode == "recent") {
+        }
+
+        if (mode == "recent") {
           await User.find({ role: "admin" })
             .sort({ $natural: -1 })
             .limit(3)
@@ -47,7 +50,9 @@ export default async function handler(req, res) {
                 })
               );
             });
-        } else if (mode == "delete") {
+        }
+
+        if (mode == "delete") {
           const { id } = req.query;
           await User.findOneAndDelete({ _id: id })
             .then(() => {
@@ -64,7 +69,9 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
-        } else if (mode == "fetchall") {
+        }
+
+        if (mode == "fetchall") {
           const { role } = req.query;
           await User.find({ role })
             .then((data) => {
@@ -82,7 +89,9 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
-        } else if (mode == "changepass") {
+        }
+
+        if (mode == "changepass") {
           const { _id } = req.query;
 
           await User.find({ _id })
@@ -126,6 +135,7 @@ export default async function handler(req, res) {
           });
       });
     }
+
     case "PUT": {
       return await new Promise(async (resolve, reject) => {
         const { mode } = req.body.payload;
@@ -185,6 +195,7 @@ export default async function handler(req, res) {
         }
       });
     }
+
     default: {
       return await new Promise(async (resolve, reject) => {
         res.status(400).end(
