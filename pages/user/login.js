@@ -1,13 +1,19 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Form, Tabs, Input, Button, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
 import { isBrowser } from "react-device-detect";
 import axios from "axios";
-import QRwithCamera from "../components/QRwithCamera";
+import io from "socket.io-client";
+import { Html5QrcodeScanner } from "html5-qrcode";
+
+import { keyGenerator } from "../assets/js/KeyGenerator";
+import QRScanner from "../components/QRwithCamera";
+let socket;
 
 export default () => {
   const [type, setType] = useState("admin");
+  const [isConnected, setIsConnected] = useState(false);
 
   const handleLogin = async (val) => {
     let payload = {};
@@ -27,20 +33,35 @@ export default () => {
       payload,
     });
     if (data.success) {
+      let key = keyGenerator(5);
+      //Cookieeee, wanna bite ? :3
       Cookies.set("user", JSON.stringify(data.user));
       Cookies.set("loggedIn", "true");
+      Cookies.set("key", key);
+
+      socket.emit("push-new-system", key);
+
       message.success(data.message);
       window.location.href = "/";
     } else message.error(data.message);
   };
 
+  useEffect(() => {
+    fetch("/api/socketio").finally(() => {
+      socket = io();
+    });
+  }, []);
+
+  //return a view
   if (!isBrowser) {
     if (!JSON.parse(Cookies.get("redirectedToQR") || false)) {
       Cookies.set("redirectedToQR", "true");
-      window.location.href = "https://192.168.254.113:3001/";
+      // window.location.href = "https://192.168.254.113:3001/";
     } else Cookies.remove("redirectedToQR");
 
-    return <QRwithCamera />;
+    return (
+      <QRScanner setIsConnected={setIsConnected} isConnected={isConnected} />
+    );
   } else
     return (
       <div
@@ -64,10 +85,10 @@ export default () => {
           }}
           onFinish={handleLogin}
         >
-          <Tabs activeKey={type} onChange={setType} type='card'>
-            <Tabs.TabPane key='admin' tab='Admin'>
+          <Tabs activeKey={type} onChange={setType} type="card">
+            <Tabs.TabPane key="admin" tab="Admin">
               <Form.Item
-                name='username'
+                name="username"
                 rules={[
                   {
                     required: type == "admin" ? true : false,
@@ -78,7 +99,7 @@ export default () => {
                 <Input prefix={<UserOutlined />} />
               </Form.Item>
               <Form.Item
-                name='password'
+                name="password"
                 rules={[
                   {
                     required: type == "admin" ? true : false,
@@ -86,12 +107,12 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type='password' />
+                <Input prefix={<LockOutlined />} type="password" />
               </Form.Item>
             </Tabs.TabPane>
-            <Tabs.TabPane key='superadmin' tab='Super Admin'>
+            <Tabs.TabPane key="superadmin" tab="Super Admin">
               <Form.Item
-                name='superpassword'
+                name="superpassword"
                 rules={[
                   {
                     required: type == "superadmin" ? true : false,
@@ -99,12 +120,12 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type='password' />
+                <Input prefix={<LockOutlined />} type="password" />
               </Form.Item>
             </Tabs.TabPane>
           </Tabs>
           <Form.Item>
-            <Button type='primary' style={{ width: "100%" }} htmlType='submit'>
+            <Button type="primary" style={{ width: "100%" }} htmlType="submit">
               Log In
             </Button>
           </Form.Item>
