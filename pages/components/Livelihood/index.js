@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Tabs, Button } from "antd";
 
-import AddForm from "../../components/AddForm";
+import AddForm from "./AddForm";
 export default () => {
   const [visible, setVisible] = useState(false);
   return (
