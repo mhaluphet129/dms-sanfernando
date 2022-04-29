@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
 import { isBrowser } from "react-device-detect";
 import axios from "axios";
 import io from "socket.io-client";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import Image from "next/image";
 
 import { keyGenerator } from "../assets/js/KeyGenerator";
 import QRScanner from "../components/QRwithCamera";
@@ -75,7 +75,8 @@ export default () => {
           background: "#eee",
         }}
       >
-        <Typography.Title>Ngalan samo system</Typography.Title>
+        {/* <Typography.Title>Ngalan samo system</Typography.Title> */}
+        <Image src="/logo.png" alt="me" width="128" height="64" />
         <Form
           style={{
             width: 255,
