@@ -11,11 +11,11 @@ import {
   Image,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import AddForm from "./Livelihood/AddForm";
+import ViewProfile from "./Livelihood/ViewProfile";
 
 export default () => {
   const [profileModal, setProfileModal] = useState(true);
-
+  const [profileVisible, setProfileVisible] = useState(false);
   return (
     <Modal
       visible={profileModal}
@@ -26,6 +26,10 @@ export default () => {
         setProfileModal(false);
       }}
     >
+      <ViewProfile
+        profileVisible={profileVisible}
+        setProfileVisible={setProfileVisible}
+      />
       <Row>
         <Col span={16}>
           <Row>
@@ -48,7 +52,10 @@ export default () => {
                   id: 20210424-1324-2143
                 </Typography.Text>
               </div>
-              <Button style={{ width: "100%", marginBottom: 5 }}>
+              <Button
+                style={{ width: "100%", marginBottom: 5 }}
+                onClick={() => setProfileVisible(true)}
+              >
                 View Full Profile
               </Button>
               <Button style={{ width: "100%", marginBottom: 5 }}>

@@ -76,12 +76,14 @@ export default () => {
         }}
       >
         {/* <Typography.Title>Ngalan samo system</Typography.Title> */}
-        <Image src='/logo.png' alt='me' width='128' height='64' />
+        <div style={{ marginBottom: 10 }}>
+          <Image src='/logo.png' alt='me' width='128' height='64' />
+        </div>
         <Form
           style={{
-            width: 255,
+            width: 400,
             padding: 30,
-            boxShadow: "0 0 5px 1px",
+            boxShadow: "0 0 7px 1px gray",
             background: "#fff",
           }}
           onFinish={handleLogin}
@@ -97,7 +99,7 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<UserOutlined />} />
+                <Input prefix={<UserOutlined />} size='large' />
               </Form.Item>
               <Form.Item
                 name='password'
@@ -108,7 +110,7 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type='password' />
+                <Input prefix={<LockOutlined />} type='password' size='large' />
               </Form.Item>
             </Tabs.TabPane>
             <Tabs.TabPane key='superadmin' tab='Super Admin'>
@@ -121,7 +123,7 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type='password' />
+                <Input prefix={<LockOutlined />} type='password' size='large' />
               </Form.Item>
             </Tabs.TabPane>
           </Tabs>
