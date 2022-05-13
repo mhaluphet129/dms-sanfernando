@@ -3,15 +3,12 @@ let mongoose = require("mongoose");
 let nameSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
   },
   middleName: {
     type: String,
-    required: true,
   },
   lastName: {
     type: String,
-    required: true,
   },
   extensionName: {
     type: String,
@@ -51,7 +48,6 @@ let birthSchema = new mongoose.Schema({
 let civilSchema = new mongoose.Schema({
   civilStatus: {
     type: String,
-    required: true,
   },
   spouseName: {
     type: String,
@@ -106,19 +102,43 @@ let emergencySchema = new mongoose.Schema({
   },
 });
 
-// let profileSchema = new mongoose.Schema({
-//   type: {
-//     type: Array,
-//   },
-//   grossIncomeLastYear: {
-//     type: String,
-//   },
-// });
+let profileSchema = new mongoose.Schema({
+  type: {
+    type: Array,
+  },
+  crops: {
+    type: Array,
+  },
+  livestock: {
+    type: Array,
+  },
+  poultry: {
+    type: Array,
+  },
+  farmWorker: {
+    type: Array,
+  },
+  fisherFolks: {
+    type: Array,
+  },
+  isARB: {
+    type: Boolean,
+  },
+});
+
+let memberSchema = new mongoose.Schema({
+  status: {
+    type: Boolean,
+  },
+  name: {
+    type: String,
+  },
+});
 
 let livelihoodSchema = new mongoose.Schema(
   {
     name: nameSchema,
-    sex: {
+    gender: {
       type: String,
     },
     contactNum: {
@@ -126,7 +146,6 @@ let livelihoodSchema = new mongoose.Schema(
     },
     religion: {
       type: String,
-      required: true,
     },
     motherMaidenName: {
       type: String,
@@ -140,9 +159,12 @@ let livelihoodSchema = new mongoose.Schema(
     is4Ps: {
       type: Boolean,
     },
-    hasCoopOrAssoc: {
-      type: Boolean,
+    profile: profileSchema,
+    farmlandID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmland",
     },
+    hasCoopOrAssoc: memberSchema,
     address: addressSchema,
     birth: birthSchema,
     civil: civilSchema,
@@ -150,7 +172,6 @@ let livelihoodSchema = new mongoose.Schema(
     ethnicity: ethnicitySchema,
     government: governmentSchema,
     emergency: emergencySchema,
-    // profile: profileSchema,
   },
   { timestamps: true }
 );

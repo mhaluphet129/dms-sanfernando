@@ -76,7 +76,7 @@ export default () => {
         }}
       >
         {/* <Typography.Title>Ngalan samo system</Typography.Title> */}
-        <Image src="/logo.png" alt="me" width="128" height="64" />
+        <Image src='/logo.png' alt='me' width='128' height='64' />
         <Form
           style={{
             width: 255,
@@ -86,10 +86,10 @@ export default () => {
           }}
           onFinish={handleLogin}
         >
-          <Tabs activeKey={type} onChange={setType} type="card">
-            <Tabs.TabPane key="admin" tab="Admin">
+          <Tabs activeKey={type} onChange={setType} type='card'>
+            <Tabs.TabPane key='admin' tab='Admin'>
               <Form.Item
-                name="username"
+                name='username'
                 rules={[
                   {
                     required: type == "admin" ? true : false,
@@ -100,7 +100,7 @@ export default () => {
                 <Input prefix={<UserOutlined />} />
               </Form.Item>
               <Form.Item
-                name="password"
+                name='password'
                 rules={[
                   {
                     required: type == "admin" ? true : false,
@@ -108,12 +108,12 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type="password" />
+                <Input prefix={<LockOutlined />} type='password' />
               </Form.Item>
             </Tabs.TabPane>
-            <Tabs.TabPane key="superadmin" tab="Super Admin">
+            <Tabs.TabPane key='superadmin' tab='Super Admin'>
               <Form.Item
-                name="superpassword"
+                name='superpassword'
                 rules={[
                   {
                     required: type == "superadmin" ? true : false,
@@ -121,12 +121,12 @@ export default () => {
                   },
                 ]}
               >
-                <Input prefix={<LockOutlined />} type="password" />
+                <Input prefix={<LockOutlined />} type='password' />
               </Form.Item>
             </Tabs.TabPane>
           </Tabs>
           <Form.Item>
-            <Button type="primary" style={{ width: "100%" }} htmlType="submit">
+            <Button type='primary' style={{ width: "100%" }} htmlType='submit'>
               Log In
             </Button>
           </Form.Item>

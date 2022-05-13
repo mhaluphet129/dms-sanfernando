@@ -16,14 +16,21 @@ import {
   Checkbox,
   InputNumber,
   Upload,
+  Typography,
+  message,
 } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import Cookie from "js-cookie";
+import axios from "axios";
+
+import FarmCustomTable from "./FarmCustomTable";
 
 export default ({ visible, setVisible }) => {
   const [current, setCurrent] = useState(0);
   const [maritalStatus, setMaritalStatus] = useState("single");
   const [isHead, setIsHead] = useState(true);
   const [maxCount, setMaxCount] = useState(false);
+  const [farmlandData, setFarmlandData] = useState([]);
 
   const uploadButton = (
     <div>
@@ -248,12 +255,14 @@ export default ({ visible, setVisible }) => {
   //HANDLERS NI BEBE *mwah*
   const handleChange = (current) => {
     setCurrent(current);
-    console.log(otherInfo);
   };
 
   const handleNext = () => {
-    if (current < 2) setCurrent(current + 1);
-    else alert("add me");
+    if (current < 2) {
+      if (current == 1) {
+      }
+      setCurrent(current + 1);
+    } else alert("add me");
   };
 
   const handlePrev = () => {
@@ -263,7 +272,7 @@ export default ({ visible, setVisible }) => {
   return (
     <Modal
       visible={visible}
-      width={800}
+      width={1000}
       onCancel={() => {
         setVisible(false);
         setCurrent(0);
@@ -284,8 +293,187 @@ export default ({ visible, setVisible }) => {
       <Divider />
       <Form
         layout='vertical'
-        onFinish={(val) => {
+        onFinish={async (val) => {
+          let flagError = 0;
+          //^(09|\+639)\d{9}$ regex for ph number
+
           console.log(val);
+
+          // restricts
+          const arr = [
+            "surname",
+            "firstname",
+            "street",
+            "barangay",
+            "city",
+            "province",
+            "region",
+            "contactnum",
+            "dateofbirth",
+            "status",
+            "isHouseholdHead",
+            "personToContact",
+            "emergencyContact",
+            "isARB",
+          ];
+
+          if (val.type?.length == 0) flagError = 1;
+
+          arr.forEach((el) => {
+            if (val[el] == undefined || val[el].length == 0) flagError = 1;
+          });
+
+          if (val.isHouseholdHead != undefined && !val.isHouseholdHead) {
+            if (
+              val.householdname?.length == 0 ||
+              val.householdRelationship?.length == 0 ||
+              val.householdname == undefined ||
+              val.householdRelationship == undefined
+            )
+              flagError = 1;
+          }
+
+          if (val.status == "Married") {
+            if (val.spousename?.length == 0 || val.spousename == undefined)
+              flagError = 1;
+          }
+
+          if (flagError) {
+            message.warn("Please input all required fields");
+            return;
+          }
+
+          // end of restrictions
+
+          let user = JSON.parse(Cookie.get("user"))[0];
+
+          // FORM data
+          let obj = {
+            gender: val.gender,
+            contactNum: val.contactnum,
+            religion: val.religion,
+            motherMaidenName: val.mothername,
+            highestEducation: val.education,
+            isDisabledPerson: otherInfo.isPWD,
+            is4Ps: otherInfo.is4Ps,
+            education: val.education,
+          };
+
+          let nameObj = {
+            name: val.firstname,
+            middleName: val.middlename,
+            lastName: val.surname,
+            extensionName: val.extensionname,
+          };
+
+          let addressObj = {
+            region: val.region,
+            province: val.province,
+            city: val.city,
+            barangay: val.barangay,
+            street: val.street,
+            house: val.housenum,
+          };
+
+          let birthObj = {
+            dateOfBirth: val.dateofbirth,
+            placeOfBirth: val.placeofbirth,
+          };
+
+          let civilObj = {
+            civilStatus: val.status,
+            spouseName: val.spousename || "",
+          };
+
+          let householdObj = {
+            isHead: val.isHouseholdHead,
+            nameOfHead: val.householdname,
+            relationship: val.householdRelationship,
+            numberOfLiving: val.totalHouseholdMembers,
+            numOfMale: val.numberOfMale,
+            numOfFemale: val.numberOfFemale,
+          };
+
+          let ethnicObj = {
+            isIp: otherInfo.isIP.status,
+            nameOfEthnicity: otherInfo.isIP.name,
+          };
+
+          let governObj = {
+            hasId: otherInfo.hasID.status,
+            idNum: otherInfo.hasID.name,
+          };
+
+          let emergencyObj = {
+            name: val.personToContact,
+            number: val.emergencyContact,
+          };
+
+          let hasCoopOrAssocObj = {
+            status: otherInfo.isMember.status,
+            name: otherInfo.isMember.name,
+          };
+
+          let profileObj = {
+            type: val.type,
+            crops: val.type?.includes("Farmer")
+              ? otherInfo.farmer.crops?.data || []
+              : [],
+            livestock: val.type?.includes("Farmworker")
+              ? otherInfo.farmer.livestock?.data || []
+              : [],
+            poultry: val.type?.includes("Fisherfolk")
+              ? otherInfo.farmer.poultry?.data || []
+              : [],
+            farmWorker: otherInfo.farmworker.status
+              ? otherInfo.farmworker.data
+              : [],
+            fisherFolks: otherInfo.fisherfolk.status
+              ? otherInfo.fisherfolk.data
+              : [],
+            isARB: val.isARB,
+          };
+
+          // end
+
+          // Farm description
+          let arrayFarm = farmlandData.map((el) => ({
+            location: el.loc,
+            ownershipDocument: el.docType,
+            ownerType: el.owner.type,
+            ownerName: el.owner.data,
+            totalArea: el.totalArea,
+            documentNumber: el.docNum,
+            crops: [...el.arr1],
+            livestock: [...el.arr2],
+          }));
+
+          let farmLandObj = {
+            userId: user._id,
+            farmland: [...arrayFarm],
+          };
+
+          const newLivelihood = {
+            ...obj,
+            name: nameObj,
+            profile: profileObj,
+            hasCoopOrAssoc: hasCoopOrAssocObj,
+            address: addressObj,
+            birth: birthObj,
+            civil: civilObj,
+            household: householdObj,
+            ethnicity: ethnicObj,
+            government: governObj,
+            emergency: emergencyObj,
+          };
+
+          let { data } = await axios.post("/api/livelihood", {
+            payload: newLivelihood,
+          });
+          if (data.success) {
+            message.success(data.message);
+            setVisible(false);
+          } else message.error(data.message);
         }}
       >
         <div style={{ display: current != 0 ? "none" : null }}>
@@ -294,10 +482,18 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Surname' name='surname'>
+                  <Form.Item
+                    label='Surname'
+                    name='surname'
+                    required={[{ required: true }]}
+                  >
                     <Input placeholder='Surname' allowClear />
                   </Form.Item>
-                  <Form.Item label='Firstname' name='firstname'>
+                  <Form.Item
+                    label='Firstname'
+                    name='firstname'
+                    required={[{ required: true }]}
+                  >
                     <Input placeholder='Firstname' allowClear />
                   </Form.Item>
                   <Form.Item label='Middle Name' name='middlename'>
@@ -314,8 +510,10 @@ export default ({ visible, setVisible }) => {
                     label='Gender'
                     style={{ marginLeft: 5, width: 150 }}
                     name='gender'
+                    required={[{ required: true }]}
+                    initialValue='male'
                   >
-                    <Select value='male'>
+                    <Select>
                       <Select.Option value='male'>Male</Select.Option>
                       <Select.Option value='female'>Female</Select.Option>
                     </Select>
@@ -325,6 +523,12 @@ export default ({ visible, setVisible }) => {
             </Col>
             <Col span={6} pull={18}>
               <strong>Name and Gender</strong>
+              <br />
+              <span style={{ color: "#ff0a0a" }}>*</span>
+              <Typography.Text type='secondary'>
+                {" "}
+                means this field is required.
+              </Typography.Text>
             </Col>
           </Row>
           <Divider />
@@ -337,23 +541,43 @@ export default ({ visible, setVisible }) => {
                   <Form.Item label='House/Lot/Bldg no.' name='housenum'>
                     <Input allowClear />
                   </Form.Item>
-                  <Form.Item label='Street/Sitio/Subdv.' name='street'>
+                  <Form.Item
+                    label='Street/Sitio/Subdv.'
+                    name='street'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
-                  <Form.Item label='Barangay' name='barangay'>
+                  <Form.Item
+                    label='Barangay'
+                    name='barangay'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
                 </Space>
               </Input.Group>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Municipality/City' name='city'>
+                  <Form.Item
+                    label='Municipality/City'
+                    name='city'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
-                  <Form.Item label='Province' name='province'>
+                  <Form.Item
+                    label='Province'
+                    name='province'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
-                  <Form.Item label='Region' name='region'>
+                  <Form.Item
+                    label='Region'
+                    name='region'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
                 </Space>
@@ -371,7 +595,11 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Contact Number' name='contactnum'>
+                  <Form.Item
+                    label='Contact Number'
+                    name='contactnum'
+                    required={[{ required: true }]}
+                  >
                     <InputNumber
                       addonBefore='+63'
                       maxLength={11}
@@ -392,7 +620,11 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Date of Birth' name='dateofbirth'>
+                  <Form.Item
+                    label='Date of Birth'
+                    name='dateofbirth'
+                    required={[{ required: true }]}
+                  >
                     <DatePicker style={{ marginRight: 5 }} />
                   </Form.Item>
                   <Form.Item label='Place of Birth' name='placeofbirth'>
@@ -416,6 +648,7 @@ export default ({ visible, setVisible }) => {
                     label='Civil Status'
                     style={{ marginRight: 5 }}
                     name='status'
+                    required={[{ required: true }]}
                   >
                     <Select
                       value={maritalStatus}
@@ -428,7 +661,11 @@ export default ({ visible, setVisible }) => {
                       <Select.Option value='Separated'>Separated</Select.Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label='Name of Spouse' name='spousename'>
+                  <Form.Item
+                    label='Name of Spouse'
+                    name='spousename'
+                    required={[{ required: true }]}
+                  >
                     <Input
                       disabled={maritalStatus.toLowerCase() != "married"}
                       allowClear
@@ -472,7 +709,11 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Household Head?' name='isHouseholdHead'>
+                  <Form.Item
+                    label='Household Head?'
+                    name='isHouseholdHead'
+                    required={[{ required: true }]}
+                  >
                     <Radio.Group onChange={(e) => setIsHead(e.target.value)}>
                       <Radio value={true}>Yes</Radio>
                       <Radio value={false}>No</Radio>
@@ -485,11 +726,16 @@ export default ({ visible, setVisible }) => {
                   <Form.Item
                     label='Name of Household Head'
                     name='householdname'
+                    required={[{ required: true }]}
                   >
                     {/* If Household Head == No */}
                     <Input allowClear disabled={isHead} />
                   </Form.Item>
-                  <Form.Item label='Relationship' name='relationship'>
+                  <Form.Item
+                    label='Relationship'
+                    name='householdRelationship'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear disabled={isHead} />
                   </Form.Item>
                 </Space>
@@ -534,6 +780,7 @@ export default ({ visible, setVisible }) => {
                     label='Highest Formal Education'
                     style={{ marginRight: 5 }}
                     name='education'
+                    initialValue='None'
                   >
                     <Select value='None' style={{ width: 200 }}>
                       <Select.Option value='None'>None</Select.Option>
@@ -585,10 +832,18 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Person to Contact' name='personToContact'>
+                  <Form.Item
+                    label='Person to Contact'
+                    name='personToContact'
+                    required={[{ required: true }]}
+                  >
                     <Input allowClear />
                   </Form.Item>
-                  <Form.Item label='Contact Number' name='emergency contact'>
+                  <Form.Item
+                    label='Contact Number'
+                    name='emergencyContact'
+                    required={[{ required: true }]}
+                  >
                     <InputNumber
                       addonBefore='+63'
                       maxLength={11}
@@ -610,9 +865,14 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item name='type' label='Type of livelihood'>
+                  <Form.Item
+                    name='type'
+                    label='Type of livelihood'
+                    required={[{ required: true }]}
+                  >
                     <Checkbox.Group>
                       <Checkbox
+                        key={1}
                         value='Farmer'
                         onChange={(e) =>
                           setOtherInfo((el) => ({
@@ -626,6 +886,7 @@ export default ({ visible, setVisible }) => {
                         Farmer
                       </Checkbox>
                       <Checkbox
+                        key={2}
                         value='Farmworker'
                         onChange={(e) =>
                           setOtherInfo((el) => ({
@@ -639,6 +900,7 @@ export default ({ visible, setVisible }) => {
                         Farmworker
                       </Checkbox>
                       <Checkbox
+                        key={3}
                         value='Fisherfolk'
                         onChange={(e) =>
                           setOtherInfo((el) => ({
@@ -672,8 +934,9 @@ export default ({ visible, setVisible }) => {
                       <Row>
                         <Col>
                           <Checkbox
+                            key={1}
                             value='crops'
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setOtherInfo((el) => ({
                                 ...el,
                                 farmer: {
@@ -682,15 +945,27 @@ export default ({ visible, setVisible }) => {
                                     status: e.target.checked,
                                   },
                                 },
-                              }))
-                            }
+                              }));
+                              if (!e.target.checked) {
+                                setOtherInfo((el) => ({
+                                  ...el,
+                                  farmer: {
+                                    ...el.farmer,
+                                    crops: {
+                                      status: e.target.checked,
+                                      data: [],
+                                    },
+                                  },
+                                }));
+                              }
+                            }}
                           >
                             Crops, please specify:
                           </Checkbox>
                           <Select
                             className='customInput'
                             mode='tags'
-                            style={{ width: 500, marginLeft: 35 }}
+                            style={{ width: 500, marginLeft: 58 }}
                             placeholder='Enter crops'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -715,6 +990,7 @@ export default ({ visible, setVisible }) => {
                       <Row>
                         <Col>
                           <Checkbox
+                            key={1}
                             value='livestocks'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -758,6 +1034,7 @@ export default ({ visible, setVisible }) => {
                       <Row>
                         <Col>
                           <Checkbox
+                            key={1}
                             value='poultry'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -777,7 +1054,7 @@ export default ({ visible, setVisible }) => {
                             className='customInput'
                             mode='tags'
                             size={4}
-                            style={{ width: 500, marginLeft: 35 }}
+                            style={{ width: 500, marginLeft: 52 }}
                             placeholder='Enter poultry'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -829,20 +1106,24 @@ export default ({ visible, setVisible }) => {
                       disabled={!otherInfo.farmworker.status}
                     >
                       <Row>
-                        <Checkbox value='Land Preparation'>
+                        <Checkbox value='Land Preparation' key={1}>
                           Land Preparation
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Planting/Transplanting'>
+                        <Checkbox value='Planting/Transplanting' key={2}>
                           Planting/Transplanting
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Cultivation'>Cultivation</Checkbox>
+                        <Checkbox value='Cultivation' key={3}>
+                          Cultivation
+                        </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Harvesting'>Harvesting</Checkbox>
+                        <Checkbox value='Harvesting' key={4}>
+                          Harvesting
+                        </Checkbox>
                       </Row>
                       <Row>
                         <Col>
@@ -851,20 +1132,20 @@ export default ({ visible, setVisible }) => {
                             className='customInput'
                             mode='tags'
                             style={{ width: 500, marginLeft: 35 }}
-                            placeholder='Enter crops'
+                            placeholder='Specify...'
                             disabled={!otherInfo.farmworker.status}
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setOtherInfo((el) => ({
                                 ...el,
                                 farmworker: {
                                   status: true,
                                   data: [
-                                    ...el.farmworker?.data,
+                                    ...(el.farmworker?.data || []),
                                     e[e.length - 1],
                                   ],
                                 },
-                              }))
-                            }
+                              }));
+                            }}
                             allowClear
                           />
                         </Col>
@@ -899,24 +1180,33 @@ export default ({ visible, setVisible }) => {
                       }}
                     >
                       <Row>
-                        <Checkbox value='Fish Capture'>Fish Capture</Checkbox>
+                        <Checkbox value='Fish Capture' key={1}>
+                          Fish Capture
+                        </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Processing'>
+                        <Checkbox value='Fish Processing' key={2}>
                           Fish Processing
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Vending'>Fish Vending</Checkbox>
+                        <Checkbox value='Fish Vending' key={3}>
+                          Fish Vending
+                        </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Aquaculture'>Aquaculture</Checkbox>
+                        <Checkbox value='Aquaculture' key={4}>
+                          Aquaculture
+                        </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Gleaning'>Gleaning</Checkbox>
+                        <Checkbox value='Gleaning' key={5}>
+                          Gleaning
+                        </Checkbox>
                       </Row>
                       <Row>
                         <Col>
+                          Others, please specify:
                           <Select
                             className='customInput'
                             mode='tags'
@@ -929,7 +1219,7 @@ export default ({ visible, setVisible }) => {
                                 fisherfolk: {
                                   status: true,
                                   data: [
-                                    ...el.fisherfolk?.data,
+                                    ...(el.fisherfolk?.data || []),
                                     e[e.length - 1],
                                   ],
                                 },
@@ -954,24 +1244,30 @@ export default ({ visible, setVisible }) => {
             {/* Farm Land */}
             <Col span={18} push={6}>
               <Input.Group>
-                <Space>
-                  <Form.Item label='No. of Farm Parcel: ' name='numberofparcel'>
-                    <Input placeholder='' allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label='Agrarian Reform Beneficiary (ARB)?'
-                    name='isARB'
-                  >
-                    <Radio.Group>
-                      <Radio value={true}>Yes</Radio>
-                      <Radio value={false}>No</Radio>
-                    </Radio.Group>
-                  </Form.Item>
-                </Space>
+                <Form.Item
+                  label='Agrarian Reform Beneficiary (ARB)?'
+                  name='isARB'
+                  required={[{ required: true }]}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
               </Input.Group>
             </Col>
             <Col span={6} pull={18}>
               <strong>Farm Land</strong>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item>
+                <FarmCustomTable
+                  setData={setFarmlandData}
+                  data={farmlandData}
+                />
+              </Form.Item>
             </Col>
           </Row>
         </div>
@@ -1045,7 +1341,11 @@ export default ({ visible, setVisible }) => {
               </Button>
             )}
             {current < 2 && (
-              <Button type='primary' onClick={handleNext}>
+              <Button
+                type='primary'
+                onClick={handleNext}
+                style={{ width: 120 }}
+              >
                 {current < 2 ? "Next" : "Add"}
               </Button>
             )}

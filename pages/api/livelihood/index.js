@@ -1,8 +1,34 @@
 import dbConnect from "../../../database/dbConnect";
-import User from "../../../database/model/User";
+import Livelihood from "../../../database/model/Livelihood";
 
 export default async function handler(req, res) {
   await dbConnect();
+  const { method } = req;
+
+  switch (method) {
+    case "POST": {
+      return new Promise(async (resolve, reject) => {
+        let newLivelihood = Livelihood(req.body.payload);
+        await newLivelihood
+          .save()
+          .then(() => {
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                message: "New livelihood added successfully",
+              })
+            );
+            resolve();
+          })
+          .catch((error) => {
+            res.end(JSON.stringify(error));
+            resolve();
+          });
+      });
+    }
+    default:
+      res.status(400).end(JSON.stringify({ success: false }));
+  }
 }
 // internals.get_region = async (req, res) => {
 //     let philippines = await Regions.aggregate([

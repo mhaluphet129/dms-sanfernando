@@ -63,6 +63,5 @@ export default async function handler(req, res) {
       });
     default:
       res.status(400).end(JSON.stringify({ success: false }));
-      break;
   }
 }
