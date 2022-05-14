@@ -21,6 +21,7 @@ export default () => {
     if (data.success) {
       setData(data.data);
       setPieData(data.pieData);
+      console.log(data.pieData);
     } else message.error(data.message);
   }, [type]);
 

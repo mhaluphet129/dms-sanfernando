@@ -13,12 +13,25 @@ export default async function handler(req, res) {
         // script-like aggregate kay antagal mag respo :(
 
         let livelihood = await Livelihood.find();
-        let pieData = {};
+        let pieData = {
+          crops: {},
+          livestocks: {},
+          poultry: {},
+        };
 
         livelihood.map((el) => {
           el.profile.crops.map((el2) => {
-            if (pieData[el2] == undefined) pieData[el2] = 1;
-            else if (pieData[el2]) pieData[el2]++;
+            if (pieData.crops[el2] == undefined) pieData.crops[el2] = 1;
+            else if (pieData.crops[el2]) pieData.crops[el2]++;
+          });
+          el.profile.livestock.map((el2) => {
+            if (pieData.livestocks[el2] == undefined)
+              pieData.livestocks[el2] = 1;
+            else if (pieData.livestocks[el2]) pieData.livestocks[el2]++;
+          });
+          el.profile.poultry.map((el2) => {
+            if (pieData.poultry[el2] == undefined) pieData.poultry[el2] = 1;
+            else if (pieData.poultry[el2]) pieData.poultry[el2]++;
           });
         });
         // end of script-like aggregate

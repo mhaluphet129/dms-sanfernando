@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Table, Button, Tag, Space, Card } from "antd";
+import {
+  Row,
+  Col,
+  Table,
+  Button,
+  Tag,
+  Space,
+  Card,
+  Typography,
+  Tabs,
+} from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
@@ -12,6 +22,8 @@ export default ({ data, pieData }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
+  const [activeTab, setActiveTab] = useState("crops");
+
   const color = {
     Farmer: "green",
     Farmworker: "cyan",
@@ -70,17 +82,26 @@ export default ({ data, pieData }) => {
     {
       title: "Functions",
       align: "center",
-      render: () => <Button icon={<SettingOutlined />}>Settings</Button>,
+      render: () => (
+        <Button
+          icon={<SettingOutlined />}
+          onClick={() => {
+            console.log(Object.values(pieData));
+          }}
+        >
+          Settings
+        </Button>
+      ),
     },
   ];
 
   //for crops pie graph data
-  const cropsdata = {
-    labels: [...Object.keys(pieData || {})],
+  const _data = {
+    labels: [...Object.keys(modifiedData[activeTab] || {})],
     datasets: [
       {
         label: "crops",
-        data: [...Object.values(pieData || {})],
+        data: [...Object.values(modifiedData[activeTab] || {})],
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
@@ -92,8 +113,72 @@ export default ({ data, pieData }) => {
     ],
   };
 
+  const tabContent = {
+    crops: <Pie data={_data} />,
+    livestocks: <Pie data={_data} />,
+    poultry: <Pie data={_data} />,
+  };
+
   useEffect(() => {
-    setModifiedData((el) => {});
+    setModifiedData((el) => {
+      let _ = {
+        crops: {},
+        livestocks: {},
+        poultry: {},
+      };
+
+      for (let k in pieData) {
+        let data = Object.fromEntries(
+          Object.entries(pieData[k]).sort(([, a], [, b]) => b - a)
+        );
+
+        if (k == "crops") {
+          if (Object.keys(data).length > 2) {
+            _.crops[Object.keys(data)[0]] = Object.values(data)[0];
+            _.crops[Object.keys(data)[1]] = Object.values(data)[1];
+            _.crops[Object.keys(data)[2]] = Object.values(data)[2];
+          } else {
+            for (let i = 0; i < Object.keys(data).length; i++)
+              _.crops[Object.keys(data)[i]] = Object.values(data)[i];
+          }
+
+          if (Object.keys(data).length > 2) _.crops.others = 0;
+          Object.entries(data).forEach(([], index) => {
+            if (index > 2) _.crops["others"]++;
+          });
+        } else if (k == "livestocks") {
+          if (Object.keys(data).length > 2) {
+            _.livestocks[Object.keys(data)[0]] = Object.values(data)[0];
+            _.livestocks[Object.keys(data)[1]] = Object.values(data)[1];
+            _.livestocks[Object.keys(data)[2]] = Object.values(data)[2];
+          } else {
+            for (let i = 0; i < Object.keys(data).length; i++)
+              _.livestocks[Object.keys(data)[i]] = Object.values(data)[i];
+          }
+
+          if (Object.keys(data).length > 2) _.livestocks.others = 0;
+          Object.entries(data).forEach(([], index) => {
+            if (index > 2) _.livestocks["others"]++;
+          });
+        } else if (k == "poultry") {
+          if (Object.keys(data).length > 2) {
+            _.poultry[Object.keys(data)[0]] = Object.values(data)[0];
+            _.poultry[Object.keys(data)[1]] = Object.values(data)[1];
+            _.poultry[Object.keys(data)[2]] = Object.values(data)[2];
+          } else {
+            for (let i = 0; i < Object.keys(data).length; i++)
+              _.poultry[Object.keys(data)[i]] = Object.values(data)[i];
+          }
+
+          if (Object.keys(data).length > 2) _.poultry.others = 0;
+          Object.entries(data).forEach(([], index) => {
+            if (index > 2) _.poultry["others"]++;
+          });
+        }
+      }
+
+      return _;
+    });
   }, [pieData]);
 
   return (
@@ -115,10 +200,37 @@ export default ({ data, pieData }) => {
           <Card>
             <Space>
               <Space direction='vertical'>
-                <Card title='Crops' style={{ width: 325 }}>
-                  <Pie data={cropsdata} />
-                </Card>{" "}
-                {/* gicard type ra nako arun dali ra madugangan if morethan 1 ang need sa pie graph ex. farmer = crops, livelihood, poultry piegraph */}
+                <Card
+                  title={
+                    <span>
+                      {titleText(`${activeTab} `)}
+                      <Typography.Text type='secondary'>{`total: ${Object.values(
+                        modifiedData[activeTab] || {}
+                      ).reduce(
+                        (prev, curr) => prev + curr,
+                        0
+                      )}`}</Typography.Text>
+                    </span>
+                  }
+                  style={{ width: 325 }}
+                  tabList={[
+                    {
+                      key: "crops",
+                      tab: "Crops",
+                    },
+                    {
+                      key: "livestocks",
+                      tab: "Livestocks",
+                    },
+                    { key: "poultry", tab: "Poultry" },
+                  ]}
+                  activeTabKey={activeTab}
+                  onTabChange={(k) => {
+                    setActiveTab(k);
+                  }}
+                >
+                  {tabContent[activeTab]}
+                </Card>
               </Space>
             </Space>
           </Card>
