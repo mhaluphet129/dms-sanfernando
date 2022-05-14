@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { Row, Col, Table, Button, Tag, Space } from "antd";
+import { Row, Col, Table, Button, Tag, Space, Card } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
 import Profiler from "../ProfilerModal";
 import titleText from "../../assets/js/TitleText";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default ({ data }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -63,14 +68,35 @@ export default ({ data }) => {
     {
       title: "Functions",
       align: "center",
-      render: () => <Button>Full View</Button>,
+      render: () => <Button icon={<SettingOutlined />}>Settings</Button>,
     },
   ];
+
+  //for crops pie graph data
+  const cropsdata = {
+    labels: ["Corn", "Rice", "Sugarcane", "Watermelon", "Petchay"],
+    datasets: [
+      {
+        label: "crops",
+        data: [12564, 19456, 3234, 5246, 399],
+        backgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <>
       <Profiler data={rowData} visible={openModal} setVisible={setOpenModal} />
       <Row>
-        <Col span={17}>
+        <Col span={15}>
           <Table
             columns={columns}
             dataSource={data}
@@ -81,7 +107,18 @@ export default ({ data }) => {
             }}
           />
         </Col>
-        <Col span={7}>naolism</Col>
+        <Col span={8} offset={1}>
+          <Card>
+            <Space>
+              <Space direction='vertical'>
+                <Card title='Crops' style={{ width: 325 }}>
+                  <Pie data={cropsdata} />
+                </Card>{" "}
+                {/* gicard type ra nako arun dali ra madugangan if morethan 1 ang need sa pie graph ex. farmer = crops, livelihood, poultry piegraph */}
+              </Space>
+            </Space>
+          </Card>
+        </Col>
       </Row>
     </>
   );

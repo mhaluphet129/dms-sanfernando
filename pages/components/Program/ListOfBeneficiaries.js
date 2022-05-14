@@ -78,18 +78,27 @@ export default () => {
       visible={programListModal}
       width={800}
       closable={false}
-      title="Poor Peace Program"
+      title={
+        <>
+          <Row>
+            <Col span={12}>
+              <Typography.Title level={5}>Poor Peace Program</Typography.Title>
+            </Col>
+            <Col span={12}>
+              <Button
+                style={{ width: 130, float: "right" }}
+                onClick={() => alert("Add na!")}
+              >
+                Add Client
+              </Button>{" "}
+            </Col>
+          </Row>{" "}
+        </>
+      }
       onCancel={() => {
         setprogramListModal(false);
       }}
     >
-      <Button
-        style={{ width: 150, float: "right" }}
-        onClick={() => setVisible(true)}
-      >
-        Add Client
-      </Button>{" "}
-      <br />
       <Table columns={columns} dataSource={data} />
     </Modal>
   );
