@@ -124,6 +124,9 @@ let profileSchema = new mongoose.Schema({
   isARB: {
     type: Boolean,
   },
+  qr: {
+    type: String,
+  },
 });
 
 let memberSchema = new mongoose.Schema({
@@ -159,11 +162,11 @@ let livelihoodSchema = new mongoose.Schema(
     is4Ps: {
       type: Boolean,
     },
-    profile: profileSchema,
     farmlandID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Farmland",
     },
+    profile: profileSchema,
     hasCoopOrAssoc: memberSchema,
     address: addressSchema,
     birth: birthSchema,

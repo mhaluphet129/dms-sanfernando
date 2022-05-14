@@ -2,81 +2,27 @@ import React, { useState } from "react";
 import {
   Row,
   Col,
-  Form,
   Input,
-  Select,
   Divider,
   Button,
   Space,
   Modal,
   Steps,
-  DatePicker,
-  Radio,
   Table,
-  Checkbox,
-  InputNumber,
-  Upload,
   Typography,
   Tag,
   Avatar,
   Image,
   List,
 } from "antd";
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import moment from "moment";
 
-export default ({ profileVisible, setProfileVisible }) => {
+import TitleText from "../../assets/js/TitleText";
+
+const { Step } = Steps;
+
+export default ({ profileVisible, setProfileVisible, info }) => {
   const [current, setCurrent] = useState(0);
-  const [maritalStatus, setMaritalStatus] = useState("single");
-  const [isHead, setIsHead] = useState(true);
-  const [maxCount, setMaxCount] = useState(false);
-  const { Step } = Steps;
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
-  const [otherInfo, setOtherInfo] = useState({
-    isPWD: false,
-    is4Ps: false,
-    isIP: {
-      status: false,
-      name: "",
-    },
-    hasID: {
-      status: false,
-      name: "",
-    },
-    isMember: {
-      status: false,
-      name: "",
-    },
-    farmer: {
-      status: false,
-      crops: {
-        status: false,
-        data: [],
-      },
-      livestock: {
-        status: false,
-        data: [],
-      },
-      poultry: {
-        status: false,
-        data: [],
-      },
-    },
-    farmworker: {
-      status: false,
-      data: [],
-    },
-    fisherfolk: {
-      status: false,
-      data: [],
-    },
-  });
 
   // columns and data for other info.
   const columns = [
@@ -97,58 +43,86 @@ export default ({ profileVisible, setProfileVisible }) => {
     {
       key: "1",
       Question: "Person With Disability (PWD)?",
-      YesNo: "No",
+      YesNo: (
+        <Tag color={info?.isDisabledPerson ? "success" : "error"}>
+          {info?.isDisabledPerson ? "Yes" : "No"}
+        </Tag>
+      ),
     },
     {
       key: "2",
       Question: "4P's Beneficiary?",
-      YesNo: "No",
+      YesNo: (
+        <Tag color={info?.is4Ps ? "success" : "error"}>
+          {info?.is4Ps ? "Yes" : "No"}
+        </Tag>
+      ),
     },
     {
       key: "3",
       Question: "Member of Indigenous Group?",
-      YesNo: "Yes",
-      Specify: "Talaandig",
+      YesNo: (
+        <Tag color={info?.ethnicity?.isIp ? "success" : "error"}>
+          {info?.ethnicity?.isIp ? "Yes" : "No"}
+        </Tag>
+      ),
+      Specify: info?.ethnicity?.isIp ? info?.ethnicity?.nameOfEthnicity : "",
     },
     {
       key: "4",
       Question: "With Government ID?",
-      YesNo: "Yes",
-      Specify: "0028-1215160-9",
+      YesNo: (
+        <Tag color={info?.government?.hasId ? "success" : "error"}>
+          {info?.government?.hasId ? "Yes" : "No"}
+        </Tag>
+      ),
+      Specify: info?.government?.hasId ? info?.government?.idNum : "",
     },
     {
       key: "5",
       Question: "Member of any Farmer Association/Cooperation?",
-      YesNo: "Yes",
-      Specify: "Organic Farmer Association",
+      YesNo: (
+        <Tag color={info?.hasCoopOrAssoc?.status ? "success" : "error"}>
+          {info?.hasCoopOrAssoc?.status ? "Yes" : "No"}
+        </Tag>
+      ),
+      Specify: info?.hasCoopOrAssoc?.status ? info?.hasCoopOrAssoc?.name : "",
     },
   ];
 
   //data for Type of farmer Activity
   const farmerActivity = [
-    "Crops: Rice, Corn, Sugarcane",
-    "Livestock: Cow, Carabao, Pig",
-    "Poultry: Chicken, Duck",
+    <Typography.Text>
+      Crops:{" "}
+      {info?.profile?.crops.map((el, i) => (
+        <Tag key={i}>{el}</Tag>
+      ))}
+    </Typography.Text>,
+    <Typography.Text>
+      Livestock:{" "}
+      {info?.profile?.livestock.map((el, i) => (
+        <Tag key={i}>{el}</Tag>
+      ))}
+    </Typography.Text>,
+    <Typography.Text>
+      Poultry:{" "}
+      {info?.profile?.poultry.map((el, i) => (
+        <Tag key={i}>{el}</Tag>
+      ))}
+    </Typography.Text>,
   ];
 
   // data for Kind of Work (farmworker)
-  const farmworkerActivity = [
-    "Land Preparation",
-    "Planting/Transplanting",
-    "Cultivation",
-    "Harvesting",
-    "Other work",
-  ];
+  const farmworkerActivity = [...info?.profile?.farmWorker];
 
   //data for Type of Fishing Activity
-  const fishingActivity = [
-    "Fish Capture",
-    "Fish Processing",
-    "Fish Vending",
-    "Aquaculture",
-    "Gleaning",
-    "Other work",
-  ];
+  const fishingActivity = [...info?.profile?.fisherFolks];
+
+  const color = {
+    Farmer: "green",
+    Farmworker: "cyan",
+    Fisherfolk: "blue",
+  };
 
   //HANDLERS NI BEBE *mwah*
   const handleChange = (current) => {
@@ -183,12 +157,18 @@ export default ({ profileVisible, setProfileVisible }) => {
               size='small'
               style={{ display: "flex" }}
             >
-              <Typography.Text strong>Xander Ford</Typography.Text>
+              <Typography.Text strong>
+                {TitleText(
+                  `${info?.name?.name} ${info?.name?.middleName[0]}. ${info?.name?.lastName}`
+                )}
+              </Typography.Text>
               <Typography.Text strong>
                 <Space>
-                  <Tag color='green'>Farmer</Tag>
-                  <Tag color='cyan'>Farmworker</Tag>
-                  <Tag color='blue'>Fisherfolk</Tag>
+                  {info?.profile?.type.map((el, i) => (
+                    <Tag key={i} color={color[el]}>
+                      {el}
+                    </Tag>
+                  ))}
                 </Space>
               </Typography.Text>
             </Space>
@@ -203,7 +183,6 @@ export default ({ profileVisible, setProfileVisible }) => {
             >
               <Avatar
                 size={150}
-                icon='user'
                 src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
               />
             </div>
@@ -225,11 +204,18 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Full Name: <br />
-                <Typography.Text strong>Xander Kalapanget Ford</Typography.Text>
+                <Typography.Text strong>
+                  {TitleText(
+                    `${info?.name?.lastName}, ${info?.name.name} ${info?.name?.middleName}, `
+                  )}
+                  {`${info?.name?.extensionName}.`}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Gender: <br />
-                <Typography.Text strong>Male</Typography.Text>
+                <Typography.Text strong>
+                  {TitleText(`${info?.gender}`)}
+                </Typography.Text>
               </Typography.Text>
             </Space>
           </Col>
@@ -245,8 +231,13 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Typography.Text type='secondary'>
               Address: <br />
               <Typography.Text strong>
-                Monserrat Street corner Gaches Street, 2 Capricorn Building, BF
-                Homes, Paranaque City, Metro Manila
+                {TitleText(
+                  `${info?.address.region} - ${info?.address.province}`
+                )}
+                <br />
+                {TitleText(
+                  `${info?.address.city}, ${info?.address.street}, ${info?.address.house}`
+                )}
               </Typography.Text>
             </Typography.Text>
           </Col>
@@ -262,7 +253,7 @@ export default ({ profileVisible, setProfileVisible }) => {
           <Col span={18} push={6}>
             <Typography.Text type='secondary'>
               Contact Number: <br />
-              <Typography.Text strong>09271234567</Typography.Text>
+              <Typography.Text strong>{info?.contactNum}</Typography.Text>
             </Typography.Text>
           </Col>
           <Col span={6} pull={18}>
@@ -277,12 +268,14 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Date of Birth: <br />
-                <Typography.Text strong>January 15, 2000</Typography.Text>
+                <Typography.Text strong>
+                  {moment(info?.birth?.dateOfBirth).format("MMMM DD, YYYY")}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Place of Birth: <br />
                 <Typography.Text strong>
-                  Paranaque City, Metro Manila
+                  {TitleText(`${info?.birth.placeOfBirth}`)}
                 </Typography.Text>
               </Typography.Text>
             </Space>
@@ -299,15 +292,28 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Civil Status: <br />
-                <Typography.Text strong>Married</Typography.Text>
+                <Typography.Text strong>
+                  {info?.civil?.civilStatus}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Name of Spouse: <br />
-                <Typography.Text strong>Saturi bastaMarried</Typography.Text>
+                <Typography.Text
+                  type={
+                    info?.civil?.civilStatus != "Married" ? "secondary" : null
+                  }
+                  strong={info?.civil.civilStatus != "Married"}
+                >
+                  {info?.civil?.civilStatus == "Married"
+                    ? info?.civil?.spouseName
+                    : "Not Applicable"}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Religion: <br />
-                <Typography.Text strong>Atheist</Typography.Text>
+                <Typography.Text strong>
+                  {TitleText(`${info?.religion}`)}
+                </Typography.Text>
               </Typography.Text>
             </Space>
           </Col>
@@ -324,7 +330,7 @@ export default ({ profileVisible, setProfileVisible }) => {
               <Typography.Text type='secondary'>
                 Mother's Maiden Name: <br />
                 <Typography.Text strong>
-                  Xandera Middle Kalapanget
+                  {TitleText(`${info?.motherMaidenName}`)}
                 </Typography.Text>
               </Typography.Text>
             </Space>
@@ -340,30 +346,55 @@ export default ({ profileVisible, setProfileVisible }) => {
           <Col span={18} push={6}>
             <Space>
               <Typography.Text type='secondary'>
-                Household Head? <Typography.Text strong>No</Typography.Text>
+                Household Head ?{" "}
+                {
+                  <Tag color={info?.household?.isHead ? "success" : "error"}>
+                    {info?.household?.isHead ? "Yes" : "No"}
+                  </Tag>
+                }
               </Typography.Text>
-            </Space>{" "}
+            </Space>
             <br />
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Name of Household Head <br />
-                <Typography.Text strong>
-                  Makagago Barumbado Ford
+                <Typography.Text
+                  type={info?.household?.isHead ? "secondary" : null}
+                  strong
+                >
+                  {info?.household?.isHead
+                    ? "Not Applicable"
+                    : info?.household?.nameOfHead}
                 </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Relationship <br />
-                <Typography.Text strong>Father</Typography.Text>
+                <Typography.Text
+                  type={info?.household?.isHead ? "secondary" : null}
+                  strong
+                >
+                  {info?.household?.isHead
+                    ? "Not Applicable"
+                    : info?.household?.relationship}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 No. of living household members:{" "}
-                <Typography.Text strong>5</Typography.Text>
+                <Typography.Text strong>
+                  {info?.household?.numberOfLiving}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
-                No. of Male: <Typography.Text strong>3</Typography.Text>
+                No. of Male:{" "}
+                <Typography.Text strong>
+                  {info?.household?.numOfMale}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
-                No. of Female: <Typography.Text strong>2</Typography.Text>
+                No. of Female:{" "}
+                <Typography.Text strong>
+                  {info?.household?.numOfFemale}
+                </Typography.Text>
               </Typography.Text>
             </Space>
           </Col>
@@ -379,7 +410,9 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Space>
               <Typography.Text type='secondary'>
                 Highest Formal Education <br />
-                <Typography.Text strong>High School</Typography.Text>
+                <Typography.Text strong>
+                  {info?.highestEducation}
+                </Typography.Text>
               </Typography.Text>
             </Space>
           </Col>
@@ -414,11 +447,15 @@ export default ({ profileVisible, setProfileVisible }) => {
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Person to Contact <br />
-                <Typography.Text strong>Xian Gaza</Typography.Text>
+                <Typography.Text strong>
+                  {TitleText(`${info?.emergency?.name}`)}
+                </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Contact Number <br />
-                <Typography.Text strong>09178301880</Typography.Text>
+                <Typography.Text strong>
+                  {info?.emergency?.number}
+                </Typography.Text>
               </Typography.Text>
             </Space>
           </Col>
@@ -429,28 +466,6 @@ export default ({ profileVisible, setProfileVisible }) => {
       </div>
 
       <div style={{ display: current != 1 ? "none" : null }}>
-        <Row>
-          {/* Main Livelihood */}
-          <Col span={18} push={6}>
-            <Space>
-              <Typography.Text type='secondary'>
-                Type of livelihood <br />
-                <Typography.Text strong>
-                  <Space>
-                    <Tag color='gray'>Farmer</Tag>
-                    <Tag color='gray'>Farmworker</Tag>
-                    <Tag color='gray'>Fisherfolk</Tag>
-                  </Space>
-                </Typography.Text>
-              </Typography.Text>
-            </Space>
-          </Col>
-          <Col span={6} pull={18}>
-            <strong>Main Livelihood</strong>
-          </Col>
-        </Row>
-        <Divider />
-
         <Row>
           {/* For farmer */}
           <Col span={18} push={6}>
@@ -538,8 +553,10 @@ export default ({ profileVisible, setProfileVisible }) => {
                 <Typography.Text strong>0</Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
-                Agrarian Reform Beneficiary (ARB)?{" "}
-                <Typography.Text strong>Yes</Typography.Text>
+                Agrarian Reform Beneficiary (ARB) ?{" "}
+                <Tag color={info?.profile?.isARB ? "success" : "error"}>
+                  {info?.profile?.isARB ? "Yes" : "No"}
+                </Tag>
               </Typography.Text>
             </Space>
           </Col>
