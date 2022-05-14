@@ -13,7 +13,7 @@ import {
 import { UserOutlined } from "@ant-design/icons";
 import ViewProfile from "./Livelihood/ViewProfile";
 
-export default () => {
+export default ({ data }) => {
   const [profileModal, setProfileModal] = useState(true);
   const [profileVisible, setProfileVisible] = useState(false);
   return (
@@ -21,7 +21,7 @@ export default () => {
       visible={profileModal}
       width={800}
       closable={false}
-      title="Profile"
+      title='Profile'
       onCancel={() => {
         setProfileModal(false);
       }}
@@ -44,7 +44,7 @@ export default () => {
               />
               <div style={{ textAlign: "center" }}>
                 <Typography.Text
-                  type="secondary"
+                  type='secondary'
                   style={{
                     fontSize: 13,
                   }}
@@ -76,40 +76,40 @@ export default () => {
               >
                 <Image
                   width={150}
-                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" //QR code ni sya
+                  src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
                 />
               </div>
             </Col>
             <Col span={11} offset={1}>
               <Space
-                direction="vertical"
-                size="small"
+                direction='vertical'
+                size='small'
                 style={{ display: "flex" }}
               >
-                <Typography.Text type="secondary">
+                <Typography.Text type='secondary'>
                   Name: <br />
                   <Typography.Text strong>Xander Ford</Typography.Text>
                 </Typography.Text>
 
-                <Typography.Text type="secondary">
+                <Typography.Text type='secondary'>
                   Address: <br />
                   <Typography.Text strong>
                     Monserrat Street corner Gaches Street, 2 Capricorn Building,
                     BF Homes, Paranaque City, Metro Manila
                   </Typography.Text>
                 </Typography.Text>
-                <Typography.Text type="secondary">
+                <Typography.Text type='secondary'>
                   Contact Number: <br />{" "}
                   <Typography.Text strong>09271234567</Typography.Text>
                 </Typography.Text>
 
-                <Typography.Text type="secondary">
+                <Typography.Text type='secondary'>
                   Livelihood:{" "}
                   <Typography.Text strong>
                     <Space>
-                      <Tag color="green">Farmer</Tag>
-                      <Tag color="cyan">Farmworker</Tag>
-                      <Tag color="blue">Fisherfolk</Tag>
+                      <Tag color='green'>Farmer</Tag>
+                      <Tag color='cyan'>Farmworker</Tag>
+                      <Tag color='blue'>Fisherfolk</Tag>
                     </Space>
                   </Typography.Text>
                 </Typography.Text>
