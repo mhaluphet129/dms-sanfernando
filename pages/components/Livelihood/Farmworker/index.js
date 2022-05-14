@@ -1,5 +1,5 @@
 import React from "react";
 import Render from "../Render";
-export default ({ data }) => {
-  return <Render data={data} />;
+export default ({ data, pieData }) => {
+  return <Render data={data} pieData={pieData} />;
 };

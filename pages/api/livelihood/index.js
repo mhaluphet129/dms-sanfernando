@@ -10,6 +10,19 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { type } = req.query;
 
+        // script-like aggregate kay antagal mag respo :(
+
+        let livelihood = await Livelihood.find();
+        let pieData = {};
+
+        livelihood.map((el) => {
+          el.profile.crops.map((el2) => {
+            if (pieData[el2] == undefined) pieData[el2] = 1;
+            else if (pieData[el2]) pieData[el2]++;
+          });
+        });
+        // end of script-like aggregate
+
         await Livelihood.find({ "profile.type": { $in: [type] } })
           .then((data) => {
             res.status(200).end(
@@ -17,6 +30,7 @@ export default async function handler(req, res) {
                 success: true,
                 message: "Successfully fetched the data",
                 data,
+                pieData,
               })
             );
             resolve();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tabs, Button, Table, Col, Row, notification } from "antd";
+import { Tabs, Button } from "antd";
 import axios from "axios";
 
 import AddForm from "./AddForm";
@@ -11,6 +11,7 @@ export default () => {
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState("Farmer");
   const [data, setData] = useState([]);
+  const [pieData, setPieData] = useState();
 
   useEffect(async () => {
     let { data } = await axios.get("/api/livelihood", {
@@ -18,11 +19,8 @@ export default () => {
     });
 
     if (data.success) {
-      notification["success"]({
-        description: data.message,
-        placement: ["bottomRight"],
-      });
       setData(data.data);
+      setPieData(data.pieData);
     } else message.error(data.message);
   }, [type]);
 
@@ -44,13 +42,13 @@ export default () => {
         destroyInactiveTabPane
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Farmers data={data} />
+          <Farmers data={data} pieData={pieData} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Farmworker data={data} />
+          <Farmworker data={data} pieData={pieData} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
-          <Fisherfolk data={data} />
+          <Fisherfolk data={data} pieData={pieData} />
         </Tabs.TabPane>
       </Tabs>
     </>
