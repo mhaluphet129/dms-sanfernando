@@ -10,17 +10,27 @@ import {
   Timeline,
   Image,
   Table,
+  Tooltip,
 } from "antd";
 
 export default () => {
   const [programListModal, setprogramListModal] = useState(true);
+  const color = {
+    Farmer: "green",
+    Farmworker: "cyan",
+    Fisherfolk: "blue",
+  };
 
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: (text) => (
+        <Tooltip title="Click to view full profile.">
+          <a>{text}</a>
+        </Tooltip>
+      ),
     },
     {
       title: "Date Availed",
@@ -38,11 +48,24 @@ export default () => {
       key: "contact",
     },
     {
+      title: "Livelihood",
+      dataIndex: "livelihood",
+      key: "livelihood",
+      render: (text) => (
+        <Space direction="vertical">
+          {text.map((el, i) => (
+            <Tag key={i} color={color[el]}>
+              {el}
+            </Tag>
+          ))}
+        </Space>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (text) => (
         <Space size="middle">
-          <a>Edit</a>
           <a>Remove</a>
         </Space>
       ),
@@ -56,6 +79,7 @@ export default () => {
       availDate: "Jan 26, 2019",
       address: "Ilocos Norte",
       contact: "09830376021",
+      livelihood: ["Farmer", "Farmworker"],
     },
     {
       key: "2",
@@ -63,6 +87,7 @@ export default () => {
       availDate: "Jan 26, 2019",
       address: "Ilocos Norte",
       contact: "09830376021",
+      livelihood: ["Farmer", "Farmworker", "Fisherfolk"],
     },
     {
       key: "3",
@@ -70,6 +95,7 @@ export default () => {
       availDate: "Jan 26, 2019",
       address: "Ilocos Norte",
       contact: "09830376021",
+      livelihood: ["Fisherfolk"],
     },
   ];
 
@@ -98,6 +124,7 @@ export default () => {
       onCancel={() => {
         setprogramListModal(false);
       }}
+      destroyOnClose={true}
     >
       <Table columns={columns} dataSource={data} />
     </Modal>

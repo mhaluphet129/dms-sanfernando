@@ -8,10 +8,15 @@ import {
   Tooltip,
   Row,
   Col,
+  Modal,
+  Form,
+  Input,
 } from "antd";
 
 export default () => {
   const [visible, setVisible] = useState(false);
+  const [addProgramModal, setAddProgramModal] = useState(false);
+  const { TextArea } = Input;
   const columns = [
     {
       title: "Name of Program",
@@ -29,6 +34,11 @@ export default () => {
       key: "dateCreated",
     },
     {
+      title: "Program In-charge",
+      dataIndex: "incharge",
+      key: "incharge",
+    },
+    {
       title: "No. of Benificiaries",
       dataIndex: "noOfBenificiaries",
       key: "noOfBenificiaries",
@@ -40,8 +50,8 @@ export default () => {
     },
     {
       title: "Status",
-      dataIndex: "active",
-      key: "active",
+      dataIndex: "status",
+      key: "status",
       render: (text) =>
         text == "Active" ? (
           <Typography.Text type="success">
@@ -72,22 +82,25 @@ export default () => {
       key: "1",
       programname: "Poor Peace Program",
       dateCreated: "Jan 26, 2019",
+      incharge: "Ninoy Aquino",
       noOfBenificiaries: "9,053",
-      active: "Expired",
+      status: "Expired",
     },
     {
       key: "2",
       programname: "Trabahong Tapat",
       dateCreated: "Mar 21, 2020",
+      incharge: "Leni Robredo",
       noOfBenificiaries: "3,210",
-      active: "Active",
+      status: "Active",
     },
     {
       key: "3",
       programname: "Angat Buhay Lahat",
       dateCreated: "May 20, 2022",
+      incharge: "Leni Robredo",
       noOfBenificiaries: "7,500",
-      active: "Active",
+      status: "Active",
     },
   ];
 
@@ -102,10 +115,44 @@ export default () => {
             <Col span={12}>
               <Button
                 style={{ width: 130, float: "right" }}
-                onClick={() => setVisible(true)}
+                onClick={() => setAddProgramModal(true)}
               >
                 Add Program
-              </Button>{" "}
+              </Button>
+              <Modal
+                visible={addProgramModal}
+                closable={false}
+                title="Add Program"
+                onCancel={() => {
+                  setAddProgramModal(false);
+                }}
+                okText="Add"
+                destroyOnClose={true}
+              >
+                <Form layout="vertical">
+                  <Form.Item
+                    label="Name of Program"
+                    name="programname"
+                    required={[{ required: true }]}
+                  >
+                    <Input allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Program In-charge"
+                    name="incharge"
+                    required={[{ required: true }]}
+                  >
+                    <Input allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Description"
+                    name="description"
+                    required={[{ required: true }]}
+                  >
+                    <TextArea rows={6} allowClear />
+                  </Form.Item>
+                </Form>
+              </Modal>
             </Col>
           </Row>
 
