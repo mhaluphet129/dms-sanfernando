@@ -6,6 +6,28 @@ export default async function handler(req, res) {
   const { method } = req;
 
   switch (method) {
+    case "GET": {
+      return new Promise(async (resolve, reject) => {
+        let { type } = req.query;
+
+        await Livelihood.find({ "profile.type": { $in: [type] } })
+          .then((data) => {
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                message: "Successfully fetched the data",
+                data,
+              })
+            );
+            resolve();
+          })
+          .catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+      });
+    }
     case "POST": {
       return new Promise(async (resolve, reject) => {
         let newLivelihood = Livelihood(req.body.payload);

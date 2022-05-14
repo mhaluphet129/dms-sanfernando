@@ -296,9 +296,6 @@ export default ({ visible, setVisible }) => {
         onFinish={async (val) => {
           let flagError = 0;
           //^(09|\+639)\d{9}$ regex for ph number
-
-          console.log(val);
-
           // restricts
           const arr = [
             "surname",

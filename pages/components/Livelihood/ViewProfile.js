@@ -153,7 +153,6 @@ export default ({ profileVisible, setProfileVisible }) => {
   //HANDLERS NI BEBE *mwah*
   const handleChange = (current) => {
     setCurrent(current);
-    console.log(otherInfo);
   };
 
   const handleNext = () => {
@@ -180,16 +179,16 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           <Col span={18} push={6}>
             <Space
-              direction="vertical"
-              size="small"
+              direction='vertical'
+              size='small'
               style={{ display: "flex" }}
             >
               <Typography.Text strong>Xander Ford</Typography.Text>
               <Typography.Text strong>
                 <Space>
-                  <Tag color="green">Farmer</Tag>
-                  <Tag color="cyan">Farmworker</Tag>
-                  <Tag color="blue">Fisherfolk</Tag>
+                  <Tag color='green'>Farmer</Tag>
+                  <Tag color='cyan'>Farmworker</Tag>
+                  <Tag color='blue'>Fisherfolk</Tag>
                 </Space>
               </Typography.Text>
             </Space>
@@ -204,18 +203,18 @@ export default ({ profileVisible, setProfileVisible }) => {
             >
               <Avatar
                 size={150}
-                icon="user"
-                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" //QR code ni sya
+                icon='user'
+                src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
               />
             </div>
           </Col>
         </Row>
         <Divider />
       </div>
-      <Steps size="small" current={current} progressDot onChange={handleChange}>
-        <Step title="Part I" description="Personal Information" />
-        <Step title="Part II" description="Farm Profile" />
-        <Step title="Part III" description="Scanned Documents" />
+      <Steps size='small' current={current} progressDot onChange={handleChange}>
+        <Step title='Part I' description='Personal Information' />
+        <Step title='Part II' description='Farm Profile' />
+        <Step title='Part III' description='Scanned Documents' />
       </Steps>
       <Divider />
 
@@ -223,12 +222,12 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Name and Gender */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 Full Name: <br />
                 <Typography.Text strong>Xander Kalapanget Ford</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Gender: <br />
                 <Typography.Text strong>Male</Typography.Text>
               </Typography.Text>
@@ -243,7 +242,7 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Address Details */}
           <Col span={18} push={6}>
-            <Typography.Text type="secondary">
+            <Typography.Text type='secondary'>
               Address: <br />
               <Typography.Text strong>
                 Monserrat Street corner Gaches Street, 2 Capricorn Building, BF
@@ -261,7 +260,7 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Contact */}
           <Col span={18} push={6}>
-            <Typography.Text type="secondary">
+            <Typography.Text type='secondary'>
               Contact Number: <br />
               <Typography.Text strong>09271234567</Typography.Text>
             </Typography.Text>
@@ -275,12 +274,12 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Birth */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 Date of Birth: <br />
                 <Typography.Text strong>January 15, 2000</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Place of Birth: <br />
                 <Typography.Text strong>
                   Paranaque City, Metro Manila
@@ -297,16 +296,16 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Status */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 Civil Status: <br />
                 <Typography.Text strong>Married</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Name of Spouse: <br />
                 <Typography.Text strong>Saturi bastaMarried</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Religion: <br />
                 <Typography.Text strong>Atheist</Typography.Text>
               </Typography.Text>
@@ -322,7 +321,7 @@ export default ({ profileVisible, setProfileVisible }) => {
           {/* Mother's Name */}
           <Col span={18} push={6}>
             <Space>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Mother's Maiden Name: <br />
                 <Typography.Text strong>
                   Xandera Middle Kalapanget
@@ -340,30 +339,30 @@ export default ({ profileVisible, setProfileVisible }) => {
           {/* Household */}
           <Col span={18} push={6}>
             <Space>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Household Head? <Typography.Text strong>No</Typography.Text>
               </Typography.Text>
             </Space>{" "}
             <br />
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 Name of Household Head <br />
                 <Typography.Text strong>
                   Makagago Barumbado Ford
                 </Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Relationship <br />
                 <Typography.Text strong>Father</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 No. of living household members:{" "}
                 <Typography.Text strong>5</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 No. of Male: <Typography.Text strong>3</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 No. of Female: <Typography.Text strong>2</Typography.Text>
               </Typography.Text>
             </Space>
@@ -378,7 +377,7 @@ export default ({ profileVisible, setProfileVisible }) => {
           {/* Education */}
           <Col span={18} push={6}>
             <Space>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Highest Formal Education <br />
                 <Typography.Text strong>High School</Typography.Text>
               </Typography.Text>
@@ -412,12 +411,12 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* In Case of Emergency */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 Person to Contact <br />
                 <Typography.Text strong>Xian Gaza</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Contact Number <br />
                 <Typography.Text strong>09178301880</Typography.Text>
               </Typography.Text>
@@ -434,13 +433,13 @@ export default ({ profileVisible, setProfileVisible }) => {
           {/* Main Livelihood */}
           <Col span={18} push={6}>
             <Space>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Type of livelihood <br />
                 <Typography.Text strong>
                   <Space>
-                    <Tag color="gray">Farmer</Tag>
-                    <Tag color="gray">Farmworker</Tag>
-                    <Tag color="gray">Fisherfolk</Tag>
+                    <Tag color='gray'>Farmer</Tag>
+                    <Tag color='gray'>Farmworker</Tag>
+                    <Tag color='gray'>Fisherfolk</Tag>
                   </Space>
                 </Typography.Text>
               </Typography.Text>
@@ -455,11 +454,11 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* For farmer */}
           <Col span={18} push={6}>
-            <Space direction="horizontal">
+            <Space direction='horizontal'>
               <List
-                size="small"
+                size='small'
                 header={
-                  <Typography.Text type="secondary">
+                  <Typography.Text type='secondary'>
                     Type of Farming Activity:
                   </Typography.Text>
                 }
@@ -481,11 +480,11 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* For Farmworker */}
           <Col span={18} push={6}>
-            <Space direction="horizontal">
+            <Space direction='horizontal'>
               <List
-                size="small"
+                size='small'
                 header={
-                  <Typography.Text type="secondary">
+                  <Typography.Text type='secondary'>
                     Kind of Work:
                   </Typography.Text>
                 }
@@ -507,11 +506,11 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* For Fisherfolk */}
           <Col span={18} push={6}>
-            <Space direction="horizontal">
+            <Space direction='horizontal'>
               <List
-                size="small"
+                size='small'
                 header={
-                  <Typography.Text type="secondary">
+                  <Typography.Text type='secondary'>
                     Type of Fishing Activity:
                   </Typography.Text>
                 }
@@ -533,12 +532,12 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Farm Land */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 No. of Farm Parcel:
                 <Typography.Text strong>0</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Agrarian Reform Beneficiary (ARB)?{" "}
                 <Typography.Text strong>Yes</Typography.Text>
               </Typography.Text>
@@ -554,28 +553,28 @@ export default ({ profileVisible, setProfileVisible }) => {
         <Row>
           {/* Upload ID Picture */}
           <Col span={18} push={6}>
-            <Space direction="vertical">
-              <Typography.Text type="secondary">
+            <Space direction='vertical'>
+              <Typography.Text type='secondary'>
                 ID Picture: <br />
                 <Image
                   width={150}
-                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
                 />
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Scanned Documents: <br />
                 <Space style={{ display: "flex" }}>
                   <Image
                     width={150}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" //documents
+                    src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //documents
                   />
                   <Image
                     width={150}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" //documents
+                    src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //documents
                   />
                   <Image
                     width={150}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" //documents
+                    src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //documents
                   />
                 </Space>
               </Typography.Text>{" "}
@@ -601,12 +600,12 @@ export default ({ profileVisible, setProfileVisible }) => {
             </Button>
           )}
           {current < 2 && (
-            <Button type="primary" onClick={handleNext}>
+            <Button type='primary' onClick={handleNext}>
               {current < 2 ? "Next Page" : null}
             </Button>
           )}
           {current == 2 && (
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               Finish
             </Button>
           )}
