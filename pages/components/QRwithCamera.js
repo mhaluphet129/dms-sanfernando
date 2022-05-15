@@ -27,17 +27,23 @@ export default ({ setIsConnected, isConnected }) => {
     fetch("/api/socketio").finally(() => {
       socket = io();
 
+      socket.emit("get-key", { deviceID: Cookie.get("key") });
       socket.on("on-get-key", (_key) => {
-        if (_key.length == 0) message.error("Error in server sockets");
+        if (!_key) message.error("Error in server sockets");
         else setKeyData(_key);
       });
 
-      socket.on("on-remove-device", (key, updatedKey) => {
-        if (Cookie.get("key") == key) setKeyData(updatedKey);
+      socket.on("on-remove-device", ({ key, updatedKey }) => {
+        if (Cookie.get("key") == key) {
+          setKeyData(updatedKey);
+          setIsConnected(false);
+        }
       });
 
+      socket.emit("remove-device", { deviceID: Cookie.get("key") });
+
       // socket.on("update-connection", (status) => {
-      //   setConnectionText(!status ? "DISCONNECT" : "CONNECT");
+      // setConnectionText(!status ? "DISCONNECT" : "CONNECT");
       // });
     });
   }, []);
@@ -46,20 +52,21 @@ export default ({ setIsConnected, isConnected }) => {
     <>
       <Prompt
         setIsConnected={setIsConnected}
-        isConnected={isConnected}
+        isConnected={keyData && keyData[0].deviceID != null}
         cb={() => socket.emit("get-key", { deviceID: Cookie.get("key") })}
       />
       <div class='row'>
         <div class='col'>
-          <div style={{ width: 500 }} id='reader'></div>
+          <div style={{ width: "100%" }} id='reader'></div>
           <Card
-            title='Device connection Information'
+            title='Device status Information'
             extra={[
               <Button
                 danger={!isConnected ? true : false}
                 onClick={() => {
-                  if (isConnected) socket.emit("disconnect", Cookie.get("key"));
-                  else socket.emit("connect", Cookie.get("key"));
+                  // if (isConnected) socket.emit("disconnect", Cookie.get("key"));
+                  // else socket.emit("connect", Cookie.get("key"));
+                  alert(keyData && keyData[0].deviceID != null);
                 }}
               >
                 {isConnected ? "DISCONNECT" : "CONNECT"}

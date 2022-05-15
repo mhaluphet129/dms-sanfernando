@@ -85,13 +85,8 @@ export default () => {
         if (Cookies.get("key") == key) setKeyData(updatedKey);
       });
 
-      socket.on("on-remove-device", (updatedKey) => {
-        if (
-          Cookies.get("key") == updatedKey.length > 0
-            ? updatedKey[0].systemID
-            : null
-        )
-          setKeyData(updatedKey);
+      socket.on("on-remove-device", ({ data }) => {
+        setKeyData(data);
       });
 
       socket.on("on-open-profile", async ({ data, id }) => {

@@ -49,10 +49,10 @@ const SocketHandler = (req, res) => {
             el.connected = false;
           }
         });
-        socket.emit(
-          "on-remove-device",
-          socketsData.filter((el) => el.deviceID == deviceID)
-        );
+        socket.broadcast.emit("on-remove-device", {
+          data: socketsData.filter((el) => el.deviceID == deviceID),
+          key: deviceID,
+        });
       });
 
       /* Getter */

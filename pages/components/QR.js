@@ -7,7 +7,7 @@ export default () => {
   const [qr, setQr] = useState();
 
   useEffect(() => {
-    QRCode.toString("627e56949d4446e23bfd3473", function (err, url) {
+    QRCode.toString("62800ba84bb85b93dc68f0c8", function (err, url) {
       setQr(parse(url));
     });
   }, []);
