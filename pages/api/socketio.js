@@ -1,12 +1,8 @@
 import { Server } from "Socket.IO";
-import {
-  getAll,
-  get,
-  pushNewSystem,
-  pushNewDevice,
-  removeSystem,
-  removeDevice,
-} from "../assets/js/Channel";
+
+/* Lets do the channeling */
+
+let socketsData = [];
 
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
@@ -18,34 +14,56 @@ const SocketHandler = (req, res) => {
     io.on("connection", (socket) => {
       // JS for LIFE
 
-      /* =============/================/===================/==================//
+      /*
+      //==============/================/===================/==================//
         WEBSOCKETS handles end to end communications without pulling an API 
         to listen every listeners okay ?
-      //===============/================/===================/================= */
+      //===============/================/===================/=================//
 
       /* System and Device push channels */
       socket.on("push-new-system", (key) => {
-        pushNewSystem({ systemID: key, deviceID: null, connected: false });
+        socketsData.push({ systemID: key, deviceID: null, connected: false });
       });
       socket.on("push-new-device", ({ key, deviceKey }) => {
-        pushNewDevice({ systemID: key, deviceID: deviceKey, connected: true });
-        socket.broadcast.emit("connected-to-system", key, deviceKey);
+        socketsData.forEach((el) => {
+          if (el.systemID == key) {
+            el.deviceID = deviceKey;
+            el.connected = true;
+          }
+        });
+        socket.broadcast.emit(
+          "connected-to-system",
+          key,
+          socketsData.filter((el) => el.systemID == key)
+        );
       });
 
       /* Remove system and Device handlers */
       socket.on("remove-system", (key) => {
-        removeSystem({ systemID: key });
+        socketsData = socketsData.filter((el) => el.systemID != key);
       });
-      socket.on("remove-device", (key) => {
-        removeDevice({ systemID: key });
+      socket.on("remove-device", ({ deviceID }) => {
+        socketsData.forEach((el) => {
+          if (el.deviceID == deviceID) {
+            el.deviceID == null;
+            el.connected = false;
+          }
+        });
+        socket.emit(
+          "on-remove-device",
+          socketsData.filter((el) => el.deviceID == deviceID)
+        );
       });
 
       /* Getter */
       socket.on("get-all", () => {
-        socket.emit("on-get-all", getAll());
+        socket.emit("on-get-all", socketsData);
+        console.log(socketsData);
       });
       socket.on("get-key", ({ systemID, deviceID }) => {
-        let key = get({ systemID, deviceID });
+        let key = systemID
+          ? socketsData.filter((el) => el.systemID == systemID)
+          : socketsData.filter((el) => el.deviceID == deviceID);
         socket.emit("on-get-key", key);
       });
 
@@ -56,16 +74,22 @@ const SocketHandler = (req, res) => {
         // let _key = keyPairs.filter((el) => el.systemKey == key);
         // socket.broadcast.emit("get-key", _key);
       });
+      socket.on("open-profile", ({ id, key }) => {
+        socket.broadcast.emit("on-open-profile", {
+          data: socketsData.filter((el) => el.deviceID == key),
+          id,
+        });
+      });
 
       /* CONNECTION handler ( connect/disconnect ) */
       socket.on("connect", (deviceID) => {
-        getAll().forEach((el) => {
+        socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = true;
         });
         socket.emit("update-connection", true);
       });
       socket.on("disconnect", (deviceID) => {
-        getAll().forEach((el) => {
+        socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = false;
         });
         socket.emit("update-connection", false);

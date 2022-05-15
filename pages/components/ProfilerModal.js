@@ -106,7 +106,7 @@ export default ({ data, visible, setVisible }) => {
                     fontSize: 13,
                   }}
                 >
-                  id: {data._id}
+                  id: {data?._id}
                 </Typography.Text>
               </div>
 

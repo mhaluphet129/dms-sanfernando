@@ -113,10 +113,14 @@ export default ({ profileVisible, setProfileVisible, info }) => {
   ];
 
   // data for Kind of Work (farmworker)
-  const farmworkerActivity = [...info?.profile?.farmWorker];
+  const farmworkerActivity = info?.profile?.farmWorker
+    ? [...info?.profile?.farmWorker]
+    : [];
 
   //data for Type of Fishing Activity
-  const fishingActivity = [...info?.profile?.fisherFolks];
+  const fishingActivity = info?.profile?.fisherFolks
+    ? [...info?.profile?.fisherFolks]
+    : [];
 
   const color = {
     Farmer: "green",

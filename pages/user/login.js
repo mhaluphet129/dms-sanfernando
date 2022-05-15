@@ -49,6 +49,11 @@ export default () => {
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
+
+      if (!isBrowser)
+        socket.emit("remove-device", {
+          deviceID: Cookies.get("key"),
+        });
     });
   }, []);
 
@@ -56,7 +61,8 @@ export default () => {
   if (!isBrowser) {
     if (!JSON.parse(Cookies.get("redirectedToQR") || false)) {
       Cookies.set("redirectedToQR", "true");
-      // window.location.href = "https://192.168.254.113:3001/";
+      if (window.location.href != "https://192.168.254.113:3001/")
+        window.location.href = "https://192.168.254.113:3001/";
     } else Cookies.remove("redirectedToQR");
 
     return (
