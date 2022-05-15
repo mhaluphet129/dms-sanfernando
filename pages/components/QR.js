@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import QRCode from "qrcode";
 import parse from "html-react-parser";
 

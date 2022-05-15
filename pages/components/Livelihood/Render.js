@@ -24,7 +24,7 @@ export default ({ data, pieData }) => {
       width: 180,
       render: (_, row) => (
         <Button
-          type='text'
+          type="link"
           onClick={() => {
             setOpenModal(true);
             setRowData(row);
@@ -58,7 +58,7 @@ export default ({ data, pieData }) => {
       title: "Livelihood",
       width: 100,
       render: (_, row) => (
-        <Space direction='vertical'>
+        <Space direction="vertical">
           {row?.profile?.type.map((el, i) => (
             <Tag key={i} color={color[el]}>
               {el}
@@ -114,8 +114,8 @@ export default ({ data, pieData }) => {
         <Col span={8} offset={1}>
           <Card>
             <Space>
-              <Space direction='vertical'>
-                <Card title='Crops' style={{ width: 325 }}>
+              <Space direction="vertical">
+                <Card title="Crops" style={{ width: 325 }}>
                   <Pie data={cropsdata} />
                 </Card>{" "}
                 {/* gicard type ra nako arun dali ra madugangan if morethan 1 ang need sa pie graph ex. farmer = crops, livelihood, poultry piegraph */}

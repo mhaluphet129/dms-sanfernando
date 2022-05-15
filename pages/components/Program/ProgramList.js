@@ -11,10 +11,15 @@ import {
   Modal,
   Form,
   Input,
+  Select,
 } from "antd";
+import ListOfBeneficiaries from "./ListOfBeneficiaries";
+import ViewProgam from "./ViewProgam";
 
 export default () => {
   const [visible, setVisible] = useState(false);
+  const [viewModal1, setViewModal1] = useState(false);
+  const [mode1, setMode1] = useState("");
   const [addProgramModal, setAddProgramModal] = useState(false);
   const { TextArea } = Input;
   const columns = [
@@ -24,7 +29,14 @@ export default () => {
       key: "programname",
       render: (text) => (
         <Tooltip title="Click to view program details.">
-          <a>{text}</a>
+          <Button
+            type="link"
+            onClick={() => {
+              setViewModal1(true);
+            }}
+          >
+            {text}
+          </Button>
         </Tooltip>
       ),
     },
@@ -44,7 +56,14 @@ export default () => {
       key: "noOfBenificiaries",
       render: (text) => (
         <Tooltip title="Click to view list.">
-          <a>{text}</a>
+          <Button
+            type="link"
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            {text}
+          </Button>
         </Tooltip>
       ),
     },
@@ -54,25 +73,34 @@ export default () => {
       key: "status",
       render: (text) =>
         text == "Active" ? (
-          <Typography.Text type="success">
-            <Badge status="success" />
-            Active
-          </Typography.Text>
+          <Typography.Text type="success">Active</Typography.Text>
         ) : (
-          <Typography.Text type="danger">
-            <Badge status="error" />
-            Expired
-          </Typography.Text>
+          <Typography.Text type="danger">Expired</Typography.Text>
         ),
     },
     {
       title: "Function",
       key: "function",
       render: (text, record) => (
-        <Space size="middle">
-          <a>Edit</a>
-          <a>Remove</a>
-        </Space>
+        <Select
+          //value={mode == "edit" ? data?.status : ""}
+          placeholder={"Settings"}
+        >
+          <Select.Option value="active">
+            <Button
+              type="link"
+              onClick={() => {
+                setViewModal1(true);
+                setMode1("edit");
+              }}
+            >
+              Edit
+            </Button>
+          </Select.Option>
+          <Select.Option value="expired">
+            <Button type="link">Remove</Button>
+          </Select.Option>
+        </Select>
       ),
     },
   ];
@@ -106,6 +134,17 @@ export default () => {
 
   return (
     <>
+      <ListOfBeneficiaries
+        programListModal={visible}
+        setProgramListModal={setVisible}
+      />
+
+      <ViewProgam
+        viewModal={viewModal1}
+        setViewModal={setViewModal1}
+        mode={mode1}
+        setMode={setMode1}
+      />
       <Row>
         <Col span={15}>
           <Row>

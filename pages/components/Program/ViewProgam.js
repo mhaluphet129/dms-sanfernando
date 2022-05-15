@@ -1,11 +1,20 @@
 import { react, useState } from "react";
-import { Modal, Row, Col, Typography, Badge, Space, Form, Input } from "antd";
+import {
+  Modal,
+  Row,
+  Col,
+  Typography,
+  Badge,
+  Space,
+  Form,
+  Input,
+  Select,
+} from "antd";
 
-export default () => {
-  const [viewModal, setViewModal] = useState(true);
+export default ({ viewModal, setViewModal, mode, setMode }) => {
   const [content, setContent] = useState("");
   const [contentNotEditing, setContentNotEditing] = useState(false);
-  const [mode, setMode] = useState("edit");
+  //const [mode, setMode] = useState("edit");
   const { TextArea } = Input;
 
   const data = {
@@ -17,15 +26,19 @@ export default () => {
     description:
       "Karapatan nating magkaroon ng kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech. Karapatan nating magkaroon na kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech. Karapatan nating magkaroon na kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech.",
   };
+
   return (
+    /* view/edit program modal */
     <Modal
       visible={viewModal}
       width={700}
       closable={false}
-      title={`${mode == "edit" ? "Edit " : ""}Put title here`} // di ko kabalo sumpay hahahha
-      okText={mode == "edit" ? "Save " : "Add"}
+      title={`${mode == "edit" ? "Edit " : ""}*Put title here*`} // di ko kabalo sumpay hahahha
+      okText={mode == "edit" ? "Save " : ""}
+      okButtonProps={mode == "edit" ? "" : { style: { display: "none" } }}
       onCancel={() => {
         setViewModal(false);
+        setMode("");
         setContent("");
         setContentNotEditing(false);
       }}
@@ -78,11 +91,13 @@ export default () => {
               name="status"
               required={[{ required: true }]}
             >
-              <Input
+              <Select
                 value={mode == "edit" ? data?.status : ""}
                 placeholder={mode == "edit" ? data?.status : ""}
-                allowClear
-              />
+              >
+                <Select.Option value="active">Active</Select.Option>
+                <Select.Option value="expired">Expired</Select.Option>
+              </Select>
             </Form.Item>
             <Form.Item
               label="No. of Beneficiaries"
