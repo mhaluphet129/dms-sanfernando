@@ -1,132 +1,169 @@
-import { react, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Row,
   Col,
-  Typography,
-  Badge,
-  Space,
   Form,
   Input,
   Select,
+  DatePicker,
+  Badge,
+  Button,
+  notification,
 } from "antd";
+import moment from "moment";
+import axios from "axios";
 
-export default ({ viewModal, setViewModal, mode, setMode }) => {
-  const [content, setContent] = useState("");
-  const [contentNotEditing, setContentNotEditing] = useState(false);
-  //const [mode, setMode] = useState("edit");
-  const { TextArea } = Input;
-
-  const data = {
-    programname: "Poor Peace Program",
-    dateCreated: "May 09, 2022",
-    incharge: "Leni Robredo",
-    status: "Active",
-    noOfBenificiaries: "9,053",
-    description:
-      "Karapatan nating magkaroon ng kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech. Karapatan nating magkaroon na kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech. Karapatan nating magkaroon na kinabukasang may dignidad, at tungkulin natin na ipaglaban ito. Natutunan natin, walang imposible,' the presidential candidate says in her final campaign speech.",
-  };
-
+export default ({ viewModal, setViewModal, modalData, cb }) => {
+  const [date, setDate] = useState();
+  const [isEditing, setIsEditing] = useState(false);
   return (
     /* view/edit program modal */
     <Modal
       visible={viewModal}
       width={700}
       closable={false}
-      title={`${mode == "edit" ? "Edit " : ""}*Put title here*`} // di ko kabalo sumpay hahahha
-      okText={mode == "edit" ? "Save " : ""}
-      okButtonProps={mode == "edit" ? "" : { style: { display: "none" } }}
+      footer={null}
       onCancel={() => {
         setViewModal(false);
-        setMode("");
-        setContent("");
-        setContentNotEditing(false);
+        setIsEditing(false);
       }}
-      destroyOnClose={true}
+      title={
+        <span
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {`${modalData?.name} `}
+          <div>
+            <Badge status={modalData?.status ? "success" : "error"} />{" "}
+            {`${modalData?.status ? "Active" : "Inactive"}`}
+          </div>
+        </span>
+      }
+      destroyOnClose
     >
-      <Form layout="vertical">
+      <Form
+        onFinish={async (val) => {
+          let obj = {
+            ...val,
+            createdAt: val?.dateCreated ? date : modalData?.createdAt,
+          };
+          let { data } = await axios.post("/api/programs", {
+            payload: {
+              data: obj,
+              mode: "update",
+              id: modalData?._id,
+            },
+          });
+
+          if (data.success) {
+            notification["success"]({
+              placement: "bottomRight",
+              description: data.message,
+            });
+            setViewModal(false);
+            setIsEditing(false);
+            cb();
+          }
+        }}
+        layout='vertical'
+      >
+        <Form.Item
+          label='Name of Program'
+          name='name'
+          initialValue={modalData?.name}
+          required={[{ required: true }]}
+        >
+          <Input
+            onChange={() => setIsEditing(true)}
+            style={{ width: 650 }}
+            allowClear
+          />
+        </Form.Item>
         <Row>
-          {/*value={mode == 'edit' ? data?.title : ''} */}
-          <Form.Item
-            label="Name of Program"
-            name="programname"
-            required={[{ required: true }]}
-          >
-            <Input
-              value={mode == "edit" ? data?.programname : ""}
-              placeholder={mode == "edit" ? data?.programname : ""}
-              allowClear
-              style={{ width: 625 }}
-            />
-          </Form.Item>
-        </Row>
-        <Row>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item
-              label="Date Created"
-              name="dateCreated"
+              label='Date Created'
+              name='dateCreated'
               required={[{ required: true }]}
             >
-              <Input
-                value={mode == "edit" ? data?.dateCreated : ""}
-                placeholder={mode == "edit" ? data?.dateCreated : ""}
-                allowClear
-              />
-            </Form.Item>
-            <Form.Item
-              label="Program In-charge"
-              name="incharge"
-              required={[{ required: true }]}
-            >
-              <Input
-                value={mode == "edit" ? data?.incharge : ""}
-                placeholder={mode == "edit" ? data?.incharge : ""}
-                allowClear
+              <DatePicker
+                defaultValue={moment(
+                  moment(modalData?.createdAt).format("MMMM DD, YYYY"),
+                  "MMMM DD, YYYY"
+                )}
+                onChange={(_, row) => {
+                  setIsEditing(true);
+                  setDate(_._d);
+                }}
+                format='MMMM DD, YYYY'
               />
             </Form.Item>
           </Col>
-          <Col span={10} offset={1}>
+          <Col span={7}>
             <Form.Item
-              label=" Status"
-              name="status"
+              label='No. of Beneficiaries'
+              name='total'
+              initialValue={modalData?.total}
               required={[{ required: true }]}
             >
-              <Select
-                value={mode == "edit" ? data?.status : ""}
-                placeholder={mode == "edit" ? data?.status : ""}
-              >
-                <Select.Option value="active">Active</Select.Option>
-                <Select.Option value="expired">Expired</Select.Option>
+              <Input onChange={() => setIsEditing(true)} allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={8} offset={1}>
+            <Form.Item
+              label=' Status'
+              name='status'
+              initialValue={modalData?.status}
+              required={[{ required: true }]}
+            >
+              <Select onChange={() => setIsEditing(true)}>
+                <Select.Option value={true}>
+                  <Badge status='success' /> Active
+                </Select.Option>
+                <Select.Option value={false}>
+                  <Badge status='error' /> Expired
+                </Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item
-              label="No. of Beneficiaries"
-              name="noOfBenificiaries"
-              required={[{ required: true }]}
-            >
-              <Input
-                value={mode == "edit" ? data?.noOfBenificiaries : ""}
-                placeholder={mode == "edit" ? data?.noOfBenificiaries : ""}
-                allowClear
-              />
-            </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Form.Item
-            label="Description"
-            name="description"
-            required={[{ required: true }]}
-          >
-            <TextArea
-              value={mode == "edit" ? data?.description : ""}
-              placeholder={mode == "edit" ? data?.description : ""}
-              rows={8}
-              allowClear
-              style={{ width: 625 }}
-            />
-          </Form.Item>
-        </Row>
+        <Form.Item
+          label='Program In-charge'
+          name='inCharge'
+          initialValue={modalData?.inCharge}
+          required={[{ required: true }]}
+        >
+          <Input
+            onChange={() => setIsEditing(true)}
+            style={{ width: 650 }}
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item
+          label='Description'
+          name='description'
+          initialValue={modalData?.description}
+          required={[{ required: true }]}
+        >
+          <Input.TextArea
+            rows={8}
+            style={{ width: 650, resize: "none!important" }}
+            autoSize={{ minRows: 7, maxRows: 7 }}
+            maxLength={1000}
+            onChange={() => setIsEditing(true)}
+            allowClear
+            showCount
+          />
+        </Form.Item>
+        <Form.Item className='submit' wrapperCol={{ offset: 22 }}>
+          <Button type='primary' htmlType='submit' disabled={!isEditing}>
+            Save
+          </Button>
+        </Form.Item>
       </Form>
     </Modal>
   );

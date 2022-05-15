@@ -8,7 +8,7 @@ import {
   Space,
   Card,
   Typography,
-  Tabs,
+  Empty,
 } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -40,6 +40,7 @@ export default ({ data, pieData }) => {
           onClick={() => {
             setOpenModal(true);
             setRowData(row);
+            console.log(row);
           }}
         >
           {titleText(
@@ -114,9 +115,24 @@ export default ({ data, pieData }) => {
   };
 
   const tabContent = {
-    crops: <Pie data={_data} />,
-    livestocks: <Pie data={_data} />,
-    poultry: <Pie data={_data} />,
+    crops:
+      Object.keys(pieData?.crops || {})?.length > 0 ? (
+        <Pie data={_data} />
+      ) : (
+        <Empty />
+      ),
+    livestocks:
+      Object.keys(pieData?.livestocks || {})?.length > 0 ? (
+        <Pie data={_data} />
+      ) : (
+        <Empty />
+      ),
+    poultry:
+      Object.keys(pieData?.poultry || {})?.length > 0 ? (
+        <Pie data={_data} />
+      ) : (
+        <Empty />
+      ),
   };
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import {
 } from "antd";
 import QRCode from "qrcode";
 import parse from "html-react-parser";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import ViewProfile from "./Livelihood/ViewProfile";
 import TitleText from "../assets/js/TitleText";
@@ -94,10 +95,26 @@ export default ({ data, visible, setVisible }) => {
                   alignItems: "center",
                 }}
               >
-                <Image
-                  width={200}
-                  src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
-                />
+                <Badge.Ribbon
+                  text={
+                    data?.isActive ? (
+                      <span>
+                        <CheckOutlined /> Active
+                      </span>
+                    ) : (
+                      <span>
+                        <CloseOutlined /> Inactive
+                      </span>
+                    )
+                  }
+                  placement='start'
+                  color={data?.isActive ? "green" : "red"}
+                >
+                  <Image
+                    width={200}
+                    src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
+                  />
+                </Badge.Ribbon>
               </div>
               <div style={{ textAlign: "center" }}>
                 <Typography.Text

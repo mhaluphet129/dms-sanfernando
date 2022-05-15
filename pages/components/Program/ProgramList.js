@@ -1,203 +1,170 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Badge,
   Button,
   Table,
-  Space,
   Typography,
   Tooltip,
   Row,
   Col,
-  Modal,
-  Form,
-  Input,
-  Select,
+  Popconfirm,
+  notification,
 } from "antd";
+import moment from "moment";
+import axios from "axios";
+
 import ListOfBeneficiaries from "./ListOfBeneficiaries";
 import ViewProgam from "./ViewProgam";
+import AddProgramForm from "./AddProgramForm";
 
 export default () => {
   const [visible, setVisible] = useState(false);
-  const [viewModal1, setViewModal1] = useState(false);
-  const [mode1, setMode1] = useState("");
+  const [viewModal, setViewModal] = useState(false);
   const [addProgramModal, setAddProgramModal] = useState(false);
-  const { TextArea } = Input;
+  const [loader, setLoader] = useState("");
+  const [data, setData] = useState();
+  const [modalData, setModalData] = useState();
+  const [listID, setListID] = useState();
+
+  // trigger
+  const [trigger, setTrigger] = useState(0);
+
+  const handleRemoveProgram = async (id) => {
+    let { data } = await axios.get("/api/programs", {
+      params: {
+        mode: "remove",
+        id,
+      },
+    });
+
+    if (data.success) {
+      notification["success"]({
+        placement: "bottomRight",
+        description: data.message,
+      });
+      setTrigger(trigger + 1);
+    }
+  };
+
   const columns = [
     {
-      title: "Name of Program",
-      dataIndex: "programname",
-      key: "programname",
-      render: (text) => (
-        <Tooltip title="Click to view program details.">
+      title: "Name",
+      render: (_, row) => (
+        <Tooltip title='Click to view program details.'>
           <Button
-            type="link"
+            type='link'
             onClick={() => {
-              setViewModal1(true);
+              setViewModal(true);
+              setModalData(row);
             }}
           >
-            {text}
+            {row?.name}
           </Button>
         </Tooltip>
       ),
     },
     {
       title: "Date Created",
-      dataIndex: "dateCreated",
-      key: "dateCreated",
+      render: (_, row) => moment(row?.createdAt).format("MMM DD, YYYY"),
     },
     {
       title: "Program In-charge",
-      dataIndex: "incharge",
-      key: "incharge",
+      dataIndex: "inCharge",
+      key: "inCharge",
     },
     {
       title: "No. of Benificiaries",
-      dataIndex: "noOfBenificiaries",
-      key: "noOfBenificiaries",
-      render: (text) => (
-        <Tooltip title="Click to view list.">
+      align: "center",
+      render: (_, row) => (
+        <Tooltip title='Click to view list.'>
           <Button
-            type="link"
+            type='link'
             onClick={() => {
               setVisible(true);
+              setListID(row?._id);
             }}
           >
-            {text}
+            {row?.total}
           </Button>
         </Tooltip>
       ),
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (text) =>
-        text == "Active" ? (
-          <Typography.Text type="success">Active</Typography.Text>
-        ) : (
-          <Typography.Text type="danger">Expired</Typography.Text>
-        ),
+      render: (_, row) => (
+        <Typography.Text type={row?.status ? "success" : "danger"}>
+          {row?.status ? "Active" : "Expired"}
+        </Typography.Text>
+      ),
     },
     {
       title: "Function",
-      key: "function",
-      render: (text, record) => (
-        <Select
-          //value={mode == "edit" ? data?.status : ""}
-          placeholder={"Settings"}
+      align: "center",
+      render: (_, row) => (
+        <Popconfirm
+          title='Are you sure to remove this program?'
+          onConfirm={() => handleRemoveProgram(row?._id)}
+          okText='Yes'
+          cancelText='No'
         >
-          <Select.Option value="active">
-            <Button
-              type="link"
-              onClick={() => {
-                setViewModal1(true);
-                setMode1("edit");
-              }}
-            >
-              Edit
-            </Button>
-          </Select.Option>
-          <Select.Option value="expired">
-            <Button type="link">Remove</Button>
-          </Select.Option>
-        </Select>
+          <Button danger>Remove</Button>
+        </Popconfirm>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      programname: "Poor Peace Program",
-      dateCreated: "Jan 26, 2019",
-      incharge: "Ninoy Aquino",
-      noOfBenificiaries: "9,053",
-      status: "Expired",
-    },
-    {
-      key: "2",
-      programname: "Trabahong Tapat",
-      dateCreated: "Mar 21, 2020",
-      incharge: "Leni Robredo",
-      noOfBenificiaries: "3,210",
-      status: "Active",
-    },
-    {
-      key: "3",
-      programname: "Angat Buhay Lahat",
-      dateCreated: "May 20, 2022",
-      incharge: "Leni Robredo",
-      noOfBenificiaries: "7,500",
-      status: "Active",
-    },
-  ];
+  useEffect(async () => {
+    setLoader("fetching");
+    let { data } = await axios.get("/api/programs", {
+      params: {
+        mode: "fetch",
+      },
+    });
+
+    if (data.success) {
+      setData(data.data);
+      setLoader("");
+    }
+  }, [trigger]);
 
   return (
     <>
       <ListOfBeneficiaries
         programListModal={visible}
         setProgramListModal={setVisible}
+        id={listID}
+        setId={setListID}
       />
-
+      <AddProgramForm
+        visible={addProgramModal}
+        setVisible={setAddProgramModal}
+        cb={() => setTrigger(trigger + 1)}
+      />
       <ViewProgam
-        viewModal={viewModal1}
-        setViewModal={setViewModal1}
-        mode={mode1}
-        setMode={setMode1}
+        viewModal={viewModal}
+        setViewModal={setViewModal}
+        modalData={modalData}
+        cb={() => setTrigger(trigger + 1)}
       />
       <Row>
-        <Col span={15}>
-          <Row>
-            <Col span={12}>
-              <Typography.Title level={4}>List of Program</Typography.Title>
-            </Col>
-            <Col span={12}>
-              <Button
-                style={{ width: 130, float: "right" }}
-                onClick={() => setAddProgramModal(true)}
-              >
-                Add Program
-              </Button>
-              <Modal
-                visible={addProgramModal}
-                closable={false}
-                title="Add Program"
-                onCancel={() => {
-                  setAddProgramModal(false);
-                }}
-                okText="Add"
-                destroyOnClose={true}
-              >
-                <Form layout="vertical">
-                  <Form.Item
-                    label="Name of Program"
-                    name="programname"
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label="Program In-charge"
-                    name="incharge"
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label="Description"
-                    name="description"
-                    required={[{ required: true }]}
-                  >
-                    <TextArea rows={6} allowClear />
-                  </Form.Item>
-                </Form>
-              </Modal>
-            </Col>
-          </Row>
-
-          <Table columns={columns} dataSource={data} />
+        <Col span={12}>
+          <Typography.Title level={4}>List of Program</Typography.Title>
+        </Col>
+        <Col span={12}>
+          <Button
+            style={{ width: 130, float: "right" }}
+            onClick={() => setAddProgramModal(true)}
+            type='primary'
+          >
+            Add Program
+          </Button>
         </Col>
       </Row>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={loader == "fetching"}
+        scroll={{ y: 500 }}
+      />
     </>
   );
 };

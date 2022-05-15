@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Modal,
   Row,
@@ -7,17 +7,25 @@ import {
   Tag,
   Button,
   Space,
-  Timeline,
-  Image,
   Table,
   Tooltip,
-  Search,
-  Input,
+  AutoComplete,
+  notification,
 } from "antd";
+import axios from "axios";
 
-export default ({ programListModal, setProgramListModal }) => {
+import titleText from "../../assets/js/TitleText";
+
+export default ({ programListModal, setProgramListModal, id, setId }) => {
   const [addClientModal, setAddClientModal] = useState(false);
-  const { Search } = Input;
+  const [loader, setLoader] = useState("");
+  const [list, setList] = useState();
+  const [selected, setSelected] = useState();
+  const timerRef = useRef(null);
+
+  const [names, setSearchNames] = useState();
+  const [trigger, setTrigger] = useState(1);
+
   const color = {
     Farmer: "green",
     Farmworker: "cyan",
@@ -27,36 +35,30 @@ export default ({ programListModal, setProgramListModal }) => {
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => (
-        <Tooltip title="Click to view full profile.">
-          <a>{text}</a>
+      render: (_, row) => (
+        <Tooltip title='Click to view full profile.'>
+          <a>{titleText(`${row.name.name} ${row.name.lastName}`)}</a>
         </Tooltip>
       ),
     },
     {
       title: "Date Availed",
-      dataIndex: "availDate",
-      key: "availDate",
+      render: (_, row) => "sunod nani",
     },
     {
       title: "Address",
-      dataIndex: "address",
-      key: "address",
+      render: (_, row) => "typoe though",
     },
     {
       title: "Contact",
-      dataIndex: "contact",
-      key: "contact",
+      render: (_, row) => row?.contactNum,
     },
     {
       title: "Livelihood",
-      dataIndex: "livelihood",
-      key: "livelihood",
-      render: (text) => (
-        <Space direction="vertical">
-          {text.map((el, i) => (
+
+      render: (_, row) => (
+        <Space direction='vertical'>
+          {row?.profile?.type.map((el, i) => (
             <Tag key={i} color={color[el]}>
               {el}
             </Tag>
@@ -67,40 +69,68 @@ export default ({ programListModal, setProgramListModal }) => {
     {
       title: "Action",
       key: "action",
-      render: (text) => (
-        <Space size="middle">
-          <a>Remove</a>
-        </Space>
-      ),
+      render: () => <Button danger>Remove</Button>,
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "Sandro Ehh",
-      availDate: "Jan 26, 2019",
-      address: "Ilocos Norte",
-      contact: "09830376021",
-      livelihood: ["Farmer", "Farmworker"],
-    },
-    {
-      key: "2",
-      name: "Bongbong Marcos",
-      availDate: "Jan 26, 2019",
-      address: "Ilocos Norte",
-      contact: "09830376021",
-      livelihood: ["Farmer", "Farmworker", "Fisherfolk"],
-    },
-    {
-      key: "3",
-      name: "Sarah Duterte",
-      availDate: "Jan 26, 2019",
-      address: "Ilocos Norte",
-      contact: "09830376021",
-      livelihood: ["Fisherfolk"],
-    },
-  ];
+  const searchName = async (searchKeyword) => {
+    let { data } = await axios.get("/api/programs", {
+      params: {
+        mode: "fetch-search",
+        searchWord: searchKeyword,
+      },
+    });
+
+    if (data.success) {
+      setSelected(data.data);
+      data.data.map((el) => {
+        setSearchNames((el2) => [...el2, { value: el.name.name }]);
+      });
+    } else console.log(data.message);
+  };
+
+  const runTimer = (searchKeyword) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(function () {
+      searchName(searchKeyword);
+    }, 500);
+  };
+
+  const handleAddProgram = async (_id) => {
+    let { data } = await axios.post("/api/programs", {
+      payload: {
+        mode: "add-to-programs",
+        programID: id,
+        livelihoodID: _id,
+      },
+    });
+
+    if (data.success) {
+      setAddClientModal(false);
+      notification["success"]({
+        placement: "bottomRight",
+        description: data.message,
+      });
+      setTrigger(trigger + 1);
+    }
+  };
+
+  useEffect(async () => {
+    setLoader("fetch-list");
+    let { data } = await axios.get("/api/programs", {
+      params: {
+        mode: "fetch-list",
+        id,
+      },
+    });
+
+    if (data.success) {
+      setList(data.data);
+      setLoader("");
+    }
+  }, [id, trigger]);
 
   return (
     /* modal for list of beneficiaries */
@@ -113,7 +143,9 @@ export default ({ programListModal, setProgramListModal }) => {
         <>
           <Row>
             <Col span={12}>
-              <Typography.Title level={5}>Poor Peace Program</Typography.Title>
+              <Typography.Title level={5} onClick={() => console.log(names)}>
+                Poor Peace Program
+              </Typography.Title>
             </Col>
             <Col span={12}>
               <Button
@@ -128,41 +160,66 @@ export default ({ programListModal, setProgramListModal }) => {
       }
       onCancel={() => {
         setProgramListModal(false);
+        setId("");
       }}
       destroyOnClose={true}
     >
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={list}
+        loading={loader == "fetch-list"}
+        scroll={{ y: 400 }}
+      />
 
       {/* modal to add client*/}
       <Modal
         visible={addClientModal}
         width={500}
         closable={false}
-        title="Add CLient"
+        title='Add CLient'
         destroyOnClose
+        footer={null}
         onCancel={() => {
           setAddClientModal(false);
         }}
-        okText="Add"
       >
         <Space
-          direction="vertical"
+          direction='vertical'
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Button style={{ width: 130 }} onClick={() => alert("scan QR")}>
-            Scan QR
-          </Button>{" "}
-          <Typography.Text style={{ textAlign: "center" }}>Or</Typography.Text>
-          <Search
-            placeholder="Input client name"
+          <AutoComplete
+            style={{
+              width: 450,
+            }}
+            options={names}
+            filterOption={(inputValue, option) =>
+              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
+              -1
+            }
+            onChange={(e) => {
+              setSelected([]);
+              setSearchNames([]);
+              runTimer(e);
+            }}
             allowClear
-            enterButton="Search"
-            size="large"
           />
+          <Button
+            style={{ width: 130 }}
+            onClick={() => {
+              if (selected[0]?.programs.includes(id))
+                notification["warn"]({
+                  placement: "bottomRight",
+                  description: "This person is already added in the program",
+                });
+              else handleAddProgram(selected[0]?._id);
+            }}
+          >
+            ADD
+          </Button>
         </Space>
       </Modal>
       {/* end add client modal */}

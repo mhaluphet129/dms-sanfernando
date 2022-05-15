@@ -162,6 +162,13 @@ let livelihoodSchema = new mongoose.Schema(
     is4Ps: {
       type: Boolean,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    programs: {
+      type: Array,
+    },
     farmlandID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Farmland",

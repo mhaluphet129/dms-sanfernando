@@ -161,7 +161,7 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
           <Table
             columns={columns}
             dataSource={data}
-            style={{ height: "85vh" }}
+            scroll={{ y: 500 }}
             pagination={{
               pageSize: 8,
               position: ["bottomCenter"],
