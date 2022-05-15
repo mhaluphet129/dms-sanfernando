@@ -86,11 +86,15 @@ export default () => {
       });
 
       socket.on("on-remove-device", ({ data }) => {
-        setKeyData(data);
+        if (data) setKeyData(data);
       });
 
       socket.on("on-open-profile", async ({ data, id }) => {
-        if (data && data[0].systemID == Cookies.get("key")) {
+        if (
+          data &&
+          data[0].connected &&
+          data[0].systemID == Cookies.get("key")
+        ) {
           let { data } = await axios.get("/api/main", {
             params: { id },
           });

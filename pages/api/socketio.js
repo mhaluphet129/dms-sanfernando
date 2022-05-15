@@ -47,11 +47,12 @@ const SocketHandler = (req, res) => {
           if (el.deviceID == deviceID) {
             el.deviceID == null;
             el.connected = false;
+
+            socket.broadcast.emit("on-remove-device", {
+              data: socketsData.filter((el) => el.deviceID == deviceID),
+              key: deviceID,
+            });
           }
-        });
-        socket.broadcast.emit("on-remove-device", {
-          data: socketsData.filter((el) => el.deviceID == deviceID),
-          key: deviceID,
         });
       });
 
@@ -82,17 +83,24 @@ const SocketHandler = (req, res) => {
       });
 
       /* CONNECTION handler ( connect/disconnect ) */
-      socket.on("connect", (deviceID) => {
+      socket.on("connect-system", (deviceID) => {
         socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = true;
         });
-        socket.emit("update-connection", true);
+
+        socket.emit("update-connection", {
+          data: socketsData.filter((el) => el.deviceID == deviceID),
+        });
       });
-      socket.on("disconnect", (deviceID) => {
+
+      socket.on("disconnect-system", (deviceID) => {
         socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = false;
         });
-        socket.emit("update-connection", false);
+
+        socket.emit("update-connection", {
+          data: socketsData.filter((el) => el.deviceID == deviceID),
+        });
       });
     });
   }

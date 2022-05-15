@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Modal, Input, Button, Space, Typography, message } from "antd";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
-import { keyGenerator } from "../js/KeyGenerator";
 let socket;
 
-export default ({ setIsConnected, isConnected, cb }) => {
+export default ({ data, cb, genKey }) => {
   const [value, setValue] = useState("");
   const [keys, setKeys] = useState();
 
@@ -19,20 +18,19 @@ export default ({ setIsConnected, isConnected, cb }) => {
     let a = keys.filter((el) => el.systemID == value);
     if (a.length == 0) message.error("key not found");
     else {
-      // if (!a[0].connected) {
-      let _key = keyGenerator(6);
-      setIsConnected(true);
-      socket.emit("notify", a[0].systemID);
-      socket.emit("push-new-device", {
-        key: a[0].systemID,
-        deviceKey: _key,
-      });
-      Cookies.set("key", _key);
-      cb();
-      // } else
-      //   message.error(
-      //     "This system key is already been connected to other devices"
-      //   );
+      if (!a[0].connected) {
+        Cookies.set("key", genKey);
+        socket.emit("notify", a[0].systemID);
+        socket.emit("push-new-device", {
+          key: a[0].systemID,
+          deviceKey: genKey,
+        });
+
+        cb();
+      } else
+        message.error(
+          "This system key is already been connected to other devices"
+        );
     }
   };
 
@@ -49,8 +47,8 @@ export default ({ setIsConnected, isConnected, cb }) => {
 
   return (
     <Modal
-      title='Connect to pc via KEY'
-      visible={!isConnected}
+      title='This is title and cannot be just a content but a title itself'
+      visible={!data?.length}
       footer={null}
       closable={false}
     >

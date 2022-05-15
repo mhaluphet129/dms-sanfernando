@@ -5,17 +5,19 @@ import io from "socket.io-client";
 import Cookie from "js-cookie";
 
 import Prompt from "../assets/js/Prompt";
+import { keyGenerator } from "../assets/js/KeyGenerator";
 let socket;
 
-export default ({ setIsConnected, isConnected }) => {
+export default () => {
   const [keyData, setKeyData] = useState();
+  const [genKey, setGenKey] = useState();
   useEffect(() => {
+    setGenKey(keyGenerator(6));
     let html5QrcodeScanner = new Html5QrcodeScanner("reader", {
       fps: 10,
       qrbox: 300,
     });
     html5QrcodeScanner.render((success) => {
-      message.success("Successfully scanned!");
       socket.emit("open-profile", {
         id: success,
         key: Cookie.get("key"),
@@ -33,27 +35,21 @@ export default ({ setIsConnected, isConnected }) => {
         else setKeyData(_key);
       });
 
-      socket.on("on-remove-device", ({ key, updatedKey }) => {
-        if (Cookie.get("key") == key) {
-          setKeyData(updatedKey);
-          setIsConnected(false);
-        }
+      socket.on("on-remove-device", ({ key, data }) => {
+        if (Cookie.get("key") == key) setKeyData(data);
       });
 
       socket.emit("remove-device", { deviceID: Cookie.get("key") });
-
-      // socket.on("update-connection", (status) => {
-      // setConnectionText(!status ? "DISCONNECT" : "CONNECT");
-      // });
+      socket.on("update-connection", ({ data }) => setKeyData(data));
     });
   }, []);
 
   return (
     <>
       <Prompt
-        setIsConnected={setIsConnected}
-        isConnected={keyData && keyData[0].deviceID != null}
-        cb={() => socket.emit("get-key", { deviceID: Cookie.get("key") })}
+        data={keyData}
+        cb={() => socket.emit("get-key", { deviceID: genKey })}
+        genKey={genKey}
       />
       <div class='row'>
         <div class='col'>
@@ -62,22 +58,34 @@ export default ({ setIsConnected, isConnected }) => {
             title='Device status Information'
             extra={[
               <Button
-                danger={!isConnected ? true : false}
+                danger={
+                  keyData?.length > 0 && keyData[0]?.connected ? true : false
+                }
                 onClick={() => {
-                  // if (isConnected) socket.emit("disconnect", Cookie.get("key"));
-                  // else socket.emit("connect", Cookie.get("key"));
-                  alert(keyData && keyData[0].deviceID != null);
+                  if (keyData?.length > 0 && keyData[0]?.connected)
+                    socket.emit("disconnect-system", Cookie.get("key"));
+                  else socket.emit("connect-system", Cookie.get("key"));
                 }}
               >
-                {isConnected ? "DISCONNECT" : "CONNECT"}
+                {keyData?.length > 0 && keyData[0]?.connected
+                  ? "DISCONNECT"
+                  : "CONNECT"}
               </Button>,
             ]}
             hoverable
           >
             <Typography.Text>
               Connection status:{" "}
-              <Tag color={isConnected ? "success" : "error"}>
-                {isConnected ? "Connected" : "Not Connected"}
+              <Tag
+                color={
+                  keyData?.length > 0 && keyData[0]?.connected
+                    ? "success"
+                    : "error"
+                }
+              >
+                {keyData?.length > 0 && keyData[0]?.connected
+                  ? "Connected"
+                  : "Not Connected"}
               </Tag>
             </Typography.Text>
             <Typography.Text>
@@ -91,7 +99,7 @@ export default ({ setIsConnected, isConnected }) => {
             <Typography.Text>
               Device Id:{" "}
               <Typography.Text type='secondary'>
-                {keyData?.length > 0 ? keyData[0].deviceID : ""}
+                {keyData?.length > 0 ? keyData[0]?.deviceID : "null"}
               </Typography.Text>
             </Typography.Text>
             <br />
