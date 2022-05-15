@@ -36,7 +36,7 @@ export default ({ data, pieData }) => {
       width: 180,
       render: (_, row) => (
         <Button
-          type='text'
+          type='link'
           onClick={() => {
             setOpenModal(true);
             setRowData(row);
