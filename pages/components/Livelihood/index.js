@@ -15,7 +15,7 @@ export default () => {
 
   useEffect(async () => {
     let { data } = await axios.get("/api/livelihood", {
-      params: { type },
+      params: { type, mode: "fetch" },
     });
 
     if (data.success) {

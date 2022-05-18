@@ -3,7 +3,7 @@ import moment from "moment";
 
 export default ({ data }) => {
   return (
-    <div style={{ backgroundColor: "#fff" }}>
+    <div style={{ backgroundColor: "#fff", height: 350, overflow: "scroll" }}>
       <Timeline reverse={true} mode='right'>
         {data &&
           data.map((el, i) => (

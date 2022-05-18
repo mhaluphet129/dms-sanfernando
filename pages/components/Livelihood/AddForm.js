@@ -466,6 +466,7 @@ export default ({ visible, setVisible }) => {
 
           let { data } = await axios.post("/api/livelihood", {
             payload: newLivelihood,
+            mode: "add",
           });
           if (data.success) {
             message.success(data.message);
