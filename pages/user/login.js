@@ -7,7 +7,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import Image from "next/image";
 
-import { keyGenerator } from "../assets/js/KeyGenerator";
+import keyGenerator from "../assets/js/KeyGenerator";
 import QRScanner from "../components/QRwithCamera";
 let socket;
 

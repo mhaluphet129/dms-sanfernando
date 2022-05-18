@@ -2,6 +2,7 @@ import dbConnect from "../../../database/dbConnect";
 import Program from "../../../database/model/Program";
 import Livelihood from "../../../database/model/Livelihood";
 import moment from "moment";
+var ObjectId = require("mongodb").ObjectId;
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -50,8 +51,7 @@ export default async function handler(req, res) {
 
         if (mode == "fetch-list") {
           const { id } = req.query;
-
-          await Livelihood.find({ programs: { $in: [id] } })
+          await Livelihood.find({ programs: { $in: [ObjectId(id)] } })
             .then((data) => {
               res.status(200).end(
                 JSON.stringify({
@@ -94,6 +94,51 @@ export default async function handler(req, res) {
           res.status(200).end(
             JSON.stringify({
               success: true,
+              data,
+            })
+          );
+          resolve();
+        }
+
+        if (mode == "fetch-programs") {
+          const { _id } = req.query;
+
+          let data = await Livelihood.aggregate([
+            {
+              $match: {
+                _id: new ObjectId(_id),
+              },
+            },
+            {
+              $unwind: "$programs",
+            },
+            {
+              $lookup: {
+                from: "programs",
+                localField: "programs",
+                foreignField: "_id",
+                as: "programsObj",
+              },
+            },
+            {
+              $unwind: "$programsObj",
+            },
+            {
+              $group: {
+                _id: "$_id",
+                programsObj: { $push: "$programsObj" },
+              },
+            },
+          ]).catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              message: "Successfully fetch the names",
               data,
             })
           );
@@ -149,11 +194,18 @@ export default async function handler(req, res) {
         }
 
         if (mode == "add-to-programs") {
-          const { programID, livelihoodID } = req.body.payload;
-
+          const { programID, livelihoodID, name } = req.body.payload;
           await Livelihood.findOneAndUpdate(
             { _id: livelihoodID },
-            { $push: { programs: programID } }
+            {
+              $push: {
+                programs: new ObjectId(programID),
+                timeline: {
+                  time: moment(),
+                  label: `Added to Program '${name}'`,
+                },
+              },
+            }
           )
             .then(() => {
               res.status(200).end(

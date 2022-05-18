@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import moment from "moment";
 
-export const AdminAddForm = () => {
+export default () => {
   return (
     <Card title='Add an admin' hoverable>
       <Form

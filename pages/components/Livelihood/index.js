@@ -41,6 +41,7 @@ export default () => {
         }}
         onChange={(e) => setType(e)}
         destroyInactiveTabPane
+        centered
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
           <Farmers data={data} pieData={pieData} />

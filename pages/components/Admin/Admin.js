@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Row, Col, Card, Tag, Typography } from "antd";
 import AdminTable from "./AdminTable";
-import { AdminAddForm } from "./AdminForm";
+import AdminAddForm from "./AdminForm";
 import AdminList from "./AdminList";
 import axios from "axios";
 import Cookie from "js-cookie";
@@ -25,7 +25,10 @@ export default () => {
       });
   };
 
-  const type = JSON.parse(Cookie.get("user"))[0].role;
+  let type;
+  try {
+    type = JSON.parse(Cookie.get("user"))[0].role;
+  } catch {}
 
   return (
     <>

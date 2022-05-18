@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import Cookie from "js-cookie";
 
 import Prompt from "../assets/js/Prompt";
-import { keyGenerator } from "../assets/js/KeyGenerator";
+import keyGenerator from "../assets/js/KeyGenerator";
 let socket;
 
 export default () => {

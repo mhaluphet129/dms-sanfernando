@@ -13,6 +13,8 @@ import {
 import { SettingOutlined } from "@ant-design/icons";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import axios from "axios";
+
 import Profiler from "../ProfilerModal";
 import titleText from "../../assets/js/TitleText";
 
@@ -37,10 +39,9 @@ export default ({ data, pieData }) => {
       render: (_, row) => (
         <Button
           type='link'
-          onClick={() => {
+          onClick={async () => {
             setOpenModal(true);
             setRowData(row);
-            console.log(row);
           }}
         >
           {titleText(
@@ -210,6 +211,7 @@ export default ({ data, pieData }) => {
               pageSize: 10,
               total: 999,
             }}
+            rowKey={(_) => _._id}
           />
         </Col>
         <Col span={8} offset={1}>

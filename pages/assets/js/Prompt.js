@@ -7,6 +7,7 @@ let socket;
 export default ({ data, cb, genKey }) => {
   const [value, setValue] = useState("");
   const [keys, setKeys] = useState();
+  const [bool, setBool] = useState(true);
 
   const handleConnect = () => {
     if (keys.length == 0) {
@@ -25,7 +26,7 @@ export default ({ data, cb, genKey }) => {
           key: a[0].systemID,
           deviceKey: genKey,
         });
-
+        setBool(false);
         cb();
       } else
         message.error(
@@ -48,7 +49,7 @@ export default ({ data, cb, genKey }) => {
   return (
     <Modal
       title='This is title and cannot be just a content but a title itself'
-      visible={!data?.length}
+      visible={bool}
       footer={null}
       closable={false}
     >

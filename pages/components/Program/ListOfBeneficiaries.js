@@ -16,7 +16,13 @@ import axios from "axios";
 
 import titleText from "../../assets/js/TitleText";
 
-export default ({ programListModal, setProgramListModal, id, setId }) => {
+export default ({
+  programListModal,
+  setProgramListModal,
+  id,
+  setId,
+  title,
+}) => {
   const [addClientModal, setAddClientModal] = useState(false);
   const [loader, setLoader] = useState("");
   const [list, setList] = useState();
@@ -104,6 +110,7 @@ export default ({ programListModal, setProgramListModal, id, setId }) => {
         mode: "add-to-programs",
         programID: id,
         livelihoodID: _id,
+        name: title,
       },
     });
 
@@ -118,19 +125,21 @@ export default ({ programListModal, setProgramListModal, id, setId }) => {
   };
 
   useEffect(async () => {
-    setLoader("fetch-list");
-    let { data } = await axios.get("/api/programs", {
-      params: {
-        mode: "fetch-list",
-        id,
-      },
-    });
+    if (programListModal) {
+      setLoader("fetch-list");
+      let { data } = await axios.get("/api/programs", {
+        params: {
+          mode: "fetch-list",
+          id,
+        },
+      });
 
-    if (data.success) {
-      setList(data.data);
-      setLoader("");
+      if (data.success) {
+        setList(data.data);
+        setLoader("");
+      }
     }
-  }, [id, trigger]);
+  }, [programListModal, trigger]);
 
   return (
     /* modal for list of beneficiaries */
@@ -144,7 +153,7 @@ export default ({ programListModal, setProgramListModal, id, setId }) => {
           <Row>
             <Col span={12}>
               <Typography.Title level={5} onClick={() => console.log(names)}>
-                Poor Peace Program
+                {title}
               </Typography.Title>
             </Col>
             <Col span={12}>

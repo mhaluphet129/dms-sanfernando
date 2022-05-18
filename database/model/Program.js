@@ -14,10 +14,6 @@ let ProgramSchema = new mongoose.Schema({
   inCharge: {
     type: String,
   },
-  total: {
-    type: Number,
-    default: 0,
-  },
   description: {
     type: String,
   },

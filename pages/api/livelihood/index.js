@@ -1,5 +1,6 @@
 import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
+import moment from "moment";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -57,6 +58,12 @@ export default async function handler(req, res) {
     case "POST": {
       return new Promise(async (resolve, reject) => {
         let newLivelihood = Livelihood(req.body.payload);
+        Livelihood.timeline = [
+          {
+            time: moment(),
+            label: "This livelihood account is newsly added.",
+          },
+        ];
         await newLivelihood
           .save()
           .then(() => {

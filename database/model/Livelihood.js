@@ -173,6 +173,9 @@ let livelihoodSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Farmland",
     },
+    timeline: {
+      type: Array,
+    },
     profile: profileSchema,
     hasCoopOrAssoc: memberSchema,
     address: addressSchema,

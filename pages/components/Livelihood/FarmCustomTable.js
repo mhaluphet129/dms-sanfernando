@@ -26,7 +26,7 @@ export default ({ data, setData }) => {
         title: (
           <span>
             Farm Land Description{" "}
-            {data.length == 0 ? (
+            {data?.length == 0 ? (
               <Typography.Text type='secondary'>(Example form)</Typography.Text>
             ) : (
               ""
@@ -40,7 +40,7 @@ export default ({ data, setData }) => {
               setVisible={setModalOpen}
               pushData={(e) => setData([...data, e])}
             />
-            {data.length == 0 ? (
+            {data?.length == 0 ? (
               <div style={{ padding: 10 }}>
                 <Row>
                   <Col
@@ -178,7 +178,7 @@ export default ({ data, setData }) => {
                   <Col span={24}>
                     <Table
                       columns={columns[1]}
-                      dataSource={row.arr1.length == 0 ? [null] : row.arr1}
+                      dataSource={row.arr1?.length == 0 ? [null] : row.arr1}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
                       bordered
@@ -189,7 +189,7 @@ export default ({ data, setData }) => {
                   <Col span={24}>
                     <Table
                       columns={columns[2]}
-                      dataSource={row.arr2.length == 0 ? [null] : row.arr2}
+                      dataSource={row.arr2?.length == 0 ? [null] : row.arr2}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
                       bordered
@@ -267,7 +267,7 @@ export default ({ data, setData }) => {
   return (
     <Table
       columns={columns[0]}
-      dataSource={data.length == 0 ? [null] : data}
+      dataSource={data?.length == 0 ? [null] : data}
       pagination={false}
       bordered
     />

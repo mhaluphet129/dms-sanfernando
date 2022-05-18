@@ -7,6 +7,7 @@ import {
   Row,
   Col,
   Popconfirm,
+  Badge,
   notification,
 } from "antd";
 import moment from "moment";
@@ -24,6 +25,7 @@ export default () => {
   const [data, setData] = useState();
   const [modalData, setModalData] = useState();
   const [listID, setListID] = useState();
+  const [index, setIndex] = useState(0);
 
   // trigger
   const [trigger, setTrigger] = useState(0);
@@ -74,16 +76,17 @@ export default () => {
     {
       title: "No. of Benificiaries",
       align: "center",
-      render: (_, row) => (
+      render: (_, row, index) => (
         <Tooltip title='Click to view list.'>
           <Button
             type='link'
             onClick={() => {
               setVisible(true);
               setListID(row?._id);
+              setIndex(index);
             }}
           >
-            {row?.total}
+            View
           </Button>
         </Tooltip>
       ),
@@ -91,9 +94,10 @@ export default () => {
     {
       title: "Status",
       render: (_, row) => (
-        <Typography.Text type={row?.status ? "success" : "danger"}>
-          {row?.status ? "Active" : "Expired"}
-        </Typography.Text>
+        <>
+          <Badge status={row?.status ? "success" : "error"} />{" "}
+          {`${row?.status ? "Active" : "Inactive"}`}
+        </>
       ),
     },
     {
@@ -133,6 +137,7 @@ export default () => {
         setProgramListModal={setVisible}
         id={listID}
         setId={setListID}
+        title={data?.length > 0 ? data[index]?.name : ""}
       />
       <AddProgramForm
         visible={addProgramModal}
@@ -164,6 +169,7 @@ export default () => {
         dataSource={data}
         loading={loader == "fetching"}
         scroll={{ y: 500 }}
+        rowKey={(obj) => obj._id}
       />
     </>
   );

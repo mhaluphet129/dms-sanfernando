@@ -15,7 +15,7 @@ import axios from "axios";
 
 import Page from "../components/Page";
 import ProfilerModal from "../components/ProfilerModal";
-import { SidePane } from "../components/Sider";
+import SidePane from "../components/Sider";
 
 const { Content, Header } = Layout;
 let socket;

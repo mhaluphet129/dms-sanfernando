@@ -84,7 +84,7 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
           />
         </Form.Item>
         <Row>
-          <Col span={8}>
+          <Col span={7}>
             <Form.Item
               label='Date Created'
               name='dateCreated'
@@ -100,20 +100,11 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
                   setDate(_._d);
                 }}
                 format='MMMM DD, YYYY'
+                style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>
-          <Col span={7}>
-            <Form.Item
-              label='No. of Beneficiaries'
-              name='total'
-              initialValue={modalData?.total}
-              required={[{ required: true }]}
-            >
-              <Input onChange={() => setIsEditing(true)} allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={8} offset={1}>
+          <Col span={5} offset={1}>
             <Form.Item
               label=' Status'
               name='status'
@@ -130,19 +121,22 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
               </Select>
             </Form.Item>
           </Col>
+          <Col span={10} offset={1}>
+            <Form.Item
+              label='Program In-charge'
+              name='inCharge'
+              initialValue={modalData?.inCharge}
+              required={[{ required: true }]}
+            >
+              <Input
+                onChange={() => setIsEditing(true)}
+                style={{ width: "100%" }}
+                allowClear
+              />
+            </Form.Item>
+          </Col>
         </Row>
-        <Form.Item
-          label='Program In-charge'
-          name='inCharge'
-          initialValue={modalData?.inCharge}
-          required={[{ required: true }]}
-        >
-          <Input
-            onChange={() => setIsEditing(true)}
-            style={{ width: 650 }}
-            allowClear
-          />
-        </Form.Item>
+
         <Form.Item
           label='Description'
           name='description'
@@ -151,7 +145,7 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
         >
           <Input.TextArea
             rows={8}
-            style={{ width: 650, resize: "none!important" }}
+            style={{ width: "100%", resize: "none!important" }}
             autoSize={{ minRows: 7, maxRows: 7 }}
             maxLength={1000}
             onChange={() => setIsEditing(true)}

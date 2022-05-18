@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import FloatLabel from "../../assets/js/FloatLabel";
-import { Label01 } from "../../assets/js/Labels";
+import Label01 from "../../assets/js/Labels";
 import TimelineDisplay from "../../assets/js/TimelineDisplay";
 import moment from "moment";
 import axios from "axios";
