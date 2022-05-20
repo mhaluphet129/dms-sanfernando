@@ -69,11 +69,11 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
             cb();
           }
         }}
-        layout='vertical'
+        layout="vertical"
       >
         <Form.Item
-          label='Name of Program'
-          name='name'
+          label="Name of Program"
+          name="name"
           initialValue={modalData?.name}
           required={[{ required: true }]}
         >
@@ -83,11 +83,11 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
             allowClear
           />
         </Form.Item>
-        <Row>
-          <Col span={8}>
+        <Row gutter={16}>
+          <Col span={7}>
             <Form.Item
-              label='Date Created'
-              name='dateCreated'
+              label="Date Created"
+              name="dateCreated"
               required={[{ required: true }]}
             >
               <DatePicker
@@ -99,41 +99,41 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
                   setIsEditing(true);
                   setDate(_._d);
                 }}
-                format='MMMM DD, YYYY'
+                format="MMMM DD, YYYY"
               />
             </Form.Item>
           </Col>
-          <Col span={7}>
+          <Col span={9}>
             <Form.Item
-              label='No. of Beneficiaries'
-              name='total'
+              label="No. of Beneficiaries"
+              name="total"
               initialValue={modalData?.total}
               required={[{ required: true }]}
             >
               <Input onChange={() => setIsEditing(true)} allowClear />
             </Form.Item>
           </Col>
-          <Col span={8} offset={1}>
+          <Col span={8}>
             <Form.Item
-              label=' Status'
-              name='status'
+              label=" Status"
+              name="status"
               initialValue={modalData?.status}
               required={[{ required: true }]}
             >
               <Select onChange={() => setIsEditing(true)}>
                 <Select.Option value={true}>
-                  <Badge status='success' /> Active
+                  <Badge status="success" /> Active
                 </Select.Option>
                 <Select.Option value={false}>
-                  <Badge status='error' /> Expired
+                  <Badge status="error" /> Expired
                 </Select.Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
         <Form.Item
-          label='Program In-charge'
-          name='inCharge'
+          label="Program In-charge"
+          name="inCharge"
           initialValue={modalData?.inCharge}
           required={[{ required: true }]}
         >
@@ -144,8 +144,8 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
           />
         </Form.Item>
         <Form.Item
-          label='Description'
-          name='description'
+          label="Description"
+          name="description"
           initialValue={modalData?.description}
           required={[{ required: true }]}
         >
@@ -159,8 +159,8 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
             showCount
           />
         </Form.Item>
-        <Form.Item className='submit' wrapperCol={{ offset: 22 }}>
-          <Button type='primary' htmlType='submit' disabled={!isEditing}>
+        <Form.Item className="submit" wrapperCol={{ offset: 22 }}>
+          <Button type="primary" htmlType="submit" disabled={!isEditing}>
             Save
           </Button>
         </Form.Item>
