@@ -211,6 +211,7 @@ export default ({ data, pieData }) => {
               pageSize: 10,
               total: 999,
             }}
+            title={() => "Livelihood"}
             rowKey={(_) => _._id}
           />
         </Col>

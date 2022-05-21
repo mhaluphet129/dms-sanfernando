@@ -1,5 +1,6 @@
 import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
+import Visit from "../../../database/model/Visit";
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -70,6 +71,49 @@ export default async function handler(req, res) {
             })
           );
           resolve();
+        }
+
+        if (mode == "visit") {
+          const { id, barangay, name } = req.query;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $push: {
+                timeline: {
+                  time: moment(),
+                  label: "Visited today.",
+                },
+              },
+            }
+          )
+            .then(() => {
+              let newVisit = Visit({
+                name,
+                barangay,
+                type: mode,
+              });
+
+              newVisit
+                .save()
+                .then(() => {
+                  res.status(200).end(
+                    JSON.stringify({
+                      success: true,
+                      message: "Successfully added to logs",
+                    })
+                  );
+                  resolve();
+                })
+                .catch((error) => {
+                  res.end(JSON.stringify(error));
+                  resolve();
+                });
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+              resolve();
+            });
         }
       });
     }

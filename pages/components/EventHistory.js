@@ -72,7 +72,7 @@ export default () => {
             loading={loader == "fetch-log"}
             rowKey={(row) => row._id}
             title={() => (
-              <Typography.Title level={4}>Visit History</Typography.Title>
+              <Typography.Title level={4}>Events History</Typography.Title>
             )}
             bordered
           />

@@ -8,6 +8,7 @@ import ProfilerModal from "./ProfilerModal";
 import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
 import LogHistory from "./LogHistory";
+import EventHistory from "./EventHistory";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
@@ -60,18 +61,30 @@ export default ({ setPage }) => {
         >
           Program
         </Menu.Item>
+        <Menu.SubMenu key='logs' title='Logs'>
+          <Menu.Item
+            key='log1'
+            onClick={() => {
+              setPage({
+                children: <LogHistory />,
+              });
+            }}
+          >
+            Visit History
+          </Menu.Item>
+          <Menu.Item
+            key='log2'
+            onClick={() => {
+              setPage({
+                children: <EventHistory />,
+              });
+            }}
+          >
+            Event History
+          </Menu.Item>
+        </Menu.SubMenu>
         <Menu.Item
-          key="5"
-          onClick={() => {
-            setPage({
-              children: <LogHistory />,
-            });
-          }}
-        >
-          Log History
-        </Menu.Item>
-        <Menu.Item
-          key="6"
+          key='6'
           onClick={() => {
             setPage({
               children: <QRSample />,

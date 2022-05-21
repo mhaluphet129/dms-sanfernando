@@ -12,11 +12,11 @@ import {
   Input,
   Spin,
   DatePicker,
-  Badge,
   notification,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+
 import { CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
 import TimelineDisplay from "../assets/js/TimelineDisplay";
@@ -25,7 +25,6 @@ import TitleText from "../assets/js/TitleText";
 
 export default ({ data, visible, setVisible }) => {
   const [profileVisible, setProfileVisible] = useState();
-  const [qr, setQr] = useState();
   const [loader, setLoader] = useState();
   const [trigger, setTrigger] = useState(0);
   const [programs, setPrograms] = useState([]);
@@ -168,16 +167,8 @@ export default ({ data, visible, setVisible }) => {
               />
             </div>
             <div style={{ textAlign: "center", marginBottom: 5 }}>
-              <Typography.Text
-                type='secondary'
-                style={{
-                  fontSize: 13,
-                }}
-              >
-                id: {data?._id}
-              </Typography.Text>
+              <small style={{ color: "#aaa" }}>id: {data?._id}</small>
               <br />
-
               {data?.profile?.type.map((el, i) => (
                 <Tag color={color[el]} key={i}>
                   {el}
@@ -196,7 +187,37 @@ export default ({ data, visible, setVisible }) => {
               View Full Profile
             </Button>
             <Button style={{ width: "100%", marginBottom: 5 }}>View QR</Button>
-            <div>{qr}</div>
+            <Button
+              type='dashed'
+              size='large'
+              style={{
+                backgroundColor: "#70e040",
+                color: "#fff",
+                width: "100%",
+              }}
+              onClick={async () => {
+                let res = await axios.get("/api/livelihood", {
+                  params: {
+                    mode: "visit",
+                    id: data?._id,
+                    barangay: data?.address?.barangay || "",
+                    name: TitleText(
+                      `${data?.name.lastName}, ${data?.name.name} ${data?.name.middleName[0]}.`
+                    ),
+                  },
+                });
+
+                if (res.data.success) {
+                  notification["success"]({
+                    placement: "bottomRight",
+                    message: res.data.message,
+                  });
+                  setVisible(false);
+                }
+              }}
+            >
+              VISIT TODAY
+            </Button>
           </Col>
           <Col span={8}>
             <Space
@@ -222,7 +243,7 @@ export default ({ data, visible, setVisible }) => {
                 </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
-                Contact Number: <br />{" "}
+                Contact Number: <br />
                 <Typography.Text strong>{data?.contactNum}</Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
@@ -238,20 +259,20 @@ export default ({ data, visible, setVisible }) => {
             </Space>
           </Col>
           <Col span={8}>
-            <Typography.Title
-              level={5}
-              style={{
-                textAlign: "center",
-                marginBottom: 5,
-              }}
-            >
-              Log History
-            </Typography.Title>
             {loader == "fetch" ? (
               <Spin style={{ textAlign: "center", width: "100%" }} />
             ) : (
               <TimelineDisplay data={timeline} />
             )}
+            <Button
+              style={{
+                marginLeft: "50%",
+                marginTop: 10,
+                transform: "translateX(-50%)",
+              }}
+            >
+              View full logs
+            </Button>
           </Col>
         </Row>
       </Modal>

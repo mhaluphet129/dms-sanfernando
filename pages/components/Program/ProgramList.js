@@ -170,6 +170,9 @@ export default () => {
         loading={loader == "fetching"}
         scroll={{ y: 500 }}
         rowKey={(obj) => obj._id}
+        // summary={()=>{
+
+        // }}
       />
     </>
   );

@@ -78,6 +78,7 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
     },
     {
       title: "Email",
+      ellipsis: true,
       render: (_, row) => (
         <div style={{ width: 220 }}>
           {row?.role == "admin" ? (

@@ -23,7 +23,7 @@ export default ({ type, data, visible, onClose }) => {
           title={type == "admin" ? "Only a superadmin can remove this" : null}
         >
           <Popconfirm
-            okText="delete"
+            okText='delete'
             okButtonProps={{
               type: "danger",
             }}
@@ -31,7 +31,7 @@ export default ({ type, data, visible, onClose }) => {
             onConfirm={() => handleDelete(row?._id)}
             disabled={type == "admin"}
           >
-            <Button type="danger" disabled={type == "admin"}>
+            <Button type='danger' disabled={type == "admin"}>
               Remove
             </Button>
           </Popconfirm>
