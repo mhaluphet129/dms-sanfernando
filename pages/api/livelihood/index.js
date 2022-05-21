@@ -1,6 +1,6 @@
 import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
-import Visit from "../../../database/model/Visit";
+import Log from "../../../database/model/Log";
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -73,8 +73,8 @@ export default async function handler(req, res) {
           resolve();
         }
 
-        if (mode == "visit") {
-          const { id, barangay, name } = req.query;
+        if (mode == "log") {
+          const { id, barangay, name, type } = req.query;
 
           await Livelihood.findOneAndUpdate(
             { _id: id },
@@ -82,16 +82,16 @@ export default async function handler(req, res) {
               $push: {
                 timeline: {
                   time: moment(),
-                  label: "Visited today.",
+                  label: "Visited.",
                 },
               },
             }
           )
             .then(() => {
-              let newVisit = Visit({
+              let newVisit = Log({
                 name,
                 barangay,
-                type: mode,
+                type,
               });
 
               newVisit
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
 
         if (mode == "add-to-logs") {
           const { id, message, date } = req.body.payload;
-          console.log(req.body.payload);
+
           await Livelihood.findOneAndUpdate(
             { _id: id },
             {

@@ -43,7 +43,7 @@ export default () => {
     try {
       let { data } = await axios.get("/api/history", {
         params: {
-          mode: "log",
+          type: "visit",
         },
       });
 

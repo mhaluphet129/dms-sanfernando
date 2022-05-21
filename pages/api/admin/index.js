@@ -1,5 +1,6 @@
 import dbConnect from "../../../database/dbConnect";
 import User from "../../../database/model/User";
+import Log from "../../../database/model/Log";
 var ObjectId = require("mongodb").ObjectId;
 
 export default async function handler(req, res) {
@@ -120,14 +121,28 @@ export default async function handler(req, res) {
         let user = User({ email, timeline });
         await user
           .save()
-          .then(() => {
-            res.status(200).end(
-              JSON.stringify({
-                success: true,
-                message: "Admin added successfully",
+          .then(async () => {
+            let newVisit = Log({
+              type: "event",
+              description: `admin account email '${email}' has been added.`,
+            });
+
+            await newVisit
+              .save()
+              .then(() => {
+                res.status(200).end(
+                  JSON.stringify({
+                    success: true,
+                    message: "Admin added successfully",
+                  })
+                );
+                resolve();
               })
-            );
-            resolve();
+              .catch((err) => {
+                res.end(
+                  JSON.stringify({ success: false, message: "Error: " + err })
+                );
+              });
           })
           .catch((err) => {
             res.end(
@@ -151,17 +166,30 @@ export default async function handler(req, res) {
               timeline: { time, label },
             };
           }
-
           await User.findOneAndUpdate({ _id: id }, obj)
-            .then(() => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "Updated successfully",
-                })
-              );
+            .then(async () => {
+              let newVisit = Log({
+                type: "event",
+                description: obj.$push.timeline.label.join(" "),
+              });
 
-              resolve();
+              await newVisit
+                .save()
+                .then(() => {
+                  res.status(200).end(
+                    JSON.stringify({
+                      success: true,
+                      message: "Updated successfully",
+                    })
+                  );
+
+                  resolve();
+                })
+                .catch((err) => {
+                  res.end(
+                    JSON.stringify({ success: false, message: "Error: " + err })
+                  );
+                });
             })
             .catch((err) => {
               res.end(
@@ -187,14 +215,31 @@ export default async function handler(req, res) {
                 {
                   $set: { role: "admin" },
                 }
-              ).then(() => {
-                res.status(200).end(
-                  JSON.stringify({
-                    success: true,
-                    message: "Updated successfully",
+              ).then(async () => {
+                let newVisit = Log({
+                  type: "event",
+                  description: label,
+                });
+
+                await newVisit
+                  .save()
+                  .then(() => {
+                    res.status(200).end(
+                      JSON.stringify({
+                        success: true,
+                        message: "Updated successfully",
+                      })
+                    );
+                    resolve();
                   })
-                );
-                resolve();
+                  .catch((err) => {
+                    res.end(
+                      JSON.stringify({
+                        success: false,
+                        message: "Error: " + err,
+                      })
+                    );
+                  });
               });
             })
             .catch((err) => {

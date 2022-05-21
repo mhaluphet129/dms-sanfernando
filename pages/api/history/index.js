@@ -1,5 +1,5 @@
 import dbConnect from "../../../database/dbConnect";
-import Visit from "../../../database/model/Visit";
+import Log from "../../../database/model/Log";
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -9,15 +9,21 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET": {
       return new Promise(async (resolve, reject) => {
-        let data = await Visit.find({ type: "visit" }).catch((err) => {
-          res.end(JSON.stringify({ success: false, message: "Error: " + err }));
-        });
+        const { type } = req.query;
+        let data = await Log.find({ type })
+          .sort({ $natural: -1 })
+          .catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
 
-        let countToday = await Visit.countDocuments({
+        let countToday = await Log.countDocuments({
           createdAt: {
             $gte: moment().startOf("day"),
             $lte: moment(moment().startOf("day")).endOf("day").toDate(),
           },
+          type,
         });
 
         res.status(200).end(

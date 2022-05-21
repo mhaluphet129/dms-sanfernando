@@ -198,7 +198,8 @@ export default ({ data, visible, setVisible }) => {
               onClick={async () => {
                 let res = await axios.get("/api/livelihood", {
                   params: {
-                    mode: "visit",
+                    mode: "log",
+                    type: "visit",
                     id: data?._id,
                     barangay: data?.address?.barangay || "",
                     name: TitleText(

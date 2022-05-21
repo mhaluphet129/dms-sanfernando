@@ -20,21 +20,17 @@ export default () => {
   const columns = [
     {
       title: "Date and Time",
+      width: 200,
       render: (_, row) =>
         `${moment(row?.createdAt).format("MMM DD, YYYY | hh:mm a")}`,
     },
     {
-      title: "Name",
+      title: "Description",
       render: (_, row) => (
         <Tooltip title='Click to view full profile.'>
-          <Button type='link'>{row?.name}</Button>
+          <Typography.Text>{row?.description}</Typography.Text>
         </Tooltip>
       ),
-    },
-    {
-      title: "Barangay",
-      dataIndex: "barangay",
-      key: "barangay",
     },
   ];
 
@@ -43,7 +39,7 @@ export default () => {
     try {
       let { data } = await axios.get("/api/history", {
         params: {
-          mode: "log",
+          type: "event",
         },
       });
 
@@ -82,13 +78,13 @@ export default () => {
             <Typography.Title level={2}>
               {loader == "fetch-log" ? "-" : totalToday}
             </Typography.Title>
-            <Typography.Text>No. of Visits Today</Typography.Text>
+            <Typography.Text>No. of Events Today</Typography.Text>
           </Card>
           <Card style={{ height: 150, marginTop: 10 }}>
             <Typography.Title level={2}>
               {loader == "fetch-log" ? "-" : logs?.length}
             </Typography.Title>
-            <Typography.Text>Total visits</Typography.Text>
+            <Typography.Text>Total events</Typography.Text>
           </Card>
         </Col>
       </Row>

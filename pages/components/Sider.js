@@ -7,7 +7,7 @@ import QRSample from "./QR";
 import ProfilerModal from "./ProfilerModal";
 import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
-import LogHistory from "./LogHistory";
+import VisitHistory from "./VisitHistory";
 import EventHistory from "./EventHistory";
 const { Sider } = Layout;
 
@@ -66,7 +66,7 @@ export default ({ setPage }) => {
             key='log1'
             onClick={() => {
               setPage({
-                children: <LogHistory />,
+                children: <VisitHistory />,
               });
             }}
           >
