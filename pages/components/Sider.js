@@ -6,6 +6,8 @@ import Farmers from "./Livelihood";
 import QRSample from "./QR";
 import ProfilerModal from "./ProfilerModal";
 import ProgramList from "./Program/ProgramList";
+import Dashboard from "./Dashboard/Dashboard";
+import LogHistory from "./LogHistory";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
@@ -22,7 +24,7 @@ export default ({ setPage }) => {
           key='1'
           onClick={() => {
             setPage({
-              children: <QRSample />,
+              children: <Dashboard />,
             });
           }}
         >
@@ -57,6 +59,26 @@ export default ({ setPage }) => {
           }}
         >
           Program
+        </Menu.Item>
+        <Menu.Item
+          key="5"
+          onClick={() => {
+            setPage({
+              children: <LogHistory />,
+            });
+          }}
+        >
+          Log History
+        </Menu.Item>
+        <Menu.Item
+          key="6"
+          onClick={() => {
+            setPage({
+              children: <QRSample />,
+            });
+          }}
+        >
+          Scan
         </Menu.Item>
       </Menu>
     </Sider>

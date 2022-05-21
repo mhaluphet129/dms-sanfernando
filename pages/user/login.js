@@ -37,12 +37,6 @@ export default () => {
       payload,
     });
 
-    if (!data.success && data.mode == "not-exist")
-      message.error("Account doesn't exist");
-    if (!data.success && data.mode == "with-pass")
-      message.error("Please input a password.");
-    if (!data.success && data.mode == "wrong-pass") message.error(data.message);
-
     if (data.success) {
       if (data.mode == "validated") {
         let key = keyGenerator(5);
@@ -60,6 +54,10 @@ export default () => {
         setModalEmail(data.email);
         setOpenModal(true);
       }
+    } else {
+      if (data.mode == "not-exist") message.error("Account doesn't exist");
+      if (data.mode == "with-pass") message.error("Please input a password.");
+      if (data.mode == "wrong-pass") message.error(data.message);
     }
   };
 

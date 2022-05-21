@@ -136,7 +136,6 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
             </Form.Item>
           </Col>
         </Row>
-
         <Form.Item
           label='Description'
           name='description'

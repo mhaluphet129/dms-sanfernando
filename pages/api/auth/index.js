@@ -107,6 +107,7 @@ export default async function handler(req, res) {
               JSON.stringify({
                 status: false,
                 message: "Password in incorrect.",
+                mode: "wrong-pass",
               })
             );
 
