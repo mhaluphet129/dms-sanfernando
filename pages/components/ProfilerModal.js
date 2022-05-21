@@ -10,15 +10,13 @@ import {
   Image,
   Form,
   Input,
+  Spin,
   DatePicker,
-  Table,
   Badge,
   notification,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
-import QRCode from "qrcode";
-import parse from "html-react-parser";
 import { CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
 import TimelineDisplay from "../assets/js/TimelineDisplay";
@@ -41,28 +39,9 @@ export default ({ data, visible, setVisible }) => {
     Fisherfolk: "blue",
   };
 
-  let columns = [
-    {
-      title: "status",
-      align: "center",
-      width: 80,
-      render: (_, row) => <Badge status={row?.status ? "success" : "error"} />,
-    },
-    {
-      title: "Program",
-      render: (_, row) => row?.name,
-    },
-  ];
-
-  // useEffect(() => {
-  //   QRCode.toString(data?._id?.toString(), function (err, url) {
-  //     setQr(parse(url || ""));
-  //   });
-  // }, [visible]);
-
   useEffect(async () => {
     if (visible) {
-      setLoader("fetch-programs");
+      setLoader("fetch");
       let res = await axios.get("/api/programs", {
         params: {
           mode: "fetch-programs",
@@ -81,7 +60,6 @@ export default ({ data, visible, setVisible }) => {
         setLoader("");
         setPrograms(res?.data?.data[0]?.programsObj);
         setTimeline(res2.data.data);
-        console.log(res2.data.data);
       }
     }
   }, [visible, trigger]);
@@ -173,6 +151,7 @@ export default ({ data, visible, setVisible }) => {
           profileVisible={profileVisible}
           setProfileVisible={setProfileVisible}
           info={data}
+          programs={programs}
         />
         <Row gutter={[16, 16]}>
           <Col span={8}>
@@ -215,9 +194,6 @@ export default ({ data, visible, setVisible }) => {
               }}
             >
               View Full Profile
-            </Button>
-            <Button style={{ width: "100%", marginBottom: 5 }}>
-              View Program
             </Button>
             <Button style={{ width: "100%", marginBottom: 5 }}>View QR</Button>
             <div>{qr}</div>
@@ -271,7 +247,11 @@ export default ({ data, visible, setVisible }) => {
             >
               Log History
             </Typography.Title>
-            <TimelineDisplay data={timeline} />
+            {loader == "fetch" ? (
+              <Spin style={{ textAlign: "center", width: "100%" }} />
+            ) : (
+              <TimelineDisplay data={timeline} />
+            )}
           </Col>
         </Row>
       </Modal>

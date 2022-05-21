@@ -144,6 +144,29 @@ export default async function handler(req, res) {
           );
           resolve();
         }
+
+        if (mode == "remove-to-programs") {
+          const { livelihoodID, programsID } = req.query;
+          console.log(req.query);
+          await Livelihood.findOneAndUpdate(
+            { _id: livelihoodID },
+            {
+              $pull: { programs: ObjectId(programsID) },
+            }
+          ).catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              message: "Removed successfully",
+            })
+          );
+          resolve();
+        }
       });
     }
     case "POST": {

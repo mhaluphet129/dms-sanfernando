@@ -342,7 +342,7 @@ export default ({ visible, setVisible }) => {
 
           // end of restrictions
 
-          let user = JSON.parse(Cookie.get("user"))[0];
+          let user = JSON.parse(Cookie.get("user"));
 
           // FORM data
           let obj = {

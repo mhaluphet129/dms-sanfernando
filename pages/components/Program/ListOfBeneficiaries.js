@@ -10,6 +10,7 @@ import {
   Table,
   Tooltip,
   AutoComplete,
+  Popconfirm,
   notification,
 } from "antd";
 import axios from "axios";
@@ -75,7 +76,26 @@ export default ({
     {
       title: "Action",
       key: "action",
-      render: () => <Button danger>Remove</Button>,
+      render: (_, row) => (
+        <Popconfirm
+          title='Are you sure to remove this person?'
+          onConfirm={async () => {
+            let { data } = await axios.get("/api/programs", {
+              params: {
+                mode: "remove-to-programs",
+                livelihoodID: row?._id,
+                programsID: id,
+              },
+            });
+
+            if (data.success) setTrigger(trigger + 1);
+          }}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Button danger>Remove</Button>
+        </Popconfirm>
+      ),
     },
   ];
 
@@ -162,9 +182,9 @@ export default ({
                 onClick={() => setAddClientModal(true)}
               >
                 Add Client
-              </Button>{" "}
+              </Button>
             </Col>
-          </Row>{" "}
+          </Row>
         </>
       }
       onCancel={() => {

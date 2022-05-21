@@ -1,5 +1,6 @@
 import dbConnect from "../../../database/dbConnect";
 import User from "../../../database/model/User";
+var ObjectId = require("mongodb").ObjectId;
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -168,7 +169,7 @@ export default async function handler(req, res) {
               );
             });
         } else if (mode == "tosuperadmin") {
-          const { id, addtimeline } = req.body.payload;
+          const { id, addtimeline, saID } = req.body.payload;
           const { time, label } = addtimeline;
           await User.findOneAndUpdate(
             { _id: id },
@@ -177,15 +178,24 @@ export default async function handler(req, res) {
               $push: { timeline: { time, label } },
             }
           )
-            .then(() => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "Updated successfully",
-                })
-              );
-
-              resolve();
+            .then(async () => {
+              await User.findOneAndUpdate(
+                {
+                  _id: ObjectId(saID),
+                  role: "superadmin",
+                },
+                {
+                  $set: { role: "admin" },
+                }
+              ).then(() => {
+                res.status(200).end(
+                  JSON.stringify({
+                    success: true,
+                    message: "Updated successfully",
+                  })
+                );
+                resolve();
+              });
             })
             .catch((err) => {
               res.end(

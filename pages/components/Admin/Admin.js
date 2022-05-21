@@ -27,7 +27,7 @@ export default () => {
 
   let type;
   try {
-    type = JSON.parse(Cookie.get("user"))[0].role;
+    type = JSON.parse(Cookie.get("user")).role;
   } catch {}
 
   return (

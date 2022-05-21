@@ -64,7 +64,7 @@ export default () => {
   );
 
   useEffect(() => {
-    setData(JSON.parse(Cookies.get("user"))[0]);
+    setData(JSON.parse(Cookies.get("user")));
   }, []);
 
   useEffect(() => {

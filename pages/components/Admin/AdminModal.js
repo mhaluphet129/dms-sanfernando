@@ -12,12 +12,15 @@ import {
   notification,
   message,
 } from "antd";
+import Cookie from "js-cookie";
+import moment from "moment";
+import axios from "axios";
+
 import { UserOutlined } from "@ant-design/icons";
+
 import FloatLabel from "../../assets/js/FloatLabel";
 import Label01 from "../../assets/js/Labels";
 import TimelineDisplay from "../../assets/js/TimelineDisplay";
-import moment from "moment";
-import axios from "axios";
 
 export default ({ type, visibility, onClose, data }) => {
   const [_name, setName] = useState("");
@@ -122,6 +125,7 @@ export default ({ type, visibility, onClose, data }) => {
       payload: {
         mode: "tosuperadmin",
         id: data?._id,
+        saID: JSON.parse(Cookie.get("user"))._id,
         addtimeline: { time: moment(), label: "Upgraded to Superadmin" },
       },
     });
@@ -130,6 +134,7 @@ export default ({ type, visibility, onClose, data }) => {
       notification["success"]({
         message: resp.message,
       });
+      window.location.href = "/";
     } else message.error(resp.message);
   };
 
