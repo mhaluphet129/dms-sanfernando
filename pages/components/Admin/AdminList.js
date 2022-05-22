@@ -54,7 +54,12 @@ export default ({ type, data, visible, onClose }) => {
 
   return (
     <Modal visible={visible} onCancel={onClose} footer={null} closable={false}>
-      <Table columns={columns} dataSource={data} pagination={false} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        rowKey={(row) => row._id}
+      />
     </Modal>
   );
 };

@@ -20,7 +20,7 @@ import titleText from "../../assets/js/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default ({ data, pieData }) => {
+export default ({ data, pieData, type }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
@@ -219,37 +219,39 @@ export default ({ data, pieData }) => {
           <Card>
             <Space>
               <Space direction='vertical'>
-                <Card
-                  title={
-                    <span>
-                      {titleText(`${activeTab} `)}
-                      <Typography.Text type='secondary'>{`total: ${Object.values(
-                        modifiedData[activeTab] || {}
-                      ).reduce(
-                        (prev, curr) => prev + curr,
-                        0
-                      )}`}</Typography.Text>
-                    </span>
-                  }
-                  style={{ width: 325 }}
-                  tabList={[
-                    {
-                      key: "crops",
-                      tab: "Crops",
-                    },
-                    {
-                      key: "livestocks",
-                      tab: "Livestocks",
-                    },
-                    { key: "poultry", tab: "Poultry" },
-                  ]}
-                  activeTabKey={activeTab}
-                  onTabChange={(k) => {
-                    setActiveTab(k);
-                  }}
-                >
-                  {tabContent[activeTab]}
-                </Card>
+                {type == "Farmer" && (
+                  <Card
+                    title={
+                      <span>
+                        {titleText(`${activeTab} `)}
+                        <Typography.Text type='secondary'>{`total: ${Object.values(
+                          modifiedData[activeTab] || {}
+                        ).reduce(
+                          (prev, curr) => prev + curr,
+                          0
+                        )}`}</Typography.Text>
+                      </span>
+                    }
+                    style={{ width: 325 }}
+                    tabList={[
+                      {
+                        key: "crops",
+                        tab: "Crops",
+                      },
+                      {
+                        key: "livestocks",
+                        tab: "Livestocks",
+                      },
+                      { key: "poultry", tab: "Poultry" },
+                    ]}
+                    activeTabKey={activeTab}
+                    onTabChange={(k) => {
+                      setActiveTab(k);
+                    }}
+                  >
+                    {tabContent[activeTab]}
+                  </Card>
+                )}
               </Space>
             </Space>
           </Card>

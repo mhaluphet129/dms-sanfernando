@@ -1,6 +1,7 @@
 import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
 import Log from "../../../database/model/Log";
+import Farmland from "../../../database/model/Farmland";
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -120,24 +121,40 @@ export default async function handler(req, res) {
     case "POST": {
       return new Promise(async (resolve, reject) => {
         const { mode } = req.body;
+
         if (mode == "add") {
-          let newLivelihood = Livelihood(req.body.payload);
-          Livelihood.timeline = [
-            {
-              time: moment(),
-              label: "This livelihood account is newly added.",
-            },
-          ];
-          await newLivelihood
-            .save()
-            .then(() => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "New livelihood added successfully",
+          let newLivelihood = Livelihood(req.body.payload.newLivelihood);
+          let resp = await Farmland.insertMany([...req.body.payload.arrayFarm])
+            .then(async (e) => {
+              Livelihood.timeline = [
+                {
+                  time: moment(),
+                  label: "This livelihood account is newly added.",
+                },
+              ];
+
+              let insertedIds = [];
+
+              e?.forEach((el) => {
+                insertedIds.push(el._id);
+              });
+              newLivelihood.farmlandID = insertedIds;
+
+              await newLivelihood
+                .save()
+                .then(() => {
+                  res.status(200).end(
+                    JSON.stringify({
+                      success: true,
+                      message: "New livelihood added successfully",
+                    })
+                  );
+                  resolve();
                 })
-              );
-              resolve();
+                .catch((error) => {
+                  res.end(JSON.stringify(error));
+                  resolve();
+                });
             })
             .catch((error) => {
               res.end(JSON.stringify(error));

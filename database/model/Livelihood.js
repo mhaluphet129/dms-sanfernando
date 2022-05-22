@@ -170,8 +170,7 @@ let livelihoodSchema = new mongoose.Schema(
       type: Array,
     },
     farmlandID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmland",
+      type: Array,
     },
     timeline: {
       type: Array,

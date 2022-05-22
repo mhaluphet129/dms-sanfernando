@@ -96,7 +96,7 @@ export default () => {
           data[0].systemID == Cookies.get("key")
         ) {
           let { data } = await axios.get("/api/main", {
-            params: { id },
+            params: { id, mode: "qr" },
           });
           if (data.success) {
             setProfilerData(data.data[0]);

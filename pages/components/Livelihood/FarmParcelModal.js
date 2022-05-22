@@ -308,7 +308,7 @@ export default ({ visible, setVisible, pushData }) => {
               <Space direction='vertical'>
                 <Form.Item
                   name='location'
-                  label='Location'
+                  label='Barangay'
                   rules={[{ required: true, message: "This field is empty" }]}
                 >
                   <Input

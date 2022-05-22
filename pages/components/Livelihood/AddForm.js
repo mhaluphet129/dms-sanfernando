@@ -445,11 +445,6 @@ export default ({ visible, setVisible }) => {
             livestock: [...el.arr2],
           }));
 
-          let farmLandObj = {
-            userId: user._id,
-            farmland: [...arrayFarm],
-          };
-
           const newLivelihood = {
             ...obj,
             name: nameObj,
@@ -465,7 +460,10 @@ export default ({ visible, setVisible }) => {
           };
 
           let { data } = await axios.post("/api/livelihood", {
-            payload: newLivelihood,
+            payload: {
+              newLivelihood,
+              arrayFarm,
+            },
             mode: "add",
           });
           if (data.success) {

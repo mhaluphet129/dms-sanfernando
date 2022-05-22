@@ -12,6 +12,14 @@ import EventHistory from "./EventHistory";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
+  useEffect(
+    () =>
+      setPage({
+        children: <Dashboard />,
+      }),
+    []
+  );
+
   return (
     <Sider
       collapsible

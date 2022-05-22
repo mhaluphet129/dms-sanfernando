@@ -236,9 +236,7 @@ export default ({ data, setData }) => {
         title: "Organic Practioner (Y/N) ?",
         width: 250,
         render: (_) => (
-          <Typography.Text>
-            {_?.bool ? (_?.bool ? "Yes" : "No") : ""}
-          </Typography.Text>
+          <Typography.Text>{_?.bool ? "Yes" : "No"}</Typography.Text>
         ),
       },
     ],
@@ -257,9 +255,7 @@ export default ({ data, setData }) => {
         title: "Organic Practioner (Y/N) ?",
         width: 250,
         render: (_) => (
-          <Typography.Text>
-            {_?.bool ? (_?.bool ? "Yes" : "No") : ""}
-          </Typography.Text>
+          <Typography.Text>{_?.bool ? "Yes" : "No"}</Typography.Text>
         ),
       },
     ],

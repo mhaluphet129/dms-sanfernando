@@ -2,11 +2,32 @@ let mongoose = require("mongoose");
 
 let FarmlandSchema = new mongoose.Schema(
   {
-    userId: {
+    livelihoodId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Livelihood",
     },
-    farmLand: {
+    location: {
+      type: String,
+    },
+    ownershipDocument: {
+      type: String,
+    },
+    ownerType: {
+      type: String,
+    },
+    ownerName: {
+      type: String,
+    },
+    totalArea: {
+      type: Number,
+    },
+    documentNumber: {
+      type: String,
+    },
+    crops: {
+      type: Array,
+    },
+    livestock: {
       type: Array,
     },
   },

@@ -168,6 +168,7 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
               position: ["bottomCenter"],
               total,
             }}
+            rowKey={(row) => row?._id}
             onChange={(params) => fetch({ ...params, mode: "fetch" })}
           />
         </Card>

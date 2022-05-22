@@ -44,13 +44,13 @@ export default () => {
         centered
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Farmers data={data} pieData={pieData} />
+          <Farmers data={data} type={type} pieData={pieData} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Farmworker data={data} pieData={pieData} />
+          <Farmworker data={data} type={type} pieData={pieData} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
-          <Fisherfolk data={data} pieData={pieData} />
+          <Fisherfolk data={data} type={type} pieData={pieData} />
         </Tabs.TabPane>
       </Tabs>
     </>

@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Typography, Divider, Tabs, Table } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Row,
+  Col,
+  Typography,
+  Divider,
+  Tabs,
+  Table,
+  message,
+} from "antd";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +19,8 @@ import {
   Legend,
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
+
+import axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -22,7 +33,8 @@ ChartJS.register(
 
 export default () => {
   const [type, setType] = useState("Farmer");
-
+  const [loader, setLoader] = useState("");
+  const [data, setData] = useState();
   // For bargraph responsiveness
   const options = {
     responsive: true,
@@ -354,64 +366,112 @@ export default () => {
     ],
   };
 
+  useEffect(async () => {
+    setLoader("fetch");
+    try {
+      let { data } = await axios.get("/api/main", {
+        params: {
+          mode: "dashboard-data",
+        },
+      });
+
+      if (data.success) {
+        setData(data.res);
+        setLoader("");
+        console.log(data.res);
+      }
+    } catch {
+      message.error("There is an error on the server");
+    }
+  }, []);
+
   return (
     <div style={{ height: "100vh", overflowY: "scroll" }}>
       <Card>
         <Row gutter={[16, 16]}>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>574</Typography.Title>
+              <Typography.Title level={2}>
+                {loader == "fetch" ? "-" : data?.visitToday}
+              </Typography.Title>
               <Typography.Text>No. of Visitor Today</Typography.Text>
             </Card>
           </Col>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>10,099</Typography.Title>
-              <Typography.Text>Total no. of registered client</Typography.Text>
+              <Typography.Title level={2}>
+                {" "}
+                {loader == "fetch" ? "-" : data?.totalLivelihood}
+              </Typography.Title>
+              <Typography.Text>
+                Total no. of registered livelihood
+              </Typography.Text>
               <br />
               <Typography.Text>
-                <Typography.Text strong>500</Typography.Text> Client Registered
-                Today
+                <Typography.Text strong>
+                  {loader == "fetch" ? 0 : data?.totalLivelihood}
+                </Typography.Text>{" "}
+                Livelihood Registered Today
               </Typography.Text>
             </Card>
           </Col>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>10,099</Typography.Title>
+              <Typography.Title level={2}>
+                {loader == "fetch" ? "-" : data?.totalPrograms}
+              </Typography.Title>
               <Typography.Text>Total no. of Programs</Typography.Text>
               <br />
               <Typography.Text>
-                <Typography.Text strong>5000</Typography.Text> Active Programs
+                <Typography.Text strong>
+                  {loader == "fetch" ? 0 : data?.totalProgramsActive}
+                </Typography.Text>{" "}
+                Active Programs
               </Typography.Text>
             </Card>
           </Col>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>10,099</Typography.Title>
+              <Typography.Title level={2}>
+                {loader == "fetch" ? "-" : data?.totalFarmers}
+              </Typography.Title>
               <Typography.Text>Total no. of Farmers</Typography.Text>
               <br />
               <Typography.Text>
-                <Typography.Text strong>500</Typography.Text> Newly Added Today
+                <Typography.Text strong>
+                  {loader == "fetch" ? 0 : data?.totalFarmersToday}
+                </Typography.Text>{" "}
+                Newly Added Today
               </Typography.Text>
             </Card>
           </Col>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>10,099</Typography.Title>
+              <Typography.Title level={2}>
+                {loader == "fetch" ? "-" : data?.totalFarmworkers}
+              </Typography.Title>
               <Typography.Text>Total no. of Farmworkers</Typography.Text>
               <br />
               <Typography.Text>
-                <Typography.Text strong>500</Typography.Text> Newly Added Today
+                <Typography.Text strong>
+                  {loader == "fetch" ? 0 : data?.totalFarmworkersToday}
+                </Typography.Text>{" "}
+                Newly Added Today
               </Typography.Text>
             </Card>
           </Col>
           <Col span={8}>
             <Card style={{ height: 150 }}>
-              <Typography.Title level={2}>10,099</Typography.Title>
+              <Typography.Title level={2}>
+                {loader == "fetch" ? "-" : data?.totalFisherfolks}
+              </Typography.Title>
               <Typography.Text>Total no. of Fisherfolks</Typography.Text>
               <br />
               <Typography.Text>
-                <Typography.Text strong>500</Typography.Text> Newly Added Today
+                <Typography.Text strong>
+                  {loader == "fetch" ? 0 : data?.totalFisherfolksToday}
+                </Typography.Text>{" "}
+                Newly Added Today
               </Typography.Text>
             </Card>
           </Col>
