@@ -12,8 +12,11 @@ export default () => {
   const [type, setType] = useState("Farmer");
   const [data, setData] = useState([]);
   const [pieData, setPieData] = useState();
+  const [loader, setLoader] = useState("");
+  const [trigger, setTrigger] = useState(0);
 
   useEffect(async () => {
+    setLoader("fetch-livelihood");
     let { data } = await axios.get("/api/livelihood", {
       params: { type, mode: "fetch" },
     });
@@ -21,13 +24,17 @@ export default () => {
     if (data.success) {
       setData(data.data);
       setPieData(data.pieData);
-      console.log(data.pieData);
+      setLoader("");
     } else message.error(data.message);
-  }, [type]);
+  }, [type, trigger]);
 
   return (
     <>
-      <AddForm visible={visible} setVisible={setVisible} />
+      <AddForm
+        visible={visible}
+        setVisible={setVisible}
+        cb={() => setTrigger(trigger + 1)}
+      />
       <Tabs
         defaultActiveKey='1'
         size='large'
@@ -44,13 +51,23 @@ export default () => {
         centered
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Farmers data={data} type={type} pieData={pieData} />
+          <Farmers data={data} type={type} pieData={pieData} loader={loader} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Farmworker data={data} type={type} pieData={pieData} />
+          <Farmworker
+            data={data}
+            type={type}
+            pieData={pieData}
+            loader={loader}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
-          <Fisherfolk data={data} type={type} pieData={pieData} />
+          <Fisherfolk
+            data={data}
+            type={type}
+            pieData={pieData}
+            loader={loader}
+          />
         </Tabs.TabPane>
       </Tabs>
     </>

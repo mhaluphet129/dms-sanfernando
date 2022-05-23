@@ -10,28 +10,13 @@ let nameSchema = new mongoose.Schema({
   lastName: {
     type: String,
   },
-  extensionName: {
-    type: String,
-  },
 });
 
 let addressSchema = new mongoose.Schema({
-  region: {
-    type: String,
-  },
-  province: {
-    type: String,
-  },
-  city: {
-    type: String,
-  },
   barangay: {
     type: String,
   },
   street: {
-    type: String,
-  },
-  house: {
     type: String,
   },
 });
@@ -50,27 +35,6 @@ let civilSchema = new mongoose.Schema({
     type: String,
   },
   spouseName: {
-    type: String,
-  },
-});
-
-let houseHoldSchema = new mongoose.Schema({
-  isHead: {
-    type: Boolean,
-  },
-  nameOfHead: {
-    type: String,
-  },
-  relationship: {
-    type: String,
-  },
-  numberOfLiving: {
-    type: Number,
-  },
-  numOfMale: {
-    type: String,
-  },
-  numOfFemale: {
     type: String,
   },
 });
@@ -121,12 +85,6 @@ let profileSchema = new mongoose.Schema({
   fisherFolks: {
     type: Array,
   },
-  isARB: {
-    type: Boolean,
-  },
-  qr: {
-    type: String,
-  },
 });
 
 let memberSchema = new mongoose.Schema({
@@ -148,9 +106,6 @@ let livelihoodSchema = new mongoose.Schema(
       type: String,
     },
     religion: {
-      type: String,
-    },
-    motherMaidenName: {
       type: String,
     },
     highestEducation: {
@@ -180,7 +135,6 @@ let livelihoodSchema = new mongoose.Schema(
     address: addressSchema,
     birth: birthSchema,
     civil: civilSchema,
-    household: houseHoldSchema,
     ethnicity: ethnicitySchema,
     government: governmentSchema,
     emergency: emergencySchema,

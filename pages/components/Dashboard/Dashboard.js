@@ -9,6 +9,7 @@ import {
   Table,
   message,
 } from "antd";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,7 +36,8 @@ export default () => {
   const [type, setType] = useState("Farmer");
   const [loader, setLoader] = useState("");
   const [data, setData] = useState();
-  // For bargraph responsiveness
+  const [newData, setNewData] = useState();
+
   const options = {
     responsive: true,
     plugins: {
@@ -45,196 +47,37 @@ export default () => {
     },
   };
 
-  //bargraph per barangay labels
-  const labels = [
-    "Bonacao",
-    "Cabuling",
-    "Kawayan",
-    "Cayaga",
-    "Dao",
-    "Durian",
-    "Iglugsad",
-    "Kalagangan",
-    "Kibongcog",
-    "Little Baguio",
-    "Nacabuklad",
-    "Namnam",
-    "Palacpacan",
-    "Halapitan",
-    "San Jose",
-    "Santo Domingo",
-    "Tugop",
-    "Matupe",
-    "Bulalang",
-    "Candelaria",
-    "Mabuhay",
-    "Magkalungay",
-    "Malayanan",
-    "Sacramento Valley",
-  ];
-
-  /* dummy data for farmer */
-  //for bargraph dummy farmer data
   const farmerdata = {
-    labels,
+    labels: newData?.bar?.label,
     datasets: [
       {
-        label: "Total no. per Barangay",
-        data: [
-          156, 989, 836, 641, 778, 167, 292, 452, 343, 644, 75, 435, 64, 564,
-          756, 765, 345, 653, 456, 123, 422, 231, 321, 323,
-        ],
+        label: "Total number of farmers",
+        data: newData?.bar?.value,
         backgroundColor: "rgba(53, 162, 235, 1)",
       },
     ],
   };
 
-  //   for total hectares per barangay
   const columns = [
     {
       title: "Barangay",
-      dataIndex: "barangay",
+      dataIndex: "_id",
       key: "barangay",
     },
-    { title: "Hectares", dataIndex: "hectare", key: "hectare" },
+    { title: "Hectares", dataIndex: "total", key: "hectare" },
   ];
 
-  const hectaredata = [
-    {
-      key: "1",
-      barangay: "Bonacao",
-      hectare: "156",
-    },
-    {
-      key: "2",
-      barangay: "Cabuling",
-      hectare: "156",
-    },
-    {
-      key: "3",
-      barangay: "Kawayan",
-      hectare: "989",
-    },
-    {
-      key: "4",
-      barangay: "Cayaga",
-      hectare: "836",
-    },
-    {
-      key: "5",
-      barangay: "Dao",
-      hectare: "641",
-    },
-    {
-      key: "6",
-      barangay: "Durian",
-      hectare: "321",
-    },
-    {
-      key: "7",
-      barangay: "Iglugsad",
-      hectare: "778",
-    },
-    {
-      key: "8",
-      barangay: "Kalagangan",
-      hectare: "167",
-    },
-    {
-      key: "9",
-      barangay: "Kibongcog",
-      hectare: "292",
-    },
-    {
-      key: "10",
-      barangay: "Little Baguio",
-      hectare: "452",
-    },
-    {
-      key: "11",
-      barangay: "Nacabuklad",
-      hectare: "343",
-    },
-    {
-      key: "12",
-      barangay: "Namnam",
-      hectare: "644",
-    },
-    {
-      key: "13",
-      barangay: "Palacpacan",
-      hectare: "75",
-    },
-    {
-      key: "14",
-      barangay: "Halapitan",
-      hectare: "435",
-    },
-    {
-      key: "15",
-      barangay: "San Jose",
-      hectare: "64",
-    },
-    {
-      key: "16",
-      barangay: "Santo Domingo",
-      hectare: "564",
-    },
-    {
-      key: "17",
-      barangay: "Tugop",
-      hectare: "756",
-    },
-    {
-      key: "18",
-      barangay: "Matupe",
-      hectare: "765",
-    },
-    {
-      key: "19",
-      barangay: "Bulalang",
-      hectare: "345",
-    },
-    {
-      key: "20",
-      barangay: "Candelaria",
-      hectare: "653",
-    },
-    {
-      key: "21",
-      barangay: "Mabuhay",
-      hectare: "456",
-    },
-    {
-      key: "22",
-      barangay: "Magkalungay",
-      hectare: "123",
-    },
-    {
-      key: "23",
-      barangay: "Malayanan",
-      hectare: "422",
-    },
-    {
-      key: "24",
-      barangay: "Sacramento Valley",
-      hectare: "231",
-    },
-  ];
-  //for crops pie graph data
   const cropsdata = {
-    labels: ["corn", "rice", "sugracane", "others"],
+    labels: newData?.pie?.crops?.label,
     datasets: [
       {
         label: "crops",
-        data: [321, 230, 123, 235],
+        data: newData?.pie?.crops?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
@@ -243,18 +86,16 @@ export default () => {
 
   //for livestock pie graph data
   const livestockdata = {
-    labels: ["cow", "carabao", "pig", "others"],
+    labels: newData?.pie?.livestock?.label,
     datasets: [
       {
-        label: "crops",
-        data: [321, 230, 1355, 235],
+        label: "livestock",
+        data: newData?.pie?.livestock?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
@@ -263,60 +104,44 @@ export default () => {
 
   //for poultry pie graph data
   const poultrydata = {
-    labels: ["chicken", "duck", "goose", "others"],
+    labels: newData?.pie?.poultry?.label,
     datasets: [
       {
-        label: "crops",
-        data: [321, 230, 123, 235],
+        label: "poultry",
+        data: newData?.pie?.poultry?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
     ],
   };
-  /* end */
 
-  /* dummy data for farmworker */
-  //for bargraph dummy farmworker data
   const farmworkerdata = {
-    labels,
+    labels: newData?.farmworker?.label,
     datasets: [
       {
-        label: "Total no. per Barangay",
-        data: [
-          156, 989, 836, 641, 778, 167, 292, 452, 343, 644, 75, 435, 64, 564,
-          756, 765, 345, 653, 456, 123, 422, 231, 321, 323,
-        ],
+        label: "Total no. of farmworkers",
+        data: newData?.farmworker?.value,
         backgroundColor: "rgba(53, 162, 235, 1)",
       },
     ],
   };
-  //for kind of work pie graph data
+
   const workdata = {
-    labels: [
-      "Land Preparation",
-      "Planting/Transplanting",
-      "Cultivation",
-      "Harvesting",
-      "Others",
-    ],
+    labels: newData?.pie?.farmworker?.label,
     datasets: [
       {
-        label: "crops",
-        data: [351, 130, 143, 235, 78],
+        label: "Farmworkers",
+        data: newData?.pie?.farmworker?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
@@ -327,39 +152,27 @@ export default () => {
   /* dummy data for fisherfolk */
   //for bargraph dummy fisherfolk data
   const fisherfolkdata = {
-    labels,
+    labels: newData?.fisherfolk?.label,
     datasets: [
       {
         label: "Total no. per Barangay",
-        data: [
-          156, 989, 836, 641, 778, 167, 292, 452, 343, 644, 75, 435, 64, 564,
-          756, 765, 345, 653, 456, 123, 422, 231, 321, 323,
-        ],
+        data: newData?.fisherfolk?.value,
         backgroundColor: "rgba(53, 162, 235, 1)",
       },
     ],
   };
   //for type of fishing activity pie graph data
   const fishingdata = {
-    labels: [
-      "Fish Capture",
-      "Fish Processing",
-      "Fish Vending",
-      "Aquaculture",
-      "Gleaning",
-      "Others",
-    ],
+    labels: newData?.pie?.fisherfolk?.label,
     datasets: [
       {
         label: "crops",
-        data: [351, 530, 223, 335, 143, 265],
+        data: newData?.pie?.fisherfolk?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
@@ -378,7 +191,98 @@ export default () => {
       if (data.success) {
         setData(data.res);
         setLoader("");
-        console.log(data.res);
+
+        setNewData(() => {
+          let label = [];
+          let value = [];
+          let label2 = [];
+          let value2 = [];
+          let label3 = [];
+          let value3 = [];
+          let cropsLabel = [];
+          let cropsTotal = [];
+          let livestockLabel = [];
+          let livestockTotal = [];
+          let poultryLabel = [];
+          let poultryTotal = [];
+          let farmworkerLabel = [];
+          let farmworkerTotal = [];
+          let fisherfolkLabel = [];
+          let fisherfolkTotal = [];
+
+          data?.res?.farmlandSummary?.forEach((el) => {
+            label.push(el._id);
+            value.push(el.count);
+          });
+          data?.res?.farmworkers?.forEach((el) => {
+            label2.push(el._id);
+            value2.push(el.count);
+          });
+          data?.res?.fisherfolk?.forEach((el) => {
+            label3.push(el._id);
+            value3.push(el.count);
+          });
+          data?.res?.cropsData?.forEach((el) => {
+            cropsLabel.push(el?.name);
+            cropsTotal.push(el?.total);
+          });
+          data?.res?.livestockData.forEach((el) => {
+            livestockLabel.push(el?.name);
+            livestockTotal.push(el?.total);
+          });
+          data?.res?.poultryData.forEach((el) => {
+            poultryLabel.push(el?.name);
+            poultryTotal.push(el?.total);
+          });
+          data?.res?.farmworkerData?.forEach((el) => {
+            farmworkerLabel.push(el.name);
+            farmworkerTotal.push(el.total);
+          });
+          data?.res?.fisherfolkdata?.forEach((el) => {
+            fisherfolkLabel.push(el.name);
+            fisherfolkTotal.push(el.total);
+          });
+
+          return {
+            bar: {
+              label,
+              value,
+              total: value.reduce((_, __) => _ + __, 0),
+            },
+            farmworker: {
+              label: label2,
+              value: value2,
+              total: value2.reduce((_, __) => _ + __, 0),
+            },
+            fisherfolk: {
+              label: label3,
+              value: value3,
+              total: value3.reduce((_, __) => _ + __, 0),
+            },
+            pie: {
+              crops: {
+                label: cropsLabel,
+                value: cropsTotal,
+              },
+              livestock: {
+                label: livestockLabel,
+                value: livestockTotal,
+              },
+              poultry: {
+                label: poultryLabel,
+                value: poultryTotal,
+              },
+              farmworker: {
+                label: farmworkerLabel,
+                value: farmworkerTotal,
+              },
+              fisherfolk: {
+                label: fisherfolkLabel,
+                value: fisherfolkTotal,
+              },
+            },
+          };
+        });
       }
     } catch {
       message.error("There is an error on the server");
@@ -495,7 +399,16 @@ export default () => {
               <Col span={16}>
                 <Card
                   style={{ height: 450 }}
-                  title='Total no. of Farmers per Barangay '
+                  title={
+                    <>
+                      <span style={{ float: "left" }}>
+                        Total no. of Farmers per Barangay
+                      </span>
+                      <span style={{ float: "right" }}>
+                        total: {newData?.bar?.total}
+                      </span>
+                    </>
+                  }
                 >
                   <Bar options={options} data={farmerdata} />
                 </Card>
@@ -512,7 +425,7 @@ export default () => {
                     scroll={{ y: 300 }}
                     columns={columns}
                     pagination={false}
-                    dataSource={hectaredata}
+                    dataSource={data?.farmlandSummary}
                   />
                 </Card>
               </Col>
@@ -537,6 +450,7 @@ export default () => {
           </Card>
         </Tabs.TabPane>
 
+        {/* FARMWORKER */}
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
           <Card>
             <Row gutter={[16, 16]}>
@@ -544,7 +458,16 @@ export default () => {
               <Col span={16}>
                 <Card
                   style={{ height: 450 }}
-                  title='Total no. of Farmworkers per Barangay '
+                  title={
+                    <>
+                      <span style={{ float: "left" }}>
+                        Total no. of Farmworkers per Barangay
+                      </span>
+                      <span style={{ float: "right" }}>
+                        total: {newData?.farmworker?.total}
+                      </span>
+                    </>
+                  }
                 >
                   <Bar options={options} data={farmworkerdata} />
                 </Card>
@@ -567,7 +490,16 @@ export default () => {
               <Col span={16}>
                 <Card
                   style={{ height: 450 }}
-                  title='Total no. of Fisherfolks per Barangay '
+                  title={
+                    <>
+                      <span style={{ float: "left" }}>
+                        Total no. of Fisherfolks per Barangay
+                      </span>
+                      <span style={{ float: "right" }}>
+                        total: {newData?.fisherfolk?.total}
+                      </span>
+                    </>
+                  }
                 >
                   <Bar options={options} data={fisherfolkdata} />
                 </Card>

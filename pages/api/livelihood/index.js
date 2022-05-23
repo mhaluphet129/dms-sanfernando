@@ -124,9 +124,9 @@ export default async function handler(req, res) {
 
         if (mode == "add") {
           let newLivelihood = Livelihood(req.body.payload.newLivelihood);
-          let resp = await Farmland.insertMany([...req.body.payload.arrayFarm])
+          await Farmland.insertMany([...req.body.payload.arrayFarm])
             .then(async (e) => {
-              Livelihood.timeline = [
+              newLivelihood.timeline = [
                 {
                   time: moment(),
                   label: "This livelihood account is newly added.",

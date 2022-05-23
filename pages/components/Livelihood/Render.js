@@ -13,14 +13,13 @@ import {
 import { SettingOutlined } from "@ant-design/icons";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import axios from "axios";
 
 import Profiler from "../ProfilerModal";
 import titleText from "../../assets/js/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default ({ data, pieData, type }) => {
+export default ({ data, pieData, type, loader }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
@@ -207,12 +206,12 @@ export default ({ data, pieData, type }) => {
             columns={columns}
             dataSource={data}
             scroll={{ y: 500 }}
-            pagination={{
-              pageSize: 10,
-              total: 999,
-            }}
             title={() => "Livelihood"}
             rowKey={(_) => _._id}
+            loading={loader == "fetch-livelihood"}
+            pagination={{
+              pageSize: 10,
+            }}
           />
         </Col>
         <Col span={8} offset={1}>

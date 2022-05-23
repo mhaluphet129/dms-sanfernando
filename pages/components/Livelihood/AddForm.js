@@ -22,13 +22,13 @@ import {
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import Cookie from "js-cookie";
 import axios from "axios";
+import jason from "../../assets/json";
 
 import FarmCustomTable from "./FarmCustomTable";
 
-export default ({ visible, setVisible }) => {
+export default ({ visible, setVisible, cb }) => {
   const [current, setCurrent] = useState(0);
   const [maritalStatus, setMaritalStatus] = useState("single");
-  const [isHead, setIsHead] = useState(true);
   const [maxCount, setMaxCount] = useState(false);
   const [farmlandData, setFarmlandData] = useState([]);
 
@@ -202,7 +202,7 @@ export default ({ visible, setVisible }) => {
           onChange={(e) =>
             setOtherInfo((el) => ({
               ...el,
-              hasID: {
+              isMember: {
                 status: true,
                 name: e.target.value,
               },
@@ -236,7 +236,7 @@ export default ({ visible, setVisible }) => {
       Specify: (
         <Input
           placeholder='Specify'
-          disabled={!otherInfo.hasID.status}
+          disabled={!otherInfo.isMember.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
               ...el,
@@ -295,23 +295,18 @@ export default ({ visible, setVisible }) => {
         layout='vertical'
         onFinish={async (val) => {
           let flagError = 0;
-          //^(09|\+639)\d{9}$ regex for ph number
+
           // restricts
           const arr = [
             "surname",
             "firstname",
             "street",
             "barangay",
-            "city",
-            "province",
-            "region",
             "contactnum",
             "dateofbirth",
             "status",
-            "isHouseholdHead",
             "personToContact",
             "emergencyContact",
-            "isARB",
           ];
 
           if (val.type?.length == 0) flagError = 1;
@@ -320,20 +315,18 @@ export default ({ visible, setVisible }) => {
             if (val[el] == undefined || val[el].length == 0) flagError = 1;
           });
 
-          if (val.isHouseholdHead != undefined && !val.isHouseholdHead) {
-            if (
-              val.householdname?.length == 0 ||
-              val.householdRelationship?.length == 0 ||
-              val.householdname == undefined ||
-              val.householdRelationship == undefined
-            )
-              flagError = 1;
-          }
-
           if (val.status == "Married") {
             if (val.spousename?.length == 0 || val.spousename == undefined)
               flagError = 1;
           }
+
+          // if (
+          //   !/^(09|\+639)\d{9}$/.test(val.contactnum) ||
+          //   !/^(09|\+639)\d{9}$/.test(val.emergencyContact)
+          // ) {
+          //   message.warn("Please input valid phone number");
+          //   return;
+          // }
 
           if (flagError) {
             message.warn("Please input all required fields");
@@ -349,7 +342,6 @@ export default ({ visible, setVisible }) => {
             gender: val.gender,
             contactNum: val.contactnum,
             religion: val.religion,
-            motherMaidenName: val.mothername,
             highestEducation: val.education,
             isDisabledPerson: otherInfo.isPWD,
             is4Ps: otherInfo.is4Ps,
@@ -360,16 +352,11 @@ export default ({ visible, setVisible }) => {
             name: val.firstname,
             middleName: val.middlename,
             lastName: val.surname,
-            extensionName: val.extensionname,
           };
 
           let addressObj = {
-            region: val.region,
-            province: val.province,
-            city: val.city,
             barangay: val.barangay,
             street: val.street,
-            house: val.housenum,
           };
 
           let birthObj = {
@@ -380,15 +367,6 @@ export default ({ visible, setVisible }) => {
           let civilObj = {
             civilStatus: val.status,
             spouseName: val.spousename || "",
-          };
-
-          let householdObj = {
-            isHead: val.isHouseholdHead,
-            nameOfHead: val.householdname,
-            relationship: val.householdRelationship,
-            numberOfLiving: val.totalHouseholdMembers,
-            numOfMale: val.numberOfMale,
-            numOfFemale: val.numberOfFemale,
           };
 
           let ethnicObj = {
@@ -428,7 +406,6 @@ export default ({ visible, setVisible }) => {
             fisherFolks: otherInfo.fisherfolk.status
               ? otherInfo.fisherfolk.data
               : [],
-            isARB: val.isARB,
           };
 
           // end
@@ -453,7 +430,6 @@ export default ({ visible, setVisible }) => {
             address: addressObj,
             birth: birthObj,
             civil: civilObj,
-            household: householdObj,
             ethnicity: ethnicObj,
             government: governObj,
             emergency: emergencyObj,
@@ -468,6 +444,7 @@ export default ({ visible, setVisible }) => {
           });
           if (data.success) {
             message.success(data.message);
+            cb();
             setVisible(false);
           } else message.error(data.message);
         }}
@@ -499,9 +476,6 @@ export default ({ visible, setVisible }) => {
               </Input.Group>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Extension Name' name='extensionname'>
-                    <Input placeholder='Extension' allowClear />
-                  </Form.Item>
                   <Form.Item
                     label='Gender'
                     style={{ marginLeft: 5, width: 150 }}
@@ -534,44 +508,20 @@ export default ({ visible, setVisible }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='House/Lot/Bldg no.' name='housenum'>
-                    <Input allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label='Street/Sitio/Subdv.'
-                    name='street'
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear />
-                  </Form.Item>
                   <Form.Item
                     label='Barangay'
                     name='barangay'
                     required={[{ required: true }]}
                   >
-                    <Input allowClear />
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-              <Input.Group>
-                <Space>
-                  <Form.Item
-                    label='Municipality/City'
-                    name='city'
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear />
+                    <Select style={{ width: 200 }}>
+                      {jason.barangays.map((el) => (
+                        <Select.Option value={el}>{el}</Select.Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                   <Form.Item
-                    label='Province'
-                    name='province'
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label='Region'
-                    name='region'
+                    label='Street/Sitio/Subdv.'
+                    name='street'
                     required={[{ required: true }]}
                   >
                     <Input allowClear />
@@ -684,90 +634,6 @@ export default ({ visible, setVisible }) => {
           <Divider />
 
           <Row>
-            {/* Mother's Name */}
-            <Col span={18} push={6}>
-              <Input.Group>
-                <Space>
-                  <Form.Item label="Mother's Maiden Name" name='mothername'>
-                    <Input allowClear />
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-            </Col>
-            <Col span={6} pull={18}>
-              <strong>Mother's Name</strong>
-            </Col>
-          </Row>
-          <Divider />
-
-          <Row>
-            {/* Household */}
-            <Col span={18} push={6}>
-              <Input.Group>
-                <Space>
-                  <Form.Item
-                    label='Household Head?'
-                    name='isHouseholdHead'
-                    required={[{ required: true }]}
-                  >
-                    <Radio.Group onChange={(e) => setIsHead(e.target.value)}>
-                      <Radio value={true}>Yes</Radio>
-                      <Radio value={false}>No</Radio>
-                    </Radio.Group>
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-              <Input.Group>
-                <Space>
-                  <Form.Item
-                    label='Name of Household Head'
-                    name='householdname'
-                    required={[{ required: true }]}
-                  >
-                    {/* If Household Head == No */}
-                    <Input allowClear disabled={isHead} />
-                  </Form.Item>
-                  <Form.Item
-                    label='Relationship'
-                    name='householdRelationship'
-                    required={[{ required: true }]}
-                  >
-                    <Input allowClear disabled={isHead} />
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-              <Input.Group>
-                <Space>
-                  <Form.Item
-                    label='No. of living household members'
-                    name='totalHouseholdMembers'
-                  >
-                    <InputNumber min={0} />
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-              <Input.Group>
-                <Space>
-                  <Form.Item label='No. of male' name='numberOfMale'>
-                    <InputNumber min={0} />
-                  </Form.Item>
-                  <Form.Item
-                    label='No. of female'
-                    style={{ marginLeft: 10 }}
-                    name='numberOfFemale'
-                  >
-                    <InputNumber min={0} />
-                  </Form.Item>
-                </Space>
-              </Input.Group>
-            </Col>
-            <Col span={6} pull={18}>
-              <strong>Household</strong>
-            </Col>
-          </Row>
-          <Divider />
-
-          <Row>
             {/* Education */}
             <Col span={18} push={6}>
               <Input.Group>
@@ -814,6 +680,7 @@ export default ({ visible, setVisible }) => {
                   pagination={false}
                   size={"small"}
                   showHeader={false}
+                  rowKey={(row) => row.key}
                 />
               </Input.Group>
             </Col>
@@ -961,7 +828,7 @@ export default ({ visible, setVisible }) => {
                           <Select
                             className='customInput'
                             mode='tags'
-                            style={{ width: 500, marginLeft: 58 }}
+                            style={{ width: 500, marginLeft: 55 }}
                             placeholder='Enter crops'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -1005,7 +872,7 @@ export default ({ visible, setVisible }) => {
                           <Select
                             className='customInput'
                             mode='tags'
-                            style={{ width: 500, marginLeft: 35 }}
+                            style={{ width: 500, marginLeft: 55 }}
                             placeholder='Enter livestock'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -1050,7 +917,7 @@ export default ({ visible, setVisible }) => {
                             className='customInput'
                             mode='tags'
                             size={4}
-                            style={{ width: 500, marginLeft: 52 }}
+                            style={{ width: 500, marginLeft: 55 }}
                             placeholder='Enter poultry'
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -1236,26 +1103,6 @@ export default ({ visible, setVisible }) => {
           </Row>
           <Divider />
 
-          <Row>
-            {/* Farm Land */}
-            <Col span={18} push={6}>
-              <Input.Group>
-                <Form.Item
-                  label='Agrarian Reform Beneficiary (ARB)?'
-                  name='isARB'
-                  required={[{ required: true }]}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Input.Group>
-            </Col>
-            <Col span={6} pull={18}>
-              <strong>Farm Land</strong>
-            </Col>
-          </Row>
           <Row>
             <Col span={24}>
               <Form.Item>
