@@ -64,7 +64,7 @@ export default ({ data, setData }) => {
                   <Col span={24}>
                     <Table
                       columns={columns[1]}
-                      dataSource={[null]}
+                      dataSource={[{ key: 1 }]}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
                       bordered
@@ -75,9 +75,10 @@ export default ({ data, setData }) => {
                   <Col span={24}>
                     <Table
                       columns={columns[2]}
-                      dataSource={[null]}
+                      dataSource={[{ key: 2 }]}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
+                      rowKey={(row) => row.key}
                       bordered
                     />
                   </Col>
@@ -181,6 +182,7 @@ export default ({ data, setData }) => {
                       dataSource={row.arr1?.length == 0 ? [null] : row.arr1}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
+                      rowKey={(row) => row._id}
                       bordered
                     />
                   </Col>
@@ -192,6 +194,7 @@ export default ({ data, setData }) => {
                       dataSource={row.arr2?.length == 0 ? [null] : row.arr2}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
+                      rowKey={(row) => row._id}
                       bordered
                     />
                   </Col>

@@ -30,7 +30,6 @@ export default async function handler(req, res) {
               let _user = resp.filter(
                 (el) => el.username == username || el.email == email
               );
-
               if (_user.length > 0) {
                 if (password && _user[0].password == password) {
                   res.status(200).end(

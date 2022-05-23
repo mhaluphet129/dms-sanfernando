@@ -226,6 +226,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
               dataSource={programs}
               pagination={false}
               scroll={{ y: 200 }}
+              rowKey={(row) => row._id}
             />
           </Col>
           <Col span={7}>
@@ -481,6 +482,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 pagination={false}
                 size={"small"}
                 showHeader={false}
+                rowKey={(row) => row._id}
               />
             </Input.Group>
           </Col>

@@ -9,7 +9,7 @@ import {
 } from "antd";
 import axios from "axios";
 
-export default ({ type, data, visible, onClose }) => {
+export default ({ type, data, visible, onClose, cb }) => {
   const columns = [
     {
       title: "Email",
@@ -46,6 +46,7 @@ export default ({ type, data, visible, onClose }) => {
     });
 
     if (data.success) {
+      cb();
       notification["success"]({
         description: data.message,
       });

@@ -426,6 +426,7 @@ export default () => {
                     columns={columns}
                     pagination={false}
                     dataSource={data?.farmlandSummary}
+                    rowKey={(row) => row._id}
                   />
                 </Card>
               </Col>

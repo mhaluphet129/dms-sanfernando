@@ -80,20 +80,6 @@ export default ({ data, pieData, type, loader }) => {
         </Space>
       ),
     },
-    {
-      title: "Functions",
-      align: "center",
-      render: () => (
-        <Button
-          icon={<SettingOutlined />}
-          onClick={() => {
-            console.log(Object.values(pieData));
-          }}
-        >
-          Settings
-        </Button>
-      ),
-    },
   ];
 
   //for crops pie graph data

@@ -2,7 +2,7 @@ import { Form, Input, Button, Card, notification, message } from "antd";
 import axios from "axios";
 import moment from "moment";
 
-export default () => {
+export default ({ cb }) => {
   return (
     <Card title='Add an admin' hoverable>
       <Form
@@ -24,8 +24,10 @@ export default () => {
             },
           });
 
-          if (data.success) message.success(data.message);
-          else message.error(data.message);
+          if (data.success) {
+            message.success(data.message);
+            cb();
+          } else message.error(data.message);
         }}
       >
         <Form.Item

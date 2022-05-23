@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Modal,
   Row,
@@ -22,11 +22,11 @@ import FloatLabel from "../../assets/js/FloatLabel";
 import Label01 from "../../assets/js/Labels";
 import TimelineDisplay from "../../assets/js/TimelineDisplay";
 
-export default ({ type, visibility, onClose, data }) => {
-  const [_name, setName] = useState("");
-  const [_lastname, setLastname] = useState("");
-  const [_username, setUsername] = useState("");
-  const [_email, setEmail] = useState("");
+export default ({ type, visibility, setVisible, onClose, data, cb }) => {
+  const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [viewModalPass, setViewModalPass] = useState(false);
   const [viewTimeline, setViewTimeline] = useState(false);
@@ -35,6 +35,44 @@ export default ({ type, visibility, onClose, data }) => {
   const [currentPass, setCurrentPass] = useState();
   const [newPass, setNewPass] = useState();
   const [newPass2, setNewPass2] = useState();
+
+  const handleSave = async () => {
+    let flag = [false, false, false, false];
+    let obj = { id: data?._id, mode: "edit" };
+    if (name.length != 0) {
+      obj.name = name;
+      flag[0] = true;
+    }
+    if (lastname.length != 0) {
+      obj.lastname = lastname;
+      flag[1] = true;
+    }
+    if (username.length != 0) {
+      obj.username = username;
+      flag[2] = true;
+    }
+    if (email.length != 0) {
+      obj.email = email;
+      flag[3] = true;
+    }
+    const editTimeline = Label01(flag);
+    if (editTimeline.length > 0) {
+      obj.addtimeline = {
+        time: moment(),
+        label: editTimeline,
+      };
+    }
+
+    let res = await axios.put("/api/admin", {
+      payload: obj,
+    });
+    let resp = res.data;
+    if (resp.success) {
+      notification["success"]({
+        message: resp.message,
+      });
+    } else message.error(resp.message);
+  };
 
   const handleChangePass = async () => {
     let res = await axios.get("/api/admin", {
@@ -82,44 +120,6 @@ export default ({ type, visibility, onClose, data }) => {
       .then(() => message.success("Successfully change the password"));
   };
 
-  const handleSave = async () => {
-    let flag = [false, false, false, false];
-    let obj = { id: data?._id, mode: "edit" };
-    if (_name.length != 0) {
-      obj.name = _name;
-      flag[0] = true;
-    }
-    if (_lastname.length != 0) {
-      obj.lastname = _lastname;
-      flag[1] = true;
-    }
-    if (_username.length != 0) {
-      obj.username = _username;
-      flag[2] = true;
-    }
-    if (_email.length != 0) {
-      obj.email = _email;
-      flag[3] = true;
-    }
-    const editTimeline = Label01(flag);
-    if (editTimeline.length > 0) {
-      obj.addtimeline = {
-        time: moment(),
-        label: editTimeline,
-      };
-    }
-
-    let res = await axios.put("/api/admin", {
-      payload: obj,
-    });
-    let resp = res.data;
-    if (resp.success) {
-      notification["success"]({
-        message: resp.message,
-      });
-    } else message.error(resp.message);
-  };
-
   const changeToSuperadmin = async () => {
     let res = await axios.put("/api/admin", {
       payload: {
@@ -138,19 +138,22 @@ export default ({ type, visibility, onClose, data }) => {
     } else message.error(resp.message);
   };
 
+  useEffect(() => {
+    setName(data?.name);
+    setLastname(data?.lastname);
+    setUsername(data?.username);
+    setEmail(data?.email);
+  }, [data, visibility]);
+
   return (
     <>
       <Modal
         visible={visibility}
         onCancel={() => {
           onClose();
-          setName("");
-          setLastname("");
-          setUsername("");
-          setEmail("");
           setIsEditing(false);
         }}
-        onOk={() => handleSave()}
+        onOk={handleSave}
         okButtonProps={{
           disabled: !isEditing,
         }}
@@ -184,18 +187,22 @@ export default ({ type, visibility, onClose, data }) => {
                 id: {data?._id}
               </Typography.Text>
             </div>
-            <Button style={{ width: "100%", marginBottom: 5 }}>
-              Upload/Change Picture
-            </Button>
 
-            <Button
-              style={{ width: "100%", marginBottom: 5 }}
-              onClick={() => setViewModalPass(true)}
-            >
-              {data?.hasOwnProperty("password")
-                ? "Change Password"
-                : "Set Password"}
-            </Button>
+            {type == "superadmin" && (
+              <>
+                <Button style={{ width: "100%", marginBottom: 5 }}>
+                  Upload/Change Picture
+                </Button>
+                <Button
+                  style={{ width: "100%", marginBottom: 5 }}
+                  onClick={() => setViewModalPass(true)}
+                >
+                  {data?.hasOwnProperty("password")
+                    ? "Change Password"
+                    : "Set Password"}
+                </Button>
+              </>
+            )}
             <Button
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => {
@@ -205,7 +212,7 @@ export default ({ type, visibility, onClose, data }) => {
               Timeline
             </Button>
 
-            {type == "superadmin" && data?.role != "superadmin" && (
+            {type == "superadmin" && (
               <Popconfirm
                 icon={null}
                 title='Proceed to the operation?'
@@ -221,82 +228,55 @@ export default ({ type, visibility, onClose, data }) => {
           <Col span={13}>
             <Form>
               <Form.Item name='name'>
-                <FloatLabel
-                  label='name'
-                  bool={
-                    (_name && _name.length != 0) ||
-                    (data?.name && data.name.length != 0)
-                  }
-                >
+                <FloatLabel label='name' bool={name?.length != 0}>
                   <Input
                     onChange={(e) => {
                       setName(e.target.value);
                       setIsEditing(true);
                     }}
-                    value={(_name != undefined && _name) || data?.name}
+                    value={name}
+                    disabled={type != "superadmin"}
+                    className='customInput'
                   />
                 </FloatLabel>
               </Form.Item>
               <Form.Item name='lastname'>
-                <FloatLabel
-                  label='lastname'
-                  bool={
-                    (_lastname && _lastname.length != 0) ||
-                    (data?.lastname && data.lastname.length != 0)
-                  }
-                >
+                <FloatLabel label='lastname' bool={lastname?.length != 0}>
                   <Input
                     onChange={(e) => {
                       setLastname(e.target.value);
                       setIsEditing(true);
                     }}
-                    value={
-                      (_lastname != undefined && _lastname) || data?.lastname
-                    }
+                    value={lastname}
+                    disabled={type != "superadmin"}
+                    className='customInput'
                   />
                 </FloatLabel>
               </Form.Item>
             </Form>
             <Form.Item name='username'>
-              <FloatLabel
-                label='username'
-                bool={
-                  (_username && _username.length != 0) ||
-                  (data?.username && data.username.length != 0)
-                }
-              >
+              <FloatLabel label='username' bool={username?.length != 0}>
                 <Input
                   onChange={(e) => {
                     setUsername(e.target.value);
                     setIsEditing(true);
                   }}
-                  value={
-                    (_username != undefined && _username) || data?.username
-                  }
+                  value={username}
+                  disabled={type != "superadmin"}
+                  className='customInput'
                 />
               </FloatLabel>
             </Form.Item>
             <Form.Item name='email'>
-              <FloatLabel
-                label='Email'
-                bool={
-                  data?.role == "superadmin"
-                    ? true
-                    : (_email && _email.length != 0) ||
-                      (data?.email && data.email.length != 0)
-                }
-              >
+              <FloatLabel label='Email' bool={email?.length != 0}>
                 <Input
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setIsEditing(true);
                   }}
-                  value={
-                    data?.role == "superadmin"
-                      ? "Email can only be viewed on settings"
-                      : (_email != undefined && _email) || data?.email
-                  }
-                  disabled={data?.role == "superadmin" ? true : false}
+                  value={email}
+                  disabled={type != "superadmin"}
+                  className='customInput'
                 />
               </FloatLabel>
             </Form.Item>

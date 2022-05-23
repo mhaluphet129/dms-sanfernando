@@ -1,16 +1,22 @@
 import { useState } from "react";
-import { Row, Col, Card, Tag, Typography } from "antd";
+import { Row, Col, Card, Tag, Typography, message } from "antd";
+
+import axios from "axios";
+import Cookie from "js-cookie";
+
 import AdminTable from "./AdminTable";
 import AdminAddForm from "./AdminForm";
 import AdminList from "./AdminList";
-import axios from "axios";
-import Cookie from "js-cookie";
+import AdminModal from "./AdminModal";
+
 export default () => {
   const [totalAdmin, setTotalAdmin] = useState(0);
-  const [totalSuperAdmin, setTotalSuperAdmin] = useState(0);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState();
   const [data2, setData2] = useState();
+  const [trigger, setTrigger] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [SAData, setSAData] = useState();
 
   const fetch = async (role) => {
     const { data } = await axios.get("/api/admin", {
@@ -28,24 +34,40 @@ export default () => {
   let type;
   try {
     type = JSON.parse(Cookie.get("user")).role;
-  } catch {}
+  } catch {
+    message.error("There is an error on Cookies.");
+  }
 
   return (
     <>
+      <AdminModal
+        visibility={modalVisible}
+        onClose={() => setModalVisible(false)}
+        setVisible={setModalVisible}
+        data={SAData}
+        type={type}
+        cb={() => setTrigger(trigger + 1)}
+      />
       <AdminList
         type={type}
         data={data2}
         visible={visible}
         onClose={() => setVisible(false)}
+        cb={() => {
+          setTrigger(trigger + 1);
+          setVisible(false);
+        }}
       />
       <Row gutter={[16, 16]}>
         <Col span={16}>
           <AdminTable
             setTotalAdmin={setTotalAdmin}
-            setTotalSuperAdmin={setTotalSuperAdmin}
             data={data}
             setData={setData}
             type={type}
+            trigger={trigger}
+            cb={() => setTrigger(trigger + 1)}
+            setSA={setSAData}
           />
         </Col>
         <Col span={8}>
@@ -68,24 +90,12 @@ export default () => {
               </Card>
             </Col>
             <Col span={13}>
-              <Card
-                onClick={() => {
-                  fetch("superadmin");
-                }}
-                hoverable
-              >
-                <Card.Meta
-                  title='Super Admin'
-                  description={
-                    <Typography.Text type='secondary'>
-                      Total: <Tag color='magenta'>{totalSuperAdmin}</Tag>
-                    </Typography.Text>
-                  }
-                />
+              <Card onClick={() => setModalVisible(true)} hoverable>
+                <Card.Meta title='View Super Admin' />
               </Card>
             </Col>
             <Col span={23}>
-              <AdminAddForm />
+              <AdminAddForm cb={() => setTrigger(trigger + 1)} />
             </Col>
           </Row>
         </Col>

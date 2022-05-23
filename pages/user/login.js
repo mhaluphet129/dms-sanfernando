@@ -39,14 +39,23 @@ export default () => {
 
     if (data.success) {
       if (data.mode == "validated") {
+        let obj = {
+          _id: data?.user?._id,
+          password: data?.user?.password,
+          lastname: data?.user?.lastname,
+          name: data?.user?.name,
+          username: data?.user?.username,
+          email: data?.user?.email,
+          role: data?.user?.role,
+        };
+
         let key = keyGenerator(5);
         //Cookieeee, wanna bite ? :3
-        Cookies.set("user", JSON.stringify(data.user));
+        Cookies.set("user", JSON.stringify(obj));
         Cookies.set("loggedIn", "true");
         Cookies.set("key", key);
-
+        console.log(data);
         socket.emit("push-new-system", key);
-
         message.success(data.message);
         window.location.href = "/";
       }

@@ -466,6 +466,7 @@ export default ({ visible, setVisible, pushData }) => {
               dataSource={data.arr1.length != 0 ? data.arr1 : [null]}
               style={{ width: "100%" }}
               pagination={false}
+              rowKey={(row) => row._id}
               bordered
             />
             <Button
@@ -488,6 +489,7 @@ export default ({ visible, setVisible, pushData }) => {
               dataSource={data.arr2.length != 0 ? data.arr2 : [null]}
               pagination={false}
               style={{ width: "100%", marginTop: 5 }}
+              rowKey={(row) => row._id}
               bordered
             />
             <Button

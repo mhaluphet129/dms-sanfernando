@@ -6,13 +6,14 @@ import {
   Tag,
   Card,
   Button,
+  Popconfirm,
   notification,
   message,
 } from "antd";
 import AdminModal from "./AdminModal";
 import axios from "axios";
 
-export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
+export default ({ setTotalAdmin, data, setData, type, trigger, cb, setSA }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -26,13 +27,9 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
     });
     if (data.success) {
       setData(data.users);
-      setTotal(data.total + data.totalSA);
+      setTotal(data.total);
       setTotalAdmin(data.total);
-      setTotalSuperAdmin(data.totalSA);
-      notification["success"]({
-        placement: "bottomRight",
-        description: data.message,
-      });
+      setSA(data.superadmin);
     } else message.error(data.message);
     setIsFetching(false);
   };
@@ -44,6 +41,7 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
     });
 
     if (data.success) {
+      cb();
       notification["success"]({
         description: data.message,
       });
@@ -81,19 +79,9 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
       ellipsis: true,
       render: (_, row) => (
         <div style={{ width: 220 }}>
-          {row?.role == "admin" ? (
-            <Typography.Text onClick={() => openAdminModal(row)} type='link'>
-              {row.email}
-            </Typography.Text>
-          ) : (
-            <Typography.Text
-              onClick={() => openAdminModal(row)}
-              type='secondary'
-              italic
-            >
-              Superadmin email can only be viewed on settings
-            </Typography.Text>
-          )}
+          <Typography.Text onClick={() => openAdminModal(row)} type='link'>
+            {row.email}
+          </Typography.Text>
         </div>
       ),
     },
@@ -101,11 +89,8 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
       title: "role",
       align: "center",
       render: (_, row) => (
-        <Tag
-          onClick={() => openAdminModal(row)}
-          color={row?.role == "admin" ? "blue" : "green"}
-        >
-          {row?.role == "admin" ? "Admin" : "Super Admin"}
+        <Tag onClick={() => openAdminModal(row)} color='blue'>
+          Admin
         </Tag>
       ),
     },
@@ -130,23 +115,28 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
     {
       title: "Action",
       align: "center",
-      render: (_, row) => {
-        return (
-          <Button type='danger' onClick={() => handleDelete(row._id)}>
+      render: (_, row) => (
+        <Popconfirm
+          title='Are you sure to delete this admin?'
+          onConfirm={() => handleDelete(row._id)}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Button type='danger' disabled={type != "superadmin"}>
             Remove
           </Button>
-        );
-      },
+        </Popconfirm>
+      ),
     },
   ];
 
   useEffect(() => {
     fetch({
       current: 1,
-      pageSize: 8,
+      pageSize: 10,
       mode: "fetch",
     });
-  }, []);
+  }, [trigger]);
 
   return (
     <>
@@ -162,10 +152,9 @@ export default ({ setTotalAdmin, setTotalSuperAdmin, data, setData, type }) => {
           <Table
             columns={columns}
             dataSource={data}
-            scroll={{ y: 500 }}
+            scroll={{ y: 530 }}
             pagination={{
-              pageSize: 8,
-              position: ["bottomCenter"],
+              pageSize: 10,
               total,
             }}
             rowKey={(row) => row?._id}

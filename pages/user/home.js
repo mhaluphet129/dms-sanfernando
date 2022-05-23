@@ -52,6 +52,7 @@ export default () => {
           danger
           onClick={() => {
             Cookies.remove("user");
+            Cookies.remove("key");
             Cookies.set("loggedIn", "false");
             // socket.emit("remove-system", key);
             window.location.href = "/user/login";

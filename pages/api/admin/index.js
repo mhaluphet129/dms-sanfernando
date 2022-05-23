@@ -15,29 +15,34 @@ export default async function handler(req, res) {
         if (mode == "fetch") {
           const { current, pageSize } = req.query;
           let totalAdmins = await User.countDocuments({ role: "admin" });
-          let totalSuperAdmin = await User.countDocuments({
-            role: "superadmin",
-          });
-          await User.find()
+
+          let data = await User.find({ role: "admin" })
             .limit(parseInt(pageSize, 10))
             .skip((parseInt(current, 10) - 1) * parseInt(pageSize, 10))
-            .then((data) => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "Fetch successfully",
-                  users: data,
-                  total: totalAdmins,
-                  totalSA: totalSuperAdmin,
-                })
-              );
-              resolve();
-            })
             .catch((err) => {
               res.end(
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
+
+          let superadmin = await User.find({ role: "superadmin" }).catch(
+            (err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            }
+          );
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              message: "Fetch successfully",
+              users: data,
+              total: totalAdmins,
+              superadmin: superadmin[0],
+            })
+          );
+          resolve();
         }
 
         if (mode == "recent") {
@@ -118,6 +123,19 @@ export default async function handler(req, res) {
     case "POST": {
       return await new Promise(async (resolve, reject) => {
         const { email, timeline } = req.body.payload;
+
+        let search = await User.find({ email });
+
+        if (search.length > 0) {
+          res.status(202).end(
+            JSON.stringify({
+              success: false,
+              message: "This email is already registered.",
+            })
+          );
+          resolve();
+        }
+
         let user = User({ email, timeline });
         await user
           .save()
