@@ -128,8 +128,8 @@ export default () => {
             labelCol={{ span: 7 }}
           >
             <Form.Item
-              label='Name'
-              name='name'
+              label="Name"
+              name="name"
               rules={[
                 {
                   required: true,
@@ -140,8 +140,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Lastname'
-              name='lastname'
+              label="Lastname"
+              name="lastname"
               rules={[
                 {
                   required: true,
@@ -152,8 +152,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Username'
-              name='username'
+              label="Username"
+              name="username"
               rules={[
                 {
                   required: true,
@@ -164,8 +164,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Password'
-              name='password'
+              label="Password"
+              name="password"
               rules={[
                 {
                   required: true,
@@ -173,11 +173,11 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input type="password" />
             </Form.Item>
             <Form.Item
-              label='Confirm Password'
-              name='confirm'
+              label="Confirm Password"
+              name="confirm"
               rules={[
                 {
                   required: true,
@@ -185,7 +185,7 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input type="password" />
             </Form.Item>
           </Form>
         </Modal>
@@ -202,7 +202,7 @@ export default () => {
         >
           {/* <Typography.Title>Ngalan samo system</Typography.Title> */}
           <div style={{ marginBottom: 10 }}>
-            <Image src='/logo.png' alt='me' width='128' height='64' />
+            <Image src="/logo.png" alt="me" width="128" height="64" />
           </div>
           <Form
             style={{
@@ -213,10 +213,10 @@ export default () => {
             }}
             onFinish={handleLogin}
           >
-            <Tabs activeKey={type} onChange={setType} type='card'>
-              <Tabs.TabPane key='admin' tab='Admin'>
+            <Tabs activeKey={type} onChange={setType} type="card">
+              <Tabs.TabPane key="admin" tab="Admin">
                 <Form.Item
-                  name='username'
+                  name="username"
                   rules={[
                     {
                       required: type == "admin" ? true : false,
@@ -224,21 +224,19 @@ export default () => {
                     },
                   ]}
                 >
-                  <Input prefix={<UserOutlined />} size='large' />
+                  <Input prefix={<UserOutlined />} size="large" />
                 </Form.Item>
-                <Form.Item name='password'>
+                <Form.Item name="password">
                   <Input
                     prefix={<LockOutlined />}
-                    type='password'
-                    size='large'
+                    type="password"
+                    size="large"
                   />
                 </Form.Item>
               </Tabs.TabPane>
-              <Tabs.TabPane key='superadmin' tab='Super Admin'>
+              <Tabs.TabPane key="superadmin" tab="Super Admin">
                 <Form.Item
-                  name='superpassword'
-                  label={<LockOutlined />}
-                  labelCol={{ span: 24 }}
+                  name="superpassword"
                   colon={false}
                   rules={[
                     {
@@ -247,12 +245,21 @@ export default () => {
                     },
                   ]}
                 >
+                  <LockOutlined
+                    style={{
+                      display: "flex",
+                      fontSize: 30,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 10,
+                    }}
+                  />
                   <Input
-                    type='password'
-                    size='large'
+                    type="password"
+                    size="large"
                     style={{
                       letterSpacing: 10,
-                      width: "80%",
+                      width: "100%",
                       textAlign: "center",
                     }}
                   />
@@ -261,9 +268,9 @@ export default () => {
             </Tabs>
             <Form.Item>
               <Button
-                type='primary'
+                type="primary"
                 style={{ width: "100%" }}
-                htmlType='submit'
+                htmlType="submit"
               >
                 Log In
               </Button>

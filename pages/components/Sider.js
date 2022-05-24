@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
 import { Menu, Layout } from "antd";
+import {
+  ApartmentOutlined,
+  BarChartOutlined,
+  DeploymentUnitOutlined,
+  LoginOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 
 import Admin from "./Admin/Admin";
 import Farmers from "./Livelihood";
@@ -9,8 +16,6 @@ import Dashboard from "./Dashboard/Dashboard";
 import VisitHistory from "./VisitHistory";
 import EventHistory from "./EventHistory";
 const { Sider } = Layout;
-
-import { LockOutlined } from "@ant-design/icons";
 
 export default ({ setPage }) => {
   useEffect(
@@ -37,8 +42,9 @@ export default ({ setPage }) => {
               children: <Dashboard />,
             });
           }}
+          icon={<BarChartOutlined />}
         >
-          <LockOutlined /> Dashboard
+          Dashboard
         </Menu.Item>
         <Menu.Item
           key='2'
@@ -47,6 +53,7 @@ export default ({ setPage }) => {
               children: <Admin />,
             })
           }
+          icon={<TeamOutlined />}
         >
           Admins
         </Menu.Item>
@@ -57,6 +64,7 @@ export default ({ setPage }) => {
               children: <Farmers />,
             });
           }}
+          icon={<ApartmentOutlined />}
         >
           Livelihood
         </Menu.Item>
@@ -67,10 +75,11 @@ export default ({ setPage }) => {
               children: <ProgramList />,
             });
           }}
+          icon={<DeploymentUnitOutlined />}
         >
           Program
         </Menu.Item>
-        <Menu.SubMenu key='logs' title='Logs'>
+        <Menu.SubMenu key='logs' title='Logs' icon={<LoginOutlined />}>
           <Menu.Item
             key='log1'
             onClick={() => {
