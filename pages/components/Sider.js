@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Layout, message } from "antd";
+import {
+  ApartmentOutlined,
+  BarChartOutlined,
+  DeploymentUnitOutlined,
+  LoginOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 import Admin from "./Admin/Admin";
 import Farmers from "./Livelihood";
@@ -23,55 +31,59 @@ export default ({ setPage }) => {
   return (
     <Sider
       collapsible
-      theme='light'
+      theme="light"
       style={{
         marginTop: 65,
       }}
     >
-      <Menu defaultSelectedKeys={["1"]} mode='inline'>
+      <Menu defaultSelectedKeys={["1"]} mode="inline">
         <Menu.Item
-          key='1'
+          key="1"
           onClick={() => {
             setPage({
               children: <Dashboard />,
             });
           }}
+          icon={<BarChartOutlined />}
         >
           Dashboard
         </Menu.Item>
         <Menu.Item
-          key='2'
+          key="2"
           onClick={() =>
             setPage({
               children: <Admin />,
             })
           }
+          icon={<TeamOutlined />}
         >
           Admins
         </Menu.Item>
         <Menu.Item
-          key='3'
+          key="3"
           onClick={() => {
             setPage({
               children: <Farmers />,
             });
           }}
+          icon={<ApartmentOutlined />}
         >
           Livelihood
         </Menu.Item>
         <Menu.Item
-          key='4'
+          key="4"
           onClick={() => {
             setPage({
               children: <ProgramList />,
             });
           }}
+          icon={<DeploymentUnitOutlined />}
         >
           Program
         </Menu.Item>
-        <Menu.SubMenu key='logs' title='Logs'>
+        <Menu.SubMenu key="logs" title="Logs" icon={<LoginOutlined />}>
           <Menu.Item
-            key='log1'
+            key="log1"
             onClick={() => {
               setPage({
                 children: <VisitHistory />,
@@ -81,7 +93,7 @@ export default ({ setPage }) => {
             Visit History
           </Menu.Item>
           <Menu.Item
-            key='log2'
+            key="log2"
             onClick={() => {
               setPage({
                 children: <EventHistory />,
@@ -92,7 +104,7 @@ export default ({ setPage }) => {
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item
-          key='6'
+          key="6"
           onClick={() => {
             setPage({
               children: <QRSample />,
