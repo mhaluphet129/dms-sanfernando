@@ -106,6 +106,39 @@ export default async function handler(req, res) {
             },
             {
               $sort: {
+                total: -1,
+              },
+            },
+          ]);
+
+          let bar = await Livelihood.aggregate([
+            {
+              $match: {
+                "address.barangay": {
+                  $in: jason.barangays,
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                "profile.type": 1,
+                "address.barangay": 1,
+              },
+            },
+            {
+              $unwind: "$profile.type",
+            },
+            {
+              $group: {
+                _id: "$profile.type",
+                barangay: {
+                  $push: "$address.barangay",
+                },
+              },
+            },
+            {
+              $sort: {
                 _id: 1,
               },
             },
@@ -157,7 +190,9 @@ export default async function handler(req, res) {
 
           let crops = await Livelihood.aggregate([
             {
-              $project: { _id: 0, "profile.crops": 1 },
+              $match: {
+                "profile.type": { $in: ["Farmer"] },
+              },
             },
             {
               $unwind: "$profile.crops",
@@ -174,25 +209,18 @@ export default async function handler(req, res) {
               },
             },
           ]);
-
-          let cropsData = [];
+          let cropsData = {};
+          if (crops.length > 4) cropsData.others = 0;
           crops.forEach((el, i) => {
-            if (i < 3)
-              cropsData.push({
-                name: el._id,
-                total: el.count,
-              });
-            else if (i == 3)
-              cropsData.push({
-                name: "others",
-                total: 1,
-              });
-            else cropsData[3].total++;
+            if (i < 3) cropsData[el._id] = el.count;
+            else cropsData.others++;
           });
 
           let livestock = await Livelihood.aggregate([
             {
-              $project: { _id: 0, "profile.livestock": 1 },
+              $match: {
+                "profile.type": { $in: ["Farmer"] },
+              },
             },
             {
               $unwind: "$profile.livestock",
@@ -209,25 +237,18 @@ export default async function handler(req, res) {
               },
             },
           ]);
-
-          let livestockData = [];
+          let livestockData = {};
+          if (livestock.length > 4) livestockData.others = 0;
           livestock.forEach((el, i) => {
-            if (i < 3)
-              livestockData.push({
-                name: el._id,
-                total: el.count,
-              });
-            else if (i == 3)
-              livestockData.push({
-                name: "others",
-                total: 1,
-              });
-            else livestockData[3].total++;
+            if (i < 3) livestockData[el._id] = el.count;
+            else livestockData.others++;
           });
 
           let poultry = await Livelihood.aggregate([
             {
-              $project: { _id: 0, "profile.poultry": 1 },
+              $match: {
+                "profile.type": { $in: ["Farmer"] },
+              },
             },
             {
               $unwind: "$profile.poultry",
@@ -244,20 +265,57 @@ export default async function handler(req, res) {
               },
             },
           ]);
-          let poultryData = [];
+          let poultryData = {};
+          if (poultry.length > 4) poultryData.others = 0;
           poultry.forEach((el, i) => {
-            if (i < 3)
-              poultryData.push({
-                name: el._id,
-                total: el.count,
-              });
-            else if (i == 3)
-              poultryData.push({
-                name: "others",
-                total: 1,
-              });
-            else poultryData[3].total++;
+            if (i < 3) poultryData[el._id] = el.count;
+            else poultryData.others++;
           });
+
+          let multipieData = { labels: [], datasets: [] };
+          let color1 = [];
+          let data1 = [];
+          let color2 = [];
+          let data2 = [];
+          let color3 = [];
+          let data3 = [];
+
+          Object.keys(cropsData).forEach((el, i) => {
+            multipieData.labels.push(`Crops: ${el}`);
+            color1.push(`hsl(0, 100%, ${15 * (i + 1)}%)`);
+            data1.push(cropsData[el]);
+          });
+          if (color1.length != 0 && data1.length != 0) {
+            multipieData.datasets.push({
+              backgroundColor: color1,
+              data: data1,
+            });
+          }
+
+          Object.keys(livestockData).forEach((el, i) => {
+            multipieData.labels.push(`Livestock: ${el}`);
+            color2.push(`hsl(90, 100%, ${15 * (i + 1)}%)`);
+            data2.push(livestockData[el]);
+          });
+
+          if (color2.length != 0 && data2.length != 0) {
+            multipieData.datasets.push({
+              backgroundColor: color2,
+              data: data2,
+            });
+          }
+
+          Object.keys(poultryData).forEach((el, i) => {
+            multipieData.labels.push(`Poultry: ${el}`);
+            color3.push(`hsl(180, 100%, ${15 * (i + 1)}%)`);
+            data3.push(poultryData[el]);
+          });
+          if (color3.length != 0 && data3.length != 0) {
+            multipieData.datasets.push({
+              backgroundColor: color3.length,
+              data: data3,
+            });
+          }
 
           let farmWorker = await Livelihood.aggregate([
             {
@@ -342,14 +400,12 @@ export default async function handler(req, res) {
                 totalFarmworkersToday,
                 totalFisherfolks,
                 totalFisherfolksToday,
-                farmlandSummary,
-                cropsData,
-                livestockData,
-                poultryData,
-                farmworkerData,
                 farmworkers,
                 fisherfolk,
                 fisherfolkdata,
+                bar,
+                multipieData,
+                farmlandSummary,
               },
             })
           );

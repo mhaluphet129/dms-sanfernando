@@ -91,7 +91,7 @@ export default () => {
             </Col>
             <Col span={13}>
               <Card onClick={() => setModalVisible(true)} hoverable>
-                <Card.Meta title='View Super Admin' />
+                <Typography.Text>View Super Admin Info</Typography.Text>
               </Card>
             </Col>
             <Col span={23}>

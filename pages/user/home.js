@@ -37,29 +37,20 @@ export default () => {
         </Typography.Text>
       </Menu.Item>
       <Menu.Item key='2'>
-        <Button
-          type='text'
-          onClick={() => {
-            console.log(keyData);
-          }}
-        >
-          Account Settings
-        </Button>
+        <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
-      <Menu.Item key='3'>
-        <Button
-          type='text'
-          danger
-          onClick={() => {
-            Cookies.remove("user");
-            Cookies.remove("key");
-            Cookies.set("loggedIn", "false");
-            // socket.emit("remove-system", key);
-            window.location.href = "/user/login";
-          }}
-        >
-          Logout
-        </Button>
+      <Menu.Item
+        key='3'
+        onClick={() => {
+          socket.emit("remove-system", Cookies.get("key"));
+          Cookies.remove("user");
+          Cookies.remove("key");
+          Cookies.set("loggedIn", "false");
+
+          window.location.href = "/user/login";
+        }}
+      >
+        <Typography.Text type='danger'>Logout</Typography.Text>
       </Menu.Item>
     </Menu>
   );
@@ -71,6 +62,7 @@ export default () => {
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
+
       socket.emit("get-key", { systemID: Cookies.get("key") });
       socket.on("on-get-key", (_key) => {
         if (_key.length == 0) message.error("Relogin");
@@ -104,6 +96,11 @@ export default () => {
             setOpenProfiler(true);
           }
         }
+      });
+
+      socket.on("update-connection", ({ data }) => {
+        if (data.length > 0 && data[0].systemID == Cookies.get("key"))
+          setKeyData(data);
       });
     });
   }, []);

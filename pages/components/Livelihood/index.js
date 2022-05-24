@@ -11,7 +11,6 @@ export default () => {
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState("Farmer");
   const [data, setData] = useState([]);
-  const [pieData, setPieData] = useState();
   const [loader, setLoader] = useState("");
   const [trigger, setTrigger] = useState(0);
 
@@ -23,7 +22,6 @@ export default () => {
 
     if (data.success) {
       setData(data.data);
-      setPieData(data.pieData);
       setLoader("");
     } else message.error(data.message);
   }, [type, trigger]);
@@ -51,23 +49,13 @@ export default () => {
         centered
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Farmers data={data} type={type} pieData={pieData} loader={loader} />
+          <Farmers data={data} type={type} loader={loader} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Farmworker
-            data={data}
-            type={type}
-            pieData={pieData}
-            loader={loader}
-          />
+          <Farmworker data={data} type={type} loader={loader} />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
-          <Fisherfolk
-            data={data}
-            type={type}
-            pieData={pieData}
-            loader={loader}
-          />
+          <Fisherfolk data={data} type={type} loader={loader} />
         </Tabs.TabPane>
       </Tabs>
     </>

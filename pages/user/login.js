@@ -54,7 +54,7 @@ export default () => {
         Cookies.set("user", JSON.stringify(obj));
         Cookies.set("loggedIn", "true");
         Cookies.set("key", key);
-        console.log(data);
+
         socket.emit("push-new-system", key);
         message.success(data.message);
         window.location.href = "/";
@@ -73,11 +73,6 @@ export default () => {
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
-
-      if (!isBrowser)
-        socket.emit("remove-device", {
-          deviceID: Cookies.get("key"),
-        });
     });
   }, []);
 

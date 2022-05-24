@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Menu, Layout, message } from "antd";
+import React, { useEffect } from "react";
+import { Menu, Layout } from "antd";
 
 import Admin from "./Admin/Admin";
 import Farmers from "./Livelihood";
 import QRSample from "./QR";
-import ProfilerModal from "./ProfilerModal";
 import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
 import VisitHistory from "./VisitHistory";
 import EventHistory from "./EventHistory";
 const { Sider } = Layout;
+
+import { LockOutlined } from "@ant-design/icons";
 
 export default ({ setPage }) => {
   useEffect(
@@ -37,7 +38,7 @@ export default ({ setPage }) => {
             });
           }}
         >
-          Dashboard
+          <LockOutlined /> Dashboard
         </Menu.Item>
         <Menu.Item
           key='2'

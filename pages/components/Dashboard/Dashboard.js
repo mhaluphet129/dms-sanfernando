@@ -20,6 +20,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
+import jason from "../../assets/json/index";
 
 import axios from "axios";
 
@@ -37,25 +38,32 @@ export default () => {
   const [loader, setLoader] = useState("");
   const [data, setData] = useState();
   const [newData, setNewData] = useState();
+  const [barData, setBarData] = useState([]);
+  const [totalLandArea, setTotalLandArea] = useState(0);
 
   const options = {
     responsive: true,
     plugins: {
+      title: {
+        display: true,
+        text: "Chart.js Bar Chart - Stacked",
+      },
       legend: {
         position: "top",
       },
     },
+    // lagyan mo to min 0, max = surban
+    // scales: {
+    //   y: {
+    //     min: 0,
+    //     max: 100,
+    //   },
+    // },
   };
 
   const farmerdata = {
-    labels: newData?.bar?.label,
-    datasets: [
-      {
-        label: "Total number of farmers",
-        data: newData?.bar?.value,
-        backgroundColor: "rgba(53, 162, 235, 1)",
-      },
-    ],
+    labels: jason.barangays,
+    datasets: barData,
   };
 
   const columns = [
@@ -64,24 +72,18 @@ export default () => {
       dataIndex: "_id",
       key: "barangay",
     },
-    { title: "Hectares", dataIndex: "total", key: "hectare" },
+    { title: "Hectare(s)", dataIndex: "total", key: "hectare" },
+    {
+      title: "% ratio",
+      align: "center",
+      render: (_, row) => `${((row?.total / totalLandArea) * 100).toFixed(2)}%`,
+    },
   ];
 
+  //here
   const cropsdata = {
-    labels: newData?.pie?.crops?.label,
-    datasets: [
-      {
-        label: "crops",
-        data: newData?.pie?.crops?.value,
-        backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
+    labels: [...(data?.multipieData?.labels || [])],
+    datasets: [...(data?.multipieData?.datasets || [])],
   };
 
   //for livestock pie graph data
@@ -120,65 +122,6 @@ export default () => {
     ],
   };
 
-  const farmworkerdata = {
-    labels: newData?.farmworker?.label,
-    datasets: [
-      {
-        label: "Total no. of farmworkers",
-        data: newData?.farmworker?.value,
-        backgroundColor: "rgba(53, 162, 235, 1)",
-      },
-    ],
-  };
-
-  const workdata = {
-    labels: newData?.pie?.farmworker?.label,
-    datasets: [
-      {
-        label: "Farmworkers",
-        data: newData?.pie?.farmworker?.value,
-        backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  /* end */
-
-  /* dummy data for fisherfolk */
-  //for bargraph dummy fisherfolk data
-  const fisherfolkdata = {
-    labels: newData?.fisherfolk?.label,
-    datasets: [
-      {
-        label: "Total no. per Barangay",
-        data: newData?.fisherfolk?.value,
-        backgroundColor: "rgba(53, 162, 235, 1)",
-      },
-    ],
-  };
-  //for type of fishing activity pie graph data
-  const fishingdata = {
-    labels: newData?.pie?.fisherfolk?.label,
-    datasets: [
-      {
-        label: "crops",
-        data: newData?.pie?.fisherfolk?.value,
-        backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
   useEffect(async () => {
     setLoader("fetch");
     try {
@@ -192,28 +135,43 @@ export default () => {
         setData(data.res);
         setLoader("");
 
+        let farmer = {
+          label: data?.res?.bar[0]?._id,
+          backgroundColor: "rgba(53, 162, 235, 1)",
+          data: Array(jason.barangays.length).fill(0),
+        };
+        let farmworker = {
+          label: data?.res?.bar[1]?._id,
+          backgroundColor: "rgba(255, 0, 0, 1)",
+          data: Array(jason.barangays.length).fill(0),
+        };
+        let fishfolk = {
+          label: data?.res?.bar[2]?._id,
+          backgroundColor: "rgba(0, 255, 0, 1)",
+          data: Array(jason.barangays.length).fill(0),
+        };
+
+        data?.res?.bar[0].barangay.forEach((el) => {
+          if (jason.barangays.includes(el))
+            farmer.data[jason.barangays.indexOf(el)]++;
+        });
+        data?.res?.bar[1].barangay.forEach((el) => {
+          if (jason.barangays.includes(el))
+            farmworker.data[jason.barangays.indexOf(el)]++;
+        });
+        data?.res?.bar[2].barangay.forEach((el) => {
+          if (jason.barangays.includes(el))
+            fishfolk.data[jason.barangays.indexOf(el)]++;
+        });
+
+        setBarData([farmer, farmworker, fishfolk]);
+
         setNewData(() => {
-          let label = [];
-          let value = [];
           let label2 = [];
           let value2 = [];
           let label3 = [];
           let value3 = [];
-          let cropsLabel = [];
-          let cropsTotal = [];
-          let livestockLabel = [];
-          let livestockTotal = [];
-          let poultryLabel = [];
-          let poultryTotal = [];
-          let farmworkerLabel = [];
-          let farmworkerTotal = [];
-          let fisherfolkLabel = [];
-          let fisherfolkTotal = [];
 
-          data?.res?.farmlandSummary?.forEach((el) => {
-            label.push(el._id);
-            value.push(el.count);
-          });
           data?.res?.farmworkers?.forEach((el) => {
             label2.push(el._id);
             value2.push(el.count);
@@ -222,33 +180,8 @@ export default () => {
             label3.push(el._id);
             value3.push(el.count);
           });
-          data?.res?.cropsData?.forEach((el) => {
-            cropsLabel.push(el?.name);
-            cropsTotal.push(el?.total);
-          });
-          data?.res?.livestockData.forEach((el) => {
-            livestockLabel.push(el?.name);
-            livestockTotal.push(el?.total);
-          });
-          data?.res?.poultryData.forEach((el) => {
-            poultryLabel.push(el?.name);
-            poultryTotal.push(el?.total);
-          });
-          data?.res?.farmworkerData?.forEach((el) => {
-            farmworkerLabel.push(el.name);
-            farmworkerTotal.push(el.total);
-          });
-          data?.res?.fisherfolkdata?.forEach((el) => {
-            fisherfolkLabel.push(el.name);
-            fisherfolkTotal.push(el.total);
-          });
 
           return {
-            bar: {
-              label,
-              value,
-              total: value.reduce((_, __) => _ + __, 0),
-            },
             farmworker: {
               label: label2,
               value: value2,
@@ -258,28 +191,6 @@ export default () => {
               label: label3,
               value: value3,
               total: value3.reduce((_, __) => _ + __, 0),
-            },
-            pie: {
-              crops: {
-                label: cropsLabel,
-                value: cropsTotal,
-              },
-              livestock: {
-                label: livestockLabel,
-                value: livestockTotal,
-              },
-              poultry: {
-                label: poultryLabel,
-                value: poultryTotal,
-              },
-              farmworker: {
-                label: farmworkerLabel,
-                value: farmworkerTotal,
-              },
-              fisherfolk: {
-                label: fisherfolkLabel,
-                value: fisherfolkTotal,
-              },
             },
           };
         });
@@ -294,7 +205,10 @@ export default () => {
       <Card>
         <Row gutter={[16, 16]}>
           <Col span={8}>
-            <Card style={{ height: 150 }}>
+            <Card
+              style={{ height: 150 }}
+              onClick={() => console.log(data?.multipieData)}
+            >
               <Typography.Title level={2}>
                 {loader == "fetch" ? "-" : data?.visitToday}
               </Typography.Title>
@@ -383,142 +297,104 @@ export default () => {
       </Card>
       <Divider />
 
-      {/*  TAbs*/}
-      <Tabs
-        defaultActiveKey='1'
-        size='large'
-        tabBarGutter={24}
-        onChange={(e) => setType(e)}
-        destroyInactiveTabPane
-      >
-        {/* For Farmer */}
-        <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Card>
-            <Row gutter={[16, 16]}>
-              {/* For Farmer Bargraph */}
-              <Col span={16}>
-                <Card
-                  style={{ height: 450 }}
-                  title={
-                    <>
-                      <span style={{ float: "left" }}>
-                        Total no. of Farmers per Barangay
-                      </span>
-                      <span style={{ float: "right" }}>
-                        total: {newData?.bar?.total}
-                      </span>
-                    </>
-                  }
-                >
-                  <Bar options={options} data={farmerdata} />
-                </Card>
-              </Col>
-
-              {/* For Farmer Total hectares */}
-              <Col span={8}>
-                <Card
-                  style={{ height: 450 }}
-                  title={"Total Farm Hectares per Barangay"}
-                >
-                  <Table
-                    size='small'
-                    scroll={{ y: 300 }}
-                    columns={columns}
-                    pagination={false}
-                    dataSource={data?.farmlandSummary}
-                    rowKey={(row) => row._id}
-                  />
-                </Card>
-              </Col>
-
-              {/*for pie chart crops */}
-              <Col span={8}>
-                <Card style={{ height: 450 }} title={"Crops"}>
-                  <Pie data={cropsdata} />
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card style={{ height: 450 }} title={"Livestock"}>
-                  <Pie data={livestockdata} />
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card style={{ height: 450 }} title={"Poultry"}>
-                  <Pie data={poultrydata} />
-                </Card>
-              </Col>
-            </Row>
+      {/* For Farmer */}
+      <Row>
+        {/* For Farmer Bargraph */}
+        <Col span={24}>
+          <Card style={{ height: 700 }}>
+            <Bar options={options} data={farmerdata} />
           </Card>
-        </Tabs.TabPane>
-
-        {/* FARMWORKER */}
-        <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Card>
-            <Row gutter={[16, 16]}>
-              {/* For Farmer Bargraph */}
-              <Col span={16}>
-                <Card
-                  style={{ height: 450 }}
-                  title={
-                    <>
-                      <span style={{ float: "left" }}>
-                        Total no. of Farmworkers per Barangay
-                      </span>
-                      <span style={{ float: "right" }}>
-                        total: {newData?.farmworker?.total}
-                      </span>
-                    </>
-                  }
-                >
-                  <Bar options={options} data={farmworkerdata} />
-                </Card>
-              </Col>
-
-              {/* For Farmworker pie graph */}
-              <Col span={8}>
-                <Card style={{ height: 450 }} title={"Kind of Work"}>
-                  <Pie data={workdata} />
-                </Card>
-              </Col>
-            </Row>
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
+        {/* For Farmer Total hectares */}
+        <Col span={8}>
+          <Card style={{ height: 375 }}>
+            <Table
+              size='small'
+              scroll={{ y: 300 }}
+              columns={columns}
+              pagination={false}
+              dataSource={data?.farmlandSummary}
+              rowKey={(row) => row._id}
+              title={() => <strong>Farmlands Information</strong>}
+              summary={(_) => {
+                let total = _.reduce((p, n) => p + n.total, 0);
+                setTotalLandArea(total);
+                return (
+                  <>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
+                      <Table.Summary.Cell index={1}>
+                        <Typography.Text>{total}</Typography.Text>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={2}>
+                        <Typography.Text>100%</Typography.Text>
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </>
+                );
+              }}
+            />
           </Card>
-        </Tabs.TabPane>
+        </Col>
 
-        <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
+        {/*for pie chart crops */}
+        <Col span={8}>
           <Card>
-            <Row gutter={[16, 16]}>
-              {/* For Farmer Bargraph */}
-              <Col span={16}>
-                <Card
-                  style={{ height: 450 }}
-                  title={
-                    <>
-                      <span style={{ float: "left" }}>
-                        Total no. of Fisherfolks per Barangay
-                      </span>
-                      <span style={{ float: "right" }}>
-                        total: {newData?.fisherfolk?.total}
-                      </span>
-                    </>
-                  }
-                >
-                  <Bar options={options} data={fisherfolkdata} />
-                </Card>
-              </Col>
+            <Pie
+              data={cropsdata}
+              options={{
+                plugins: {
+                  title: {
+                    display: true,
+                    text: "Chart.js Bar Chart - Stacked",
+                  },
+                  legend: {
+                    position: "right",
+                    labels: {
+                      generateLabels: function (chart) {
+                        const original =
+                          ChartJS.overrides.pie.plugins.legend.labels
+                            .generateLabels;
+                        const labelsOriginal = original.call(this, chart);
 
-              {/* For Fisherfolk pie graph */}
-              <Col span={8}>
-                <Card
-                  style={{ height: 450 }}
-                  title={"Type of Fishing Activity"}
-                >
-                  <Pie data={fishingdata} />
-                </Card>
-              </Col>
-            </Row>
+                        let datasetColors = chart.data.datasets.map(function (
+                          e
+                        ) {
+                          return e.backgroundColor;
+                        });
+                        datasetColors = datasetColors.flat();
+
+                        labelsOriginal.forEach((label) => {
+                          label.datasetIndex =
+                            (label.index - (label.index % 2)) / 2;
+
+                          label.hidden = !chart.isDatasetVisible(
+                            label.datasetIndex
+                          );
+
+                          label.fillStyle = datasetColors[label.index];
+                        });
+
+                        return labelsOriginal;
+                      },
+                    },
+                    onClick: function (mouseEvent, legendItem, legend) {
+                      legend.chart.getDatasetMeta(
+                        legendItem.datasetIndex
+                      ).hidden = legend.chart.isDatasetVisible(
+                        legendItem.datasetIndex
+                      );
+                      legend.chart.update();
+                    },
+                  },
+                },
+              }}
+            />
           </Card>
-        </Tabs.TabPane>
-      </Tabs>
+        </Col>
+      </Row>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Cookies from "js-cookie";
 let socket;
 
-export default ({ data, cb, genKey }) => {
+export default ({ cb }) => {
   const [value, setValue] = useState("");
   const [keys, setKeys] = useState();
   const [bool, setBool] = useState(true);
@@ -17,14 +17,13 @@ export default ({ data, cb, genKey }) => {
       return;
     }
     let a = keys.filter((el) => el.systemID == value);
-    if (a.length == 0) message.error("key not found");
+    if (a?.length == 0) message.error("invalid key.");
     else {
       if (!a[0].connected) {
-        Cookies.set("key", genKey);
         socket.emit("notify", a[0].systemID);
         socket.emit("push-new-device", {
           key: a[0].systemID,
-          deviceKey: genKey,
+          deviceKey: Cookies.get("key"),
         });
         setBool(false);
         cb();
@@ -39,12 +38,34 @@ export default ({ data, cb, genKey }) => {
     fetch("/api/socketio").finally(() => {
       socket = io();
 
+      //checking connectivity every run
+      socket.emit("check-connection", Cookies.get("key"));
+      socket.on("on-checking-connection", ({ data }) => {
+        if (data.length > 0) {
+          setBool(false);
+        }
+      });
+
+      socket.on("update-system", (_) => {
+        setKeys(_);
+        let a = _.filter((el) => el.deviceID == Cookies.get("key"));
+        if (a.length == 0) setBool(true);
+      });
+
       socket.emit("get-all");
       socket.on("on-get-all", (_) => {
         setKeys(_);
       });
     });
   }, []);
+
+  useEffect(() => {
+    if (keys?.length > 0) {
+      let a = keys?.filter((el) => el.deviceID == Cookies.get("key"));
+      if (a[0]?.deviceID == Cookies.get("key")) setBool(false);
+      else setBool(true);
+    }
+  }, [keys]);
 
   return (
     <Modal

@@ -21,8 +21,11 @@ const SocketHandler = (req, res) => {
       //===============/================/===================/=================//
 
       /* System and Device push channels */
+
+      console.log(socketsData);
       socket.on("push-new-system", (key) => {
         socketsData.push({ systemID: key, deviceID: null, connected: false });
+        socket.broadcast.emit("update-system", socketsData);
       });
       socket.on("push-new-device", ({ key, deviceKey }) => {
         socketsData.forEach((el) => {
@@ -31,16 +34,15 @@ const SocketHandler = (req, res) => {
             el.connected = true;
           }
         });
-        socket.broadcast.emit(
-          "connected-to-system",
-          key,
-          socketsData.filter((el) => el.systemID == key)
-        );
+        socket.broadcast.emit("update-connection", {
+          data: socketsData.filter((el) => el.deviceID == deviceID),
+        });
       });
 
       /* Remove system and Device handlers */
       socket.on("remove-system", (key) => {
         socketsData = socketsData.filter((el) => el.systemID != key);
+        socket.broadcast.emit("update-system", socketsData);
       });
       socket.on("remove-device", ({ deviceID }) => {
         socketsData.forEach((el) => {
@@ -59,7 +61,6 @@ const SocketHandler = (req, res) => {
       /* Getter */
       socket.on("get-all", () => {
         socket.emit("on-get-all", socketsData);
-        console.log(socketsData);
       });
       socket.on("get-key", ({ systemID, deviceID }) => {
         let key = systemID
@@ -87,8 +88,7 @@ const SocketHandler = (req, res) => {
         socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = true;
         });
-
-        socket.emit("update-connection", {
+        socket.broadcast.emit("update-connection", {
           data: socketsData.filter((el) => el.deviceID == deviceID),
         });
       });
@@ -97,10 +97,15 @@ const SocketHandler = (req, res) => {
         socketsData.forEach((el) => {
           if (el.deviceID == deviceID) el.connected = false;
         });
-
-        socket.emit("update-connection", {
+        socket.broadcast.emit("update-connection", {
           data: socketsData.filter((el) => el.deviceID == deviceID),
         });
+      });
+
+      /* CONNECTION CHECKER */
+      socket.on("check-connection", (deviceID) => {
+        let a = socketsData.filter((el) => el.deviceID == deviceID);
+        socket.emit("on-checking-connection", { data: a });
       });
     });
   }

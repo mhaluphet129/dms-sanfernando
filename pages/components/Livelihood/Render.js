@@ -9,8 +9,9 @@ import {
   Card,
   Typography,
   Empty,
+  message,
 } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
+import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
@@ -19,7 +20,7 @@ import titleText from "../../assets/js/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default ({ data, pieData, type, loader }) => {
+export default ({ data, type, loader }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
@@ -84,11 +85,11 @@ export default ({ data, pieData, type, loader }) => {
 
   //for crops pie graph data
   const _data = {
-    labels: [...Object.keys(modifiedData[activeTab] || {})],
+    labels: modifiedData[activeTab]?.label,
     datasets: [
       {
         label: "crops",
-        data: [...Object.values(modifiedData[activeTab] || {})],
+        data: modifiedData[activeTab]?.value,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
@@ -100,88 +101,72 @@ export default ({ data, pieData, type, loader }) => {
     ],
   };
 
-  const tabContent = {
-    crops:
-      Object.keys(pieData?.crops || {})?.length > 0 ? (
-        <Pie data={_data} />
-      ) : (
-        <Empty />
-      ),
-    livestocks:
-      Object.keys(pieData?.livestocks || {})?.length > 0 ? (
-        <Pie data={_data} />
-      ) : (
-        <Empty />
-      ),
-    poultry:
-      Object.keys(pieData?.poultry || {})?.length > 0 ? (
-        <Pie data={_data} />
-      ) : (
-        <Empty />
-      ),
-  };
-
-  useEffect(() => {
-    setModifiedData((el) => {
-      let _ = {
-        crops: {},
-        livestocks: {},
-        poultry: {},
-      };
-
-      for (let k in pieData) {
-        let data = Object.fromEntries(
-          Object.entries(pieData[k]).sort(([, a], [, b]) => b - a)
-        );
-
-        if (k == "crops") {
-          if (Object.keys(data).length > 2) {
-            _.crops[Object.keys(data)[0]] = Object.values(data)[0];
-            _.crops[Object.keys(data)[1]] = Object.values(data)[1];
-            _.crops[Object.keys(data)[2]] = Object.values(data)[2];
-          } else {
-            for (let i = 0; i < Object.keys(data).length; i++)
-              _.crops[Object.keys(data)[i]] = Object.values(data)[i];
-          }
-
-          if (Object.keys(data).length > 2) _.crops.others = 0;
-          Object.entries(data).forEach(([], index) => {
-            if (index > 2) _.crops["others"]++;
-          });
-        } else if (k == "livestocks") {
-          if (Object.keys(data).length > 2) {
-            _.livestocks[Object.keys(data)[0]] = Object.values(data)[0];
-            _.livestocks[Object.keys(data)[1]] = Object.values(data)[1];
-            _.livestocks[Object.keys(data)[2]] = Object.values(data)[2];
-          } else {
-            for (let i = 0; i < Object.keys(data).length; i++)
-              _.livestocks[Object.keys(data)[i]] = Object.values(data)[i];
-          }
-
-          if (Object.keys(data).length > 2) _.livestocks.others = 0;
-          Object.entries(data).forEach(([], index) => {
-            if (index > 2) _.livestocks["others"]++;
-          });
-        } else if (k == "poultry") {
-          if (Object.keys(data).length > 2) {
-            _.poultry[Object.keys(data)[0]] = Object.values(data)[0];
-            _.poultry[Object.keys(data)[1]] = Object.values(data)[1];
-            _.poultry[Object.keys(data)[2]] = Object.values(data)[2];
-          } else {
-            for (let i = 0; i < Object.keys(data).length; i++)
-              _.poultry[Object.keys(data)[i]] = Object.values(data)[i];
-          }
-
-          if (Object.keys(data).length > 2) _.poultry.others = 0;
-          Object.entries(data).forEach(([], index) => {
-            if (index > 2) _.poultry["others"]++;
-          });
-        }
-      }
-
-      return _;
+  useEffect(async () => {
+    let res = await axios.get("/api/main", {
+      params: {
+        mode: "dashboard-data",
+      },
     });
-  }, [pieData]);
+
+    if (res?.data.success) {
+      setModifiedData(() => {
+        let cropsLabel = [];
+        let cropsTotal = [];
+        let livestockLabel = [];
+        let livestockTotal = [];
+        let poultryLabel = [];
+        let poultryTotal = [];
+        let farmworkerLabel = [];
+        let farmworkerTotal = [];
+        let fisherfolkLabel = [];
+        let fisherfolkTotal = [];
+
+        res?.data?.res?.cropsData?.forEach((el) => {
+          cropsLabel.push(el?.name);
+          cropsTotal.push(el?.total);
+        });
+        // res?.data?.res?.livestockData.forEach((el) => {
+        //   livestockLabel.push(el?.name);
+        //   livestockTotal.push(el?.total);
+        // });
+        // res?.data?.res?.poultryData.forEach((el) => {
+        //   poultryLabel.push(el?.name);
+        //   poultryTotal.push(el?.total);
+        // });
+        // res?.data?.res?.farmworkerData?.forEach((el) => {
+        //   farmworkerLabel.push(el.name);
+        //   farmworkerTotal.push(el.total);
+        // });
+        // res?.data?.res?.fisherfolkdata?.forEach((el) => {
+        //   fisherfolkLabel.push(el.name);
+        //   fisherfolkTotal.push(el.total);
+        // });
+
+        return {
+          crops: {
+            label: cropsLabel,
+            value: cropsTotal,
+          },
+          livestock: {
+            label: livestockLabel,
+            value: livestockTotal,
+          },
+          poultry: {
+            label: poultryLabel,
+            value: poultryTotal,
+          },
+          farmworker: {
+            label: farmworkerLabel,
+            value: farmworkerTotal,
+          },
+          fisherfolk: {
+            label: fisherfolkLabel,
+            value: fisherfolkTotal,
+          },
+        };
+      });
+    }
+  }, [type]);
 
   return (
     <>
@@ -206,17 +191,7 @@ export default ({ data, pieData, type, loader }) => {
               <Space direction='vertical'>
                 {type == "Farmer" && (
                   <Card
-                    title={
-                      <span>
-                        {titleText(`${activeTab} `)}
-                        <Typography.Text type='secondary'>{`total: ${Object.values(
-                          modifiedData[activeTab] || {}
-                        ).reduce(
-                          (prev, curr) => prev + curr,
-                          0
-                        )}`}</Typography.Text>
-                      </span>
-                    }
+                    title={<span>{titleText(`${activeTab}`)}</span>}
                     style={{ width: 325 }}
                     tabList={[
                       {
@@ -224,7 +199,7 @@ export default ({ data, pieData, type, loader }) => {
                         tab: "Crops",
                       },
                       {
-                        key: "livestocks",
+                        key: "livestock",
                         tab: "Livestocks",
                       },
                       { key: "poultry", tab: "Poultry" },
@@ -234,7 +209,7 @@ export default ({ data, pieData, type, loader }) => {
                       setActiveTab(k);
                     }}
                   >
-                    {tabContent[activeTab]}
+                    <Pie data={_data} />
                   </Card>
                 )}
               </Space>

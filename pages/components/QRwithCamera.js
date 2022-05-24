@@ -11,12 +11,16 @@ let socket;
 export default () => {
   const [keyData, setKeyData] = useState();
   const [genKey, setGenKey] = useState();
+
   useEffect(() => {
-    setGenKey(keyGenerator(6));
+    let key = Cookie.get("key") || keyGenerator(6);
+    if (!Cookie.get("key")) Cookie.set("key", key);
+    setGenKey(key);
     let html5QrcodeScanner = new Html5QrcodeScanner("reader", {
       fps: 10,
       qrbox: 300,
     });
+
     html5QrcodeScanner.render((success) => {
       socket.emit("open-profile", {
         id: success,
@@ -39,18 +43,16 @@ export default () => {
         if (Cookie.get("key") == key) setKeyData(data);
       });
 
-      socket.emit("remove-device", { deviceID: Cookie.get("key") });
-      socket.on("update-connection", ({ data }) => setKeyData(data));
+      socket.on("update-connection", ({ data }) => {
+        if (data.length > 0 && data[0].deviceID == Cookies.get("key"))
+          setKeyData(data);
+      });
     });
   }, []);
 
   return (
     <>
-      <Prompt
-        data={keyData}
-        cb={() => socket.emit("get-key", { deviceID: genKey })}
-        genKey={genKey}
-      />
+      <Prompt cb={() => socket.emit("get-key", { deviceID: genKey })} />
       <div class='row'>
         <div class='col'>
           <div style={{ width: "100%" }} id='reader'></div>

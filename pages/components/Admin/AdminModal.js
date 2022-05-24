@@ -310,6 +310,7 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
             <Input
               type='password'
               onChange={(el) => setCurrentPass(el.target.value)}
+              className='customInput'
             />
           </FloatLabel>
         ) : null}
@@ -317,12 +318,14 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
           <Input
             type='password'
             onChange={(el) => setNewPass(el.target.value)}
+            className='customInput'
           />
         </FloatLabel>
         <FloatLabel label='Repeat New Password' value={newPass2}>
           <Input
             type='password'
             onChange={(el) => setNewPass2(el.target.value)}
+            className='customInput'
           />
         </FloatLabel>
       </Modal>
