@@ -46,7 +46,7 @@ export default () => {
         setVisible={setModalVisible}
         data={SAData}
         type={type}
-        cb={() => setTrigger(trigger + 1)}
+        callback={() => setTrigger(trigger + 1)}
       />
       <AdminList
         type={type}

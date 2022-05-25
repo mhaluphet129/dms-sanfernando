@@ -46,7 +46,7 @@ export default () => {
     plugins: {
       title: {
         display: true,
-        text: "Chart.js Bar Chart - Stacked",
+        text: "Total livelihood per barangay - San Fernando",
       },
       legend: {
         position: "top",
@@ -348,7 +348,7 @@ export default () => {
                 plugins: {
                   title: {
                     display: true,
-                    text: "Chart.js Bar Chart - Stacked",
+                    text: "Farmer's crops, livestocks, and poultry summary",
                   },
                   legend: {
                     position: "right",

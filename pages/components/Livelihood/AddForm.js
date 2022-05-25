@@ -31,6 +31,7 @@ export default ({ visible, setVisible, cb }) => {
   const [maritalStatus, setMaritalStatus] = useState("single");
   const [maxCount, setMaxCount] = useState(false);
   const [farmlandData, setFarmlandData] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const uploadButton = (
     <div>
@@ -442,6 +443,7 @@ export default ({ visible, setVisible, cb }) => {
             },
             mode: "add",
           });
+
           if (data.success) {
             message.success(data.message);
             cb();
@@ -1153,8 +1155,8 @@ export default ({ visible, setVisible, cb }) => {
                     <Form.Item label='Upload Scanned Documents'>
                       <div>
                         <Upload
-                          action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
                           maxCount={3}
+                          onChange={(e) => setFiles(e.fileList)}
                           multiple
                         >
                           <Button icon={<UploadOutlined />}>Upload</Button>

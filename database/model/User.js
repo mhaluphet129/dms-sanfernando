@@ -10,6 +10,9 @@ let UserSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    profile: {
+      type: String,
+    },
     lastname: {
       type: String,
       required: false,

@@ -165,53 +165,34 @@ export default async function handler(req, res) {
               resolve();
             });
         }
+
+        if (mode == "push-photo") {
+          const { id, filenames } = req.body.payload;
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $push: {
+                personalfiles: {
+                  $each: filenames,
+                },
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                })
+              );
+              resolve();
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+            });
+        }
       });
     }
     default:
       res.status(400).end(JSON.stringify({ success: false }));
   }
 }
-// internals.get_region = async (req, res) => {
-//     let philippines = await Regions.aggregate([
-//       {
-//         $lookup: {
-//           from: "provinces",
-//           let: { regionId: "$_id" },
-//           pipeline: [
-//             { $match: { $expr: { $eq: ["$regionId", "$$regionId"] } } },
-//             {
-//               $lookup: {
-//                 from: "citymunicipalities",
-//                 let: { provinceId: "$_id" },
-//                 pipeline: [
-//                   {
-//                     $match: {
-//                       $expr: {
-//                         $eq: ["$provinceId", "$$provinceId"],
-//                       },
-//                     },
-//                   },
-//                 ],
-//                 as: "citymunicipalities",
-//               },
-//             },
-//           ],
-//           as: "provinces",
-//         },
-//       },
-//       {
-//         $project: {
-//           name: 1,
-//           island: 1,
-//           "provinces._id": 1,
-//           "provinces.name": 1,
-//           "provinces.citymunicipalities._id": 1,
-//           "provinces.citymunicipalities.name": 1,
-//         },
-//       },
-//     ]).catch((err) => {
-//       return { success: false, msg: "Error: " + err };
-//     });
-
-//     return { success: true, data: philippines };
-//   };

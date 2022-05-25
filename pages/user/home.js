@@ -33,7 +33,8 @@ export default () => {
         <Typography.Text type='secondary'>
           {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
           {data.lastname &&
-            data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}
+            data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}{" "}
+          {`(${data?.role})`}
         </Typography.Text>
       </Menu.Item>
       <Menu.Item key='2'>

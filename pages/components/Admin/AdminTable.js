@@ -121,6 +121,7 @@ export default ({ setTotalAdmin, data, setData, type, trigger, cb, setSA }) => {
           onConfirm={() => handleDelete(row._id)}
           okText='Yes'
           cancelText='No'
+          disabled={type != "superadmin"}
         >
           <Button type='danger' disabled={type != "superadmin"}>
             Remove

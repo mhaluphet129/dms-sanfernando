@@ -12,17 +12,24 @@ import {
   Input,
   Spin,
   DatePicker,
-  Timeline,
+  Upload,
   notification,
+  message,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
 
-import { CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import {
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
 import TimelineDisplay from "../assets/js/TimelineDisplay";
 import ViewProfile from "./Livelihood/ViewProfile";
 import TitleText from "../assets/js/TitleText";
+
+import { getBase64 } from "../assets/js/utilities";
 
 export default ({ data, visible, setVisible }) => {
   const [profileVisible, setProfileVisible] = useState();
@@ -32,11 +39,70 @@ export default ({ data, visible, setVisible }) => {
   const [loggerModal, setLoggerModal] = useState(false);
   const [timeline, setTimeline] = useState([]);
   const [form] = Form.useForm();
+  const [files, setFiles] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
 
   const color = {
     Farmer: "green",
     Farmworker: "cyan",
     Fisherfolk: "blue",
+  };
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
+  };
+
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
+
+  const handleUpload = async () => {
+    let formData = new FormData();
+    formData.append("id", data?._id);
+    files.forEach((file) => {
+      formData.append("photos", file.originFileObj);
+    });
+
+    const res = await axios.post("/api/uploadfiles", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if (res?.data.success) {
+      let filenames = [];
+      res?.data?.files.forEach((el) => {
+        filenames.push(el.filename);
+      });
+
+      let res2 = await axios.post("/api/livelihood", {
+        payload: {
+          id: data?._id,
+          filenames,
+        },
+        mode: "push-photo",
+      });
+      console.log(res2.data);
+      if (res2?.data.success) message.success(res?.data.message);
+    }
   };
 
   useEffect(async () => {
@@ -66,6 +132,40 @@ export default ({ data, visible, setVisible }) => {
 
   return (
     <>
+      <Modal
+        visible={openModal}
+        onCancel={() => setOpenModal(false)}
+        closable={false}
+        okText='Upload'
+        onOk={handleUpload}
+      >
+        <Upload
+          fileList={files}
+          onPreview={handlePreview}
+          listType='picture-card'
+          onChange={(e) => {
+            setFiles(e.fileList);
+            setOpenModal(true);
+          }}
+          multiple
+        >
+          {files.length > 10 ? null : uploadButton}
+        </Upload>
+      </Modal>
+      <Modal
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+      >
+        <img
+          alt='example'
+          style={{
+            width: "100%",
+          }}
+          src={previewImage}
+        />
+      </Modal>
       <Modal
         title='Logs'
         visible={loggerModal}
@@ -128,7 +228,10 @@ export default ({ data, visible, setVisible }) => {
 
             <div style={{ float: "right" }}>
               <Space direction='horizontal'>
-                <Button style={{ width: "100%", marginBottom: 5 }}>
+                <Button
+                  style={{ width: "100%", marginBottom: 5 }}
+                  onClick={() => setOpenModal(true)}
+                >
                   Upload File
                 </Button>
                 <Button
@@ -231,7 +334,7 @@ export default ({ data, visible, setVisible }) => {
                 Name: <br />
                 <Typography.Text strong>
                   {TitleText(
-                    `${data?.name?.name} ${data?.name?.middleName[0]}. ${data?.name?.lastName} ${data?.name?.extensionName}`
+                    `${data?.name?.name} ${data?.name?.middleName[0]}. ${data?.name?.lastName}`
                   )}
                 </Typography.Text>
               </Typography.Text>
@@ -240,7 +343,7 @@ export default ({ data, visible, setVisible }) => {
                 Address: <br />
                 <Typography.Text strong>
                   {TitleText(
-                    `${data?.address?.street}, ${data?.address?.city}, ${data?.address?.province}`
+                    `${data?.address?.street}, ${data?.address?.barangay}`
                   )}
                 </Typography.Text>
               </Typography.Text>

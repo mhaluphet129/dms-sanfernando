@@ -10,19 +10,22 @@ import {
   Typography,
   Popconfirm,
   notification,
+  Upload,
+  Image,
   message,
 } from "antd";
 import Cookie from "js-cookie";
 import moment from "moment";
 import axios from "axios";
 
-import { UserOutlined } from "@ant-design/icons";
-
 import FloatLabel from "../../assets/js/FloatLabel";
 import Label01 from "../../assets/js/Labels";
 import TimelineDisplay from "../../assets/js/TimelineDisplay";
 
-export default ({ type, visibility, setVisible, onClose, data, cb }) => {
+import { getBase64, b64toBlob } from "../../assets/js/utilities";
+import { UserOutlined } from "@ant-design/icons";
+
+export default ({ type, visibility, setVisible, onClose, data, callback }) => {
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
@@ -35,6 +38,10 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
   const [currentPass, setCurrentPass] = useState();
   const [newPass, setNewPass] = useState();
   const [newPass2, setNewPass2] = useState();
+
+  //uploads
+  const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [file, setFile] = useState();
 
   const handleSave = async () => {
     let flag = [false, false, false, false];
@@ -138,6 +145,34 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
     } else message.error(resp.message);
   };
 
+  const handleUpload = async () => {
+    let formData = new FormData();
+    formData.append("id", data?._id);
+    formData.append("photo", file.originFileObj);
+
+    const res = await axios.post("/api/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (res?.data.success) {
+      let path = res.data?.path.replace("public", "");
+      let res2 = await axios.put("/api/admin", {
+        payload: {
+          mode: "change-profile",
+          id: data?._id,
+          path,
+        },
+      });
+
+      if (res2?.data.success) {
+        // callback(); no working, no other choice :(
+        setOpenUploadModal(false);
+        message.success(res2?.data.message);
+        window.location.href = "/";
+      }
+    }
+  };
+
   useEffect(() => {
     setName(data?.name);
     setLastname(data?.lastname);
@@ -147,6 +182,15 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
 
   return (
     <>
+      <Modal
+        visible={openUploadModal}
+        onCancel={() => setOpenUploadModal(false)}
+        onOk={handleUpload}
+      >
+        <Upload onChange={({ file }) => setFile(file)}>
+          <Button>UPLOAD</Button>
+        </Upload>
+      </Modal>
       <Modal
         visible={visibility}
         onCancel={() => {
@@ -162,20 +206,24 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
         okText='Save'
         destroyOnClose
       >
-        <Row justify='space-around'>
+        <Row justify='space-around' gutter={[16, 16]}>
           <Col span={10}>
             <Badge.Ribbon
               text={data?.role == "superadmin" ? "Super Admin" : "admin"}
               color={data?.role == "superadmin" ? "green" : "blue"}
             >
-              <UserOutlined
-                style={{
-                  fontSize: 150,
-                  color: "#aaa",
-                  width: "100%",
-                  textAlign: "center",
-                }}
-              />
+              {data?.profile ? (
+                <Image width={250} src={data?.profile} />
+              ) : (
+                <UserOutlined
+                  style={{
+                    fontSize: 150,
+                    color: "#aaa",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                />
+              )}
             </Badge.Ribbon>
             <div style={{ textAlign: "center" }}>
               <Typography.Text
@@ -190,7 +238,10 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
 
             {type == "superadmin" && (
               <>
-                <Button style={{ width: "100%", marginBottom: 5 }}>
+                <Button
+                  style={{ width: "100%", marginBottom: 5 }}
+                  onClick={() => setOpenUploadModal(true)}
+                >
                   Upload/Change Picture
                 </Button>
                 <Button
@@ -212,20 +263,21 @@ export default ({ type, visibility, setVisible, onClose, data, cb }) => {
               Timeline
             </Button>
 
-            {type == "superadmin" && (
-              <Popconfirm
-                icon={null}
-                title='Proceed to the operation?'
-                okText='Yes'
-                onConfirm={() => changeToSuperadmin()}
-              >
-                <Button style={{ width: "100%" }}>
-                  Grant Super Admin access
-                </Button>
-              </Popconfirm>
-            )}
+            {type == "superadmin" &&
+              JSON.parse(Cookie.get("user")).role != "superadmin" && (
+                <Popconfirm
+                  icon={null}
+                  title='Proceed to the operation?'
+                  okText='Yes'
+                  onConfirm={() => changeToSuperadmin()}
+                >
+                  <Button style={{ width: "100%" }}>
+                    Grant Super Admin access
+                  </Button>
+                </Popconfirm>
+              )}
           </Col>
-          <Col span={13}>
+          <Col span={14}>
             <Form>
               <Form.Item name='name'>
                 <FloatLabel label='name' bool={name?.length != 0}>

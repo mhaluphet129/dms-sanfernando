@@ -265,6 +265,30 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
+        } else if (mode == "change-profile") {
+          const { id, path } = req.body.payload;
+          await User.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: {
+                profile: path,
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Successfully uploaded the image.",
+                })
+              );
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
         }
       });
     }

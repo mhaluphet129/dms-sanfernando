@@ -130,6 +130,9 @@ let livelihoodSchema = new mongoose.Schema(
     timeline: {
       type: Array,
     },
+    personalfiles: {
+      type: Array,
+    },
     profile: profileSchema,
     hasCoopOrAssoc: memberSchema,
     address: addressSchema,
