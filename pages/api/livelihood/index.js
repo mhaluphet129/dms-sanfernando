@@ -190,6 +190,31 @@ export default async function handler(req, res) {
               res.end(JSON.stringify(error));
             });
         }
+
+        if (mode == "profile-update") {
+          const { id, path } = req.body.payload;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: {
+                profileImage: path,
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Successfully change the profile.",
+                })
+              );
+              resolve();
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+            });
+        }
       });
     }
     default:

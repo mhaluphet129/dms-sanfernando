@@ -133,6 +133,9 @@ let livelihoodSchema = new mongoose.Schema(
     personalfiles: {
       type: Array,
     },
+    profileImage: {
+      type: String,
+    },
     profile: profileSchema,
     hasCoopOrAssoc: memberSchema,
     address: addressSchema,

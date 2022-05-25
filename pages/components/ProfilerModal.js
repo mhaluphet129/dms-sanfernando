@@ -23,6 +23,7 @@ import {
   CloseCircleOutlined,
   CheckCircleOutlined,
   PlusOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import TimelineDisplay from "../assets/js/TimelineDisplay";
@@ -41,10 +42,13 @@ export default ({ data, visible, setVisible }) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [profile, setProfile] = useState();
 
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
+
+  const [openModalPicture, setOpenModalPicture] = useState(false);
 
   const color = {
     Farmer: "green",
@@ -100,8 +104,30 @@ export default ({ data, visible, setVisible }) => {
         },
         mode: "push-photo",
       });
-      console.log(res2.data);
+
       if (res2?.data.success) message.success(res?.data.message);
+    }
+  };
+
+  const handleUpload2 = async () => {
+    let formData = new FormData();
+    formData.append("id", data?._id);
+    formData.append("photo", profile.originFileObj);
+
+    const res = await axios.post("/api/upload2", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if (res?.data.success) {
+      let path = res.data?.path.replace("public", "");
+      let res2 = await axios.post("/api/livelihood", {
+        payload: {
+          id: data?._id,
+          path,
+        },
+        mode: "profile-update",
+      });
+
+      if (res2?.data.success) message.success(res2?.data.message);
     }
   };
 
@@ -133,16 +159,31 @@ export default ({ data, visible, setVisible }) => {
   return (
     <>
       <Modal
+        visible={openModalPicture}
+        onCancel={() => setOpenModalPicture(false)}
+        closable={false}
+        okText="Upload"
+        onOk={handleUpload2}
+      >
+        <Upload
+          onChange={(e) => setProfile(e.file)}
+          listType="picture-card"
+          onPreview={handlePreview}
+        >
+          {!profile ? uploadButton : null}
+        </Upload>
+      </Modal>
+      <Modal
         visible={openModal}
         onCancel={() => setOpenModal(false)}
         closable={false}
-        okText='Upload'
+        okText="Upload"
         onOk={handleUpload}
       >
         <Upload
           fileList={files}
           onPreview={handlePreview}
-          listType='picture-card'
+          listType="picture-card"
           onChange={(e) => {
             setFiles(e.fileList);
             setOpenModal(true);
@@ -159,7 +200,7 @@ export default ({ data, visible, setVisible }) => {
         onCancel={() => setPreviewVisible(false)}
       >
         <img
-          alt='example'
+          alt="example"
           style={{
             width: "100%",
           }}
@@ -167,11 +208,11 @@ export default ({ data, visible, setVisible }) => {
         />
       </Modal>
       <Modal
-        title='Logs'
+        title="Logs"
         visible={loggerModal}
         onCancel={() => setLoggerModal(false)}
         closable={false}
-        okText='Add'
+        okText="Add"
         onOk={form.submit}
       >
         <Form
@@ -199,11 +240,11 @@ export default ({ data, visible, setVisible }) => {
             }
           }}
         >
-          <Form.Item label='Message' name='message'>
+          <Form.Item label="Message" name="message">
             <Input.TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
           </Form.Item>
-          <Form.Item label='Date' initialValue={moment()} name='date'>
-            <DatePicker defaultValue={moment()} format='MM-DD-YYYY' />
+          <Form.Item label="Date" initialValue={moment()} name="date">
+            <DatePicker defaultValue={moment()} format="MM-DD-YYYY" />
           </Form.Item>
         </Form>
       </Modal>
@@ -227,7 +268,7 @@ export default ({ data, visible, setVisible }) => {
             </Tag>
 
             <div style={{ float: "right" }}>
-              <Space direction='horizontal'>
+              <Space direction="horizontal">
                 <Button
                   style={{ width: "100%", marginBottom: 5 }}
                   onClick={() => setOpenModal(true)}
@@ -235,7 +276,7 @@ export default ({ data, visible, setVisible }) => {
                   Upload File
                 </Button>
                 <Button
-                  type='primary'
+                  type="primary"
                   style={{ width: "100%", marginBottom: 5 }}
                   onClick={() => setLoggerModal(true)}
                 >
@@ -265,10 +306,18 @@ export default ({ data, visible, setVisible }) => {
                 alignItems: "center",
               }}
             >
-              <Image
-                width={200}
-                src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png' //QR code ni sya
-              />
+              {data?.profileImage ? (
+                <Image width={250} src={data?.profileImage} />
+              ) : (
+                <UserOutlined
+                  style={{
+                    fontSize: 150,
+                    color: "#aaa",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                />
+              )}
             </div>
             <div style={{ textAlign: "center", marginBottom: 5 }}>
               <small style={{ color: "#aaa" }}>id: {data?._id}</small>
@@ -279,6 +328,12 @@ export default ({ data, visible, setVisible }) => {
                 </Tag>
               ))}
             </div>
+            <Button
+              style={{ width: "100%", marginBottom: 5 }}
+              onClick={() => setOpenModalPicture(true)}
+            >
+              Change profile picture
+            </Button>
             <Button style={{ width: "100%", marginBottom: 5 }}>
               Edit Profile
             </Button>
@@ -290,10 +345,9 @@ export default ({ data, visible, setVisible }) => {
             >
               View Full Profile
             </Button>
-            <Button style={{ width: "100%", marginBottom: 5 }}>View QR</Button>
             <Button
-              type='dashed'
-              size='large'
+              type="dashed"
+              size="large"
               style={{
                 backgroundColor: "#70e040",
                 color: "#fff",
@@ -326,11 +380,11 @@ export default ({ data, visible, setVisible }) => {
           </Col>
           <Col span={8}>
             <Space
-              direction='vertical'
-              size='small'
+              direction="vertical"
+              size="small"
               style={{ display: "flex" }}
             >
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Name: <br />
                 <Typography.Text strong>
                   {TitleText(
@@ -339,7 +393,7 @@ export default ({ data, visible, setVisible }) => {
                 </Typography.Text>
               </Typography.Text>
 
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Address: <br />
                 <Typography.Text strong>
                   {TitleText(
@@ -347,11 +401,11 @@ export default ({ data, visible, setVisible }) => {
                   )}
                 </Typography.Text>
               </Typography.Text>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Contact Number: <br />
                 <Typography.Text strong>{data?.contactNum}</Typography.Text>
               </Typography.Text>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 In case of emergency: <br />
                 <Typography.Text strong>
                   {data?.emergency?.name || "Not set"}
