@@ -121,10 +121,23 @@ export default ({ data, type, loader }) => {
         let fisherfolkLabel = [];
         let fisherfolkTotal = [];
 
-        res?.data?.res?.cropsData?.forEach((el) => {
-          cropsLabel.push(el?.name);
-          cropsTotal.push(el?.total);
+        Object.keys(res?.data?.res?.cropsData).forEach((el) => {
+          cropsLabel.push(el);
         });
+        Object.values(res?.data?.res?.cropsData).forEach((el) => {
+          cropsTotal.push(el);
+        });
+        Object.keys(res?.data?.res?.livestockData).forEach((el) => {
+          livestockLabel.push(el);
+        });
+        Object.values(res?.data?.res?.livestockData).forEach((el) => {
+          livestockTotal.push(el);
+        });
+
+        // res?.data?.cropsData?.forEach((el) => {
+        //   cropsLabel.push(el?.name);
+        //   cropsTotal.push(el?.total);
+        // });
         // res?.data?.res?.livestockData.forEach((el) => {
         //   livestockLabel.push(el?.name);
         //   livestockTotal.push(el?.total);
@@ -209,7 +222,20 @@ export default ({ data, type, loader }) => {
                       setActiveTab(k);
                     }}
                   >
-                    <Pie data={_data} />
+                    {_data.labels?.length > 0 ? (
+                      <Pie
+                        data={_data}
+                        options={{
+                          plugins: {
+                            legend: {
+                              position: "right",
+                            },
+                          },
+                        }}
+                      />
+                    ) : (
+                      <Empty />
+                    )}
                   </Card>
                 )}
               </Space>

@@ -406,6 +406,9 @@ export default async function handler(req, res) {
                 bar,
                 multipieData,
                 farmlandSummary,
+                cropsData,
+                livestockData,
+                poultryData,
               },
             })
           );
