@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Clock from "react-digital-clock";
 import {
   Layout,
   Typography,
@@ -30,17 +31,17 @@ export default () => {
   const menu = () => (
     <Menu>
       <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
-        <Typography.Text type='secondary'>
+        <Typography.Text type="secondary">
           {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
           {data.lastname &&
             data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}
         </Typography.Text>
       </Menu.Item>
-      <Menu.Item key='2'>
+      <Menu.Item key="2">
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
       <Menu.Item
-        key='3'
+        key="3"
         onClick={() => {
           socket.emit("remove-system", Cookies.get("key"));
           Cookies.remove("user");
@@ -50,7 +51,7 @@ export default () => {
           window.location.href = "/user/login";
         }}
       >
-        <Typography.Text type='danger'>Logout</Typography.Text>
+        <Typography.Text type="danger">Logout</Typography.Text>
       </Menu.Item>
     </Menu>
   );
@@ -123,55 +124,19 @@ export default () => {
             width: "100%",
           }}
         >
-          <div style={{ lineHeight: 1.3, marginTop: 20, marginLeft: -80 }}>
-            <ul style={{ listStyle: "none" }}>
-              <li>
-                <Typography.Text
-                  type='secondary'
-                  onClick={() => console.log(keyData)}
-                >
-                  System Key:{" "}
-                  <Typography.Text keyboard>
-                    {keyData?.length > 0 ? keyData[0].systemID : ""}
-                  </Typography.Text>
-                </Typography.Text>
-              </li>
-              <li>
-                <Typography.Text type='secondary'>
-                  Device ID:
-                  <Typography.Text keyboard>
-                    {keyData?.length > 0 ? keyData[0].deviceID : ""}
-                  </Typography.Text>
-                </Typography.Text>
-              </li>
-              <li>
-                <Typography.Text type='secondary'>
-                  Status:{" "}
-                  {keyData?.length > 0 && (
-                    <Tag
-                      color={
-                        keyData[0].connected
-                          ? "green"
-                          : keyData[0].deviceID == null
-                          ? "orange"
-                          : "red"
-                      }
-                    >
-                      {keyData?.length > 0 && keyData[0].connected
-                        ? "Connected"
-                        : keyData[0].deviceID == null
-                        ? "No connection"
-                        : "Not Connected"}
-                    </Tag>
-                  )}
-                </Typography.Text>
-              </li>
-            </ul>
+          <div>
+            <Typography.Title
+              style={{ marginTop: 15, marginLeft: -40 }}
+              className="clock"
+              level={3}
+            >
+              <Clock />
+            </Typography.Title>
           </div>
 
           <Dropdown overlay={menu}>
             <Avatar
-              size='large'
+              size="large"
               style={{ marginLeft: "auto", cursor: "pointer" }}
             >
               {data.name && data.name[0].toUpperCase()}

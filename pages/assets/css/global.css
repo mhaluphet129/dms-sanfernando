@@ -21,3 +21,7 @@
 .submit {
   margin-bottom: 0px;
 }
+
+.clock div span {
+  color: #000;
+}

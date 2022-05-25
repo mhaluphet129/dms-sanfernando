@@ -235,6 +235,15 @@ export default () => {
                 </Form.Item>
               </Tabs.TabPane>
               <Tabs.TabPane key="superadmin" tab="Super Admin">
+                <LockOutlined
+                  style={{
+                    display: "flex",
+                    fontSize: 30,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 10,
+                  }}
+                />
                 <Form.Item
                   name="superpassword"
                   colon={false}
@@ -245,15 +254,6 @@ export default () => {
                     },
                   ]}
                 >
-                  <LockOutlined
-                    style={{
-                      display: "flex",
-                      fontSize: 30,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 10,
-                    }}
-                  />
                   <Input
                     type="password"
                     size="large"
