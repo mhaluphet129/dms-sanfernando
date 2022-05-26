@@ -213,6 +213,7 @@ export default () => {
             onFinish={handleLogin}
           >
             <Form.Item
+              label="username"
               name="username"
               rules={[
                 {
@@ -221,10 +222,11 @@ export default () => {
                 },
               ]}
             >
-              <Input prefix={<UserOutlined />} size="large" />
+              <Input />
             </Form.Item>
 
             <Form.Item
+              label="password"
               name="password"
               rules={[
                 {
@@ -233,14 +235,16 @@ export default () => {
                 },
               ]}
             >
-              <Input.Password
-                prefix={<LockOutlined />}
-                type="password"
-                size="large"
-              />
+              <Input.Password />
             </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked">
+            <Form.Item
+              name="remember"
+              valuePropName="checked"
+              wrapperCol={{
+                offset: 6,
+              }}
+            >
               <Checkbox>Login as Super Admin</Checkbox>
             </Form.Item>
             {/* <Tabs activeKey={type} onChange={setType} type='card'>
