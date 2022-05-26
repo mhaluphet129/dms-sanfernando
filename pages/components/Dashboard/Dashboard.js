@@ -325,7 +325,7 @@ export default () => {
               <Row gutter={[16, 16]}>
                 <Col span={12}>
                   <Card
-                    style={{ height: 150 }}
+                    style={{ height: 150, backgroundColor: "#bcd2d6" }}
                     onClick={() => console.log(data?.multipieData)}
                   >
                     <Typography.Title level={2}>
@@ -335,7 +335,12 @@ export default () => {
                   </Card>
                 </Col>
                 <Col span={12}>
-                  <Card style={{ height: 150 }}>
+                  <Card
+                    style={{
+                      height: 150,
+                      backgroundColor: "rgb(132,129,113,0.5)",
+                    }}
+                  >
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.totalLivelihood}
                     </Typography.Title>
@@ -352,7 +357,12 @@ export default () => {
                   </Card>
                 </Col>
                 <Col span={12}>
-                  <Card style={{ height: 150 }}>
+                  <Card
+                    style={{
+                      height: 150,
+                      backgroundColor: "rgb(128,172,199,0.5)",
+                    }}
+                  >
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.totalPrograms}
                     </Typography.Title>
