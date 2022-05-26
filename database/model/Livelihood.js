@@ -139,6 +139,9 @@ let livelihoodSchema = new mongoose.Schema(
     profileImage: {
       type: String,
     },
+    brgyImage: {
+      type: String,
+    },
     civil: {
       type: String,
     },

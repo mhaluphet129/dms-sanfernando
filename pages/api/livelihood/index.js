@@ -178,7 +178,7 @@ export default async function handler(req, res) {
               newLivelihood.timeline = [
                 {
                   time: moment(),
-                  label: "This livelihood account is newly added.",
+                  label: "This profile is newly added.",
                 },
               ];
 
@@ -195,7 +195,7 @@ export default async function handler(req, res) {
                   res.status(200).end(
                     JSON.stringify({
                       success: true,
-                      message: "New livelihood added successfully",
+                      message: "New profile added successfully",
                     })
                   );
                   resolve();
@@ -290,6 +290,35 @@ export default async function handler(req, res) {
             });
         }
       });
+    }
+    case "PUT": {
+      const { mode } = req.body.payload;
+
+      if (mode == "change-profile") {
+        const { id, path } = req.body.payload;
+        await Livelihood.findOneAndUpdate(
+          { _id: id },
+          {
+            $set: {
+              brgyImage: path,
+            },
+          }
+        )
+          .then(() => {
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                message: "Successfully uploaded the image.",
+              })
+            );
+            resolve();
+          })
+          .catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+      }
     }
     default:
       res.status(400).end(JSON.stringify({ success: false }));

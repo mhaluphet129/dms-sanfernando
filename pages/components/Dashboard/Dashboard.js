@@ -28,6 +28,7 @@ import jason from "../../assets/json/index";
 import titleText from "../../assets/js/TitleText";
 
 import axios from "axios";
+import moment from "moment";
 
 ChartJS.register(
   CategoryScale,
@@ -50,13 +51,15 @@ export default () => {
   const [loc, setLoc] = useState();
   const [farmInfo, setFarmInfo] = useState([]);
   const [total, setTotal] = useState(0);
+  const [max, setMax] = useState(10);
+  const [weatherData, setWeatherData] = useState();
 
   const options = {
     responsive: true,
     plugins: {
       title: {
         display: true,
-        text: "Total livelihood per barangay - San Fernando",
+        text: "Total Profile Registered per Barangay - San Fernando",
       },
       legend: {
         position: "top",
@@ -65,7 +68,7 @@ export default () => {
     scales: {
       y: {
         min: 0,
-        max: 10,
+        max,
       },
     },
   };
@@ -80,8 +83,8 @@ export default () => {
       title: "Barangay",
       render: (_, row) => (
         <Typography.Link
-          href="#"
-          type="link"
+          href='#'
+          type='link'
           onClick={() => {
             setOpenFarmlandInfo(true);
             setLoc(row?._id);
@@ -205,6 +208,13 @@ export default () => {
         if (fisherfolk.data.some((el) => el > 0)) _data.push(fisherfolk);
         setBarData(_data);
 
+        //finding max value, minimum of 10
+        if (Math.max(...farmer.data) > max) setMax(Math.max(...farmer.data));
+        if (Math.max(...farmworker.data) > max)
+          setMax(Math.max(...farmworker.data));
+        if (Math.max(...fisherfolk.data) > max)
+          setMax(Math.max(...fisherfolk.data));
+
         setNewData(() => {
           let label2 = [];
           let value2 = [];
@@ -258,6 +268,17 @@ export default () => {
     }
   }, [openFarmLandInfo]);
 
+  //my favourite, weather api
+  useEffect(async () => {
+    try {
+      let resp = await axios.get(
+        "https://api.openweathermap.org/data/2.5/weather?lat=7.8464&lon=125.3466&appid=84effa33cf13ed6c17415671c6ce7b54"
+      );
+      console.log(resp.data);
+      setWeatherData(resp.data);
+    } catch {}
+  }, []);
+
   return (
     <>
       <Modal
@@ -279,13 +300,13 @@ export default () => {
               return (
                 <>
                   <Table.Summary.Row>
-                    <Table.Summary.Cell index={0} align="center">
+                    <Table.Summary.Cell index={0} align='center'>
                       Total
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={1} align="center">
+                    <Table.Summary.Cell index={1} align='center'>
                       <Typography.Text>{total}</Typography.Text>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} align="center">
+                    <Table.Summary.Cell index={2} align='center'>
                       <Typography.Text>
                         {_.length > 0 ? "100%" : "0%"}
                       </Typography.Text>
@@ -316,18 +337,17 @@ export default () => {
                 <Col span={12}>
                   <Card style={{ height: 150 }}>
                     <Typography.Title level={2}>
-                      {" "}
                       {loader == "fetch" ? "-" : data?.totalLivelihood}
                     </Typography.Title>
                     <Typography.Text>
-                      Total no. of registered livelihood
+                      Total no. of Registered Profiles
                     </Typography.Text>
                     <br />
                     <Typography.Text>
                       <Typography.Text strong>
                         {loader == "fetch" ? 0 : data?.totalLivelihood}
-                      </Typography.Text>{" "}
-                      Livelihood Registered Today
+                      </Typography.Text>
+                      New Profile Registered Today
                     </Typography.Text>
                   </Card>
                 </Col>
@@ -406,9 +426,11 @@ export default () => {
                   }}
                 >
                   <Avatar
-                    src="http://openweathermap.org/img/wn/10d@2x.png"
+                    src={`http://openweathermap.org/img/wn/${
+                      weatherData && weatherData?.weather[0].icon
+                    }.png`}
                     size={100}
-                    shape="square"
+                    shape='square'
                   />
                 </Col>
                 <Col span={12}>
@@ -416,9 +438,13 @@ export default () => {
                     Today
                   </Typography.Text>
                   <br />
-                  <Typography.Text strong>Thu 26 May </Typography.Text>
+                  <Typography.Text strong>
+                    {moment().format("dddd DD MMM")}{" "}
+                  </Typography.Text>
                   <br />
-                  <Typography.Text>Rain</Typography.Text>
+                  <Typography.Text>
+                    {weatherData ? weatherData?.weather[0].main : "-"}
+                  </Typography.Text>
                 </Col>
               </Row>
               <Row
@@ -432,18 +458,25 @@ export default () => {
                 <Typography.Text
                   style={{
                     marginTop: 50,
-                    fontSize: "5.5rem",
+                    fontSize: "3.5rem",
                     fontWeight: "bold",
                     lineHeight: 0.3,
                   }}
                 >
-                  23°C <br />
+                  {weatherData
+                    ? `${(weatherData?.main.temp - 273.15).toFixed(2)}°C`
+                    : "-°C"}
                   <Typography.Text
                     style={{ fontSize: "0.8rem", fontWeight: "bold" }}
                   >
-                    Humidity: 93%
+                    <br />
+
+                    {weatherData
+                      ? `Humidity ${weatherData?.main.humidity}%`
+                      : "Humidity: -%"}
                   </Typography.Text>
                 </Typography.Text>
+                <br />
                 <Typography.Text
                   style={{
                     marginTop: 30,
@@ -454,17 +487,19 @@ export default () => {
                   San Fernando
                 </Typography.Text>
               </Row>
-              <Alert
-                message="No Internet Connection"
-                type="error"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                  bottom: -10,
-                }}
-              />
+              {weatherData == undefined ? (
+                <Alert
+                  message='No Internet Connection'
+                  type='error'
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                    bottom: -10,
+                  }}
+                />
+              ) : null}
             </Card>
           </Col>
         </Row>
@@ -486,7 +521,7 @@ export default () => {
           <Col span={8}>
             <Card style={{ height: 375 }}>
               <Table
-                size="small"
+                size='small'
                 scroll={{ y: 300 }}
                 columns={columns}
                 pagination={false}
@@ -499,13 +534,13 @@ export default () => {
                   return (
                     <>
                       <Table.Summary.Row>
-                        <Table.Summary.Cell index={0} align="center">
+                        <Table.Summary.Cell index={0} align='center'>
                           Total
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={1} align="center">
+                        <Table.Summary.Cell index={1} align='center'>
                           <Typography.Text>{total}</Typography.Text>
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={2} align="center">
+                        <Table.Summary.Cell index={2} align='center'>
                           <Typography.Text>
                             {data?.farmlandSummary.length > 0 ? "100%" : "0%"}
                           </Typography.Text>

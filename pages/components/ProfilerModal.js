@@ -13,6 +13,7 @@ import {
   Spin,
   DatePicker,
   Upload,
+  Empty,
   notification,
   message,
 } from "antd";
@@ -35,7 +36,7 @@ import parse from "html-react-parser";
 
 import { getBase64 } from "../assets/js/utilities";
 
-export default ({ data, visible, setVisible }) => {
+export default ({ data, visible, setVisible, callback }) => {
   const [profileVisible, setProfileVisible] = useState();
   const [loader, setLoader] = useState();
   const [trigger, setTrigger] = useState(0);
@@ -55,6 +56,8 @@ export default ({ data, visible, setVisible }) => {
 
   const [viewQRVisible, setViewQRVisible] = useState(false);
   const [qr, setQr] = useState();
+  const [openBrgyModal, setOpenBrgyModal] = useState(false);
+  const [brgyFile, setBrgyFile] = useState();
 
   const color = {
     Farmer: "green",
@@ -137,6 +140,35 @@ export default ({ data, visible, setVisible }) => {
     }
   };
 
+  const handleUploadBrgy = async () => {
+    let formData = new FormData();
+    formData.append("id", data?._id);
+    formData.append("photo", brgyFile.originFileObj);
+
+    const res = await axios.post("/api/uploadbrgy", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (res?.data.success) {
+      let path = res.data?.path.replace("public", "");
+      let res2 = await axios.put("/api/livelihood", {
+        payload: {
+          mode: "change-profile",
+          id: data?._id,
+          path,
+        },
+      });
+
+      if (res2?.data.success) {
+        callback();
+        setOpenBrgyModal(false);
+        setVisible(false);
+        setBrgyFile();
+        message.success(res2?.data.message);
+      }
+    }
+  };
+
   useEffect(async () => {
     if (visible) {
       setLoader("fetch");
@@ -170,6 +202,45 @@ export default ({ data, visible, setVisible }) => {
 
   return (
     <>
+      <Modal
+        visible={openBrgyModal}
+        onCancel={() => setOpenBrgyModal(false)}
+        closable={false}
+        title='Barangay Clearance'
+        footer={null}
+        destroyOnClose
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {data?.brgyImage ? (
+            <Image src={data?.brgyImage} width='100%' />
+          ) : (
+            <Empty />
+          )}
+
+          <Upload
+            onChange={(e) => setBrgyFile(e.file)}
+            disabled={brgyFile != undefined}
+          >
+            <Button
+              style={{ width: 200, marginTop: 5 }}
+              onClick={() => {
+                if (brgyFile != undefined) {
+                  handleUploadBrgy();
+                }
+              }}
+            >
+              {brgyFile != undefined ? "Save" : "Update Barangay Clearance"}
+            </Button>
+          </Upload>
+        </div>
+      </Modal>
       <Modal
         visible={openModalPicture}
         onCancel={() => setOpenModalPicture(false)}
@@ -351,12 +422,12 @@ export default ({ data, visible, setVisible }) => {
                 </Tag>
               ))}
             </div>
-            <Button
+            {/* <Button
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => setOpenModalPicture(true)}
             >
               Change profile picture
-            </Button>
+            </Button> */}
             <Button style={{ width: "100%", marginBottom: 5 }}>
               Edit Profile
             </Button>
@@ -375,6 +446,14 @@ export default ({ data, visible, setVisible }) => {
               }}
             >
               View QR
+            </Button>
+            <Button
+              style={{ width: "100%", marginBottom: 5 }}
+              onClick={() => {
+                setOpenBrgyModal(true);
+              }}
+            >
+              View / Update BARANGAY CLEARANCE
             </Button>
             <Button
               type='dashed'

@@ -69,7 +69,7 @@ export default ({ setPage }) => {
           }}
           icon={<ApartmentOutlined />}
         >
-          Livelihood
+          Profile
         </Menu.Item>
         <Menu.Item
           key='4'

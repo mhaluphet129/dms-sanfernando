@@ -49,13 +49,28 @@ export default () => {
         centered
       >
         <Tabs.TabPane tab='Farmer' key='Farmer'>
-          <Farmers data={data} type={type} loader={loader} />
+          <Farmers
+            data={data}
+            type={type}
+            loader={loader}
+            setTrigger={setTrigger}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Farmworker' key='Farmworker'>
-          <Farmworker data={data} type={type} loader={loader} />
+          <Farmworker
+            data={data}
+            type={type}
+            loader={loader}
+            setTrigger={setTrigger}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab='Fisherfolk' key='Fisherfolk'>
-          <Fisherfolk data={data} type={type} loader={loader} />
+          <Fisherfolk
+            data={data}
+            type={type}
+            loader={loader}
+            setTrigger={setTrigger}
+          />
         </Tabs.TabPane>
       </Tabs>
     </>

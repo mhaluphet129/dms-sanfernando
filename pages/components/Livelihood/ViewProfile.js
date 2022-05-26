@@ -519,12 +519,6 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 No. of Farm Parcel:
                 <Typography.Text strong>0</Typography.Text>
               </Typography.Text>
-              <Typography.Text type='secondary'>
-                Agrarian Reform Beneficiary (ARB) ?{" "}
-                <Tag color={info?.profile?.isARB ? "success" : "error"}>
-                  {info?.profile?.isARB ? "Yes" : "No"}
-                </Tag>
-              </Typography.Text>
             </Space>
           </Col>
           <Col span={6} pull={18}>
@@ -539,25 +533,20 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           <Col span={18} push={6}>
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
-                ID Picture: <br />
-                <Image
-                  width={150}
-                  src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-                />
-              </Typography.Text>
-              <Typography.Text type='secondary'>
                 {/* here */}
-                Scanned Documents: <br />
-                <Space style={{ display: "flex" }}>
-                  {info?.personalfiles &&
-                    info?.personalfiles.map((el) => (
-                      <Image
-                        width={150}
-                        src={`/uploads/livelihood/${info?._id}/${el}`}
-                      />
-                    ))}
-                </Space>
-              </Typography.Text>{" "}
+                Personal Files: <br />
+                <Image.PreviewGroup>
+                  <Space style={{ display: "flex" }}>
+                    {info?.personalfiles &&
+                      info?.personalfiles.map((el) => (
+                        <Image
+                          width={150}
+                          src={`/uploads/livelihood/${info?._id}/${el}`}
+                        />
+                      ))}
+                  </Space>
+                </Image.PreviewGroup>
+              </Typography.Text>
               <br />
             </Space>
           </Col>

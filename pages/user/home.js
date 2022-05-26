@@ -505,7 +505,10 @@ export default () => {
                 onSelect={handleSelect}
                 autoFocus
               >
-                <Input.Search size='large' placeholder='Search profile here' />
+                <Input.Search
+                  size='large'
+                  placeholder="Type 'program:' to search program."
+                />
               </AutoComplete>
             </Col>
             <Col

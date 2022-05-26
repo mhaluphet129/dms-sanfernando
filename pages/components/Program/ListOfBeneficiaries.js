@@ -62,7 +62,7 @@ export default ({
       render: (_, row) => row?.contactNum,
     },
     {
-      title: "Livelihood",
+      title: "Type",
 
       render: (_, row) => (
         <Space direction='vertical'>

@@ -312,8 +312,8 @@ export default ({ visible, setVisible, cb }) => {
 
           if (
             otherInfo.farmer.status == false &&
-            otherInfo.farmworker.status &&
-            otherInfo.fisherfolk.status
+            otherInfo.farmworker.status == false &&
+            otherInfo.fisherfolk.status == false
           )
             flagError = 1;
 

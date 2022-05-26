@@ -20,7 +20,7 @@ import titleText from "../../assets/js/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default ({ data, type, loader }) => {
+export default ({ data, type, loader, setTrigger }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
@@ -191,7 +191,12 @@ export default ({ data, type, loader }) => {
 
   return (
     <>
-      <Profiler data={rowData} visible={openModal} setVisible={setOpenModal} />
+      <Profiler
+        data={rowData}
+        visible={openModal}
+        setVisible={setOpenModal}
+        callback={() => setTrigger(Math.random() * 100)}
+      />
       <Row>
         <Col span={15}>
           <Table
