@@ -29,6 +29,7 @@
     "react-device-detect": "^2.2.2",
     "react-digital-clock": "^0.1.2",
     "react-dom": "17.0.2",
+    "react-to-print": "^2.14.7",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
     "webrtc-adapter": "^8.1.1"

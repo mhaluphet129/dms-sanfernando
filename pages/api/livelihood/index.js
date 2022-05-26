@@ -32,6 +32,30 @@ export default async function handler(req, res) {
             });
         }
 
+        if (mode == "fetch-farmer-barangay") {
+          const { brgy } = req.query;
+
+          await Livelihood.find({
+            "address.barangay": brgy,
+            "profile.type": { $in: ["Farmer"] },
+          })
+            .then((data) => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Successfully fetched the data",
+                  data,
+                })
+              );
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        }
+
         if (mode == "fetch-history") {
           const { id } = req.query;
           let resp = await Livelihood.find({ _id: id }).catch((err) => {

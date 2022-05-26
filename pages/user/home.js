@@ -14,6 +14,9 @@ import {
   Table,
   Drawer,
   Spin,
+  Modal,
+  Select,
+  Form,
   message,
 } from "antd";
 import Cookies from "js-cookie";
@@ -25,6 +28,8 @@ import ProfilerModal from "../components/ProfilerModal";
 import SidePane from "../components/Sider";
 import Profiler from "../components/ProfilerModal";
 import ViewProgam from "../components/Program/ViewProgam";
+import FarmList from "../components/FarmListReport";
+import jason from "../assets/json";
 
 import { UserOutlined } from "@ant-design/icons";
 const { Content, Header } = Layout;
@@ -65,7 +70,14 @@ export default () => {
   const [viewModal, setViewModal] = useState(false);
   const [modalData, setModalData] = useState();
   const [typeSearch, setTypeSearch] = useState("");
+  const [openReport, setOpenReport] = useState(false);
+  const [typeOfReport, setTypeOfReport] = useState("");
+  const [openGenerator, setOpenGenerator] = useState(false);
+  const [extraData, setExtraData] = useState();
+  const [form] = Form.useForm();
 
+  // report filtere
+  const [barangay, setBarangay] = useState("");
   const [total, setTotal] = useState({
     farmer: 0,
     farmworker: 0,
@@ -187,7 +199,7 @@ export default () => {
 
   const menu = () => (
     <Menu>
-      <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
+      <Menu.Item key='0' style={{ marginTop: 10, marginBottom: 10 }}>
         <div>
           <ul style={{ listStyle: "none" }}>
             <li>
@@ -234,7 +246,7 @@ export default () => {
           </ul>
         </div>
       </Menu.Item>
-      <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
+      <Menu.Item key='1' style={{ marginTop: 10, marginBottom: 10 }}>
         <Typography.Text type='secondary'>
           {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
           {data.lastname &&
@@ -245,8 +257,13 @@ export default () => {
       <Menu.Item key='2'>
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
+      <Menu.Item key='3'>
+        <Typography.Text onClick={() => setOpenReport(true)}>
+          Generate Report
+        </Typography.Text>
+      </Menu.Item>
       <Menu.Item
-        key='3'
+        key='4'
         onClick={() => {
           socket.emit("remove-system", Cookies.get("key"));
           Cookies.remove("user");
@@ -343,6 +360,55 @@ export default () => {
 
   return (
     <>
+      <Modal
+        title='Report Maker'
+        visible={openReport}
+        onCancel={() => setOpenReport(false)}
+        closable={false}
+        okText='Generate'
+        onOk={async () => {
+          if (typeOfReport == "list-farmer") {
+            let res = await axios.get("/api/livelihood", {
+              params: {
+                mode: "fetch-farmer-barangay",
+                brgy: barangay,
+              },
+            });
+
+            if (res?.data.success) {
+              setExtraData(res?.data.data);
+              setOpenGenerator(true);
+            }
+          }
+        }}
+      >
+        <Form>
+          <Form.Item name='type' label='Type of report' labelCol={{ span: 24 }}>
+            <Select style={{ width: 200 }} onChange={(e) => setTypeOfReport(e)}>
+              <Select.Option value='list-farmer'>
+                Listing of farmer
+              </Select.Option>
+            </Select>
+          </Form.Item>
+          {typeOfReport == "list-farmer" && (
+            <>
+              <Form.Item label='Barangay' labelCol={{ span: 24 }}>
+                <Select style={{ width: 200 }} onChange={(e) => setBarangay(e)}>
+                  {jason.barangays.map((el) => (
+                    <Select.Option key={el}>{el}</Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </>
+          )}
+        </Form>
+      </Modal>
+      <FarmList
+        visible={openGenerator}
+        setVisible={setOpenGenerator}
+        data={extraData}
+        barangay={barangay}
+      />
       <ViewProgam
         viewModal={viewModal}
         setViewModal={setViewModal}
