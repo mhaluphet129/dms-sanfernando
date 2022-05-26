@@ -43,19 +43,19 @@ export default ({
     {
       title: "Name",
       render: (_, row) => (
-        <Tooltip title='Click to view full profile.'>
+        <Tooltip title="Click to view full profile.">
           <a>{titleText(`${row.name.name} ${row.name.lastName}`)}</a>
         </Tooltip>
       ),
     },
-    {
-      title: "Date Availed",
-      render: (_, row) => "sunod nani",
-    },
-    {
-      title: "Address",
-      render: (_, row) => "typoe though",
-    },
+    // {
+    //   title: "Date Availed",
+    //   render: (_, row) => "sunod nani",
+    // },
+    // {
+    //   title: "Address",
+    //   render: (_, row) => "typoe though",
+    // },
     {
       title: "Contact",
       render: (_, row) => row?.contactNum,
@@ -64,7 +64,7 @@ export default ({
       title: "Livelihood",
 
       render: (_, row) => (
-        <Space direction='vertical'>
+        <Space direction="vertical">
           {row?.profile?.type.map((el, i) => (
             <Tag key={i} color={color[el]}>
               {el}
@@ -78,7 +78,7 @@ export default ({
       key: "action",
       render: (_, row) => (
         <Popconfirm
-          title='Are you sure to remove this person?'
+          title="Are you sure to remove this person?"
           onConfirm={async () => {
             let { data } = await axios.get("/api/programs", {
               params: {
@@ -90,8 +90,8 @@ export default ({
 
             if (data.success) setTrigger(trigger + 1);
           }}
-          okText='Yes'
-          cancelText='No'
+          okText="Yes"
+          cancelText="No"
         >
           <Button danger>Remove</Button>
         </Popconfirm>
@@ -205,7 +205,7 @@ export default ({
         visible={addClientModal}
         width={500}
         closable={false}
-        title='Add CLient'
+        title="Add CLient"
         destroyOnClose
         footer={null}
         onCancel={() => {
@@ -213,7 +213,7 @@ export default ({
         }}
       >
         <Space
-          direction='vertical'
+          direction="vertical"
           style={{
             display: "flex",
             justifyContent: "center",

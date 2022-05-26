@@ -31,6 +31,53 @@ export default () => {
   const menu = () => (
     <Menu>
       <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
+        <div>
+          <ul style={{ listStyle: "none" }}>
+            <li>
+              <Typography.Text
+                type="secondary"
+                onClick={() => console.log(keyData)}
+              >
+                System Key:{" "}
+                <Typography.Text keyboard>
+                  {keyData?.length > 0 ? keyData[0].systemID : ""}
+                </Typography.Text>
+              </Typography.Text>
+            </li>
+            <li>
+              <Typography.Text type="secondary">
+                Device ID:
+                <Typography.Text keyboard>
+                  {keyData?.length > 0 ? keyData[0].deviceID : ""}
+                </Typography.Text>
+              </Typography.Text>
+            </li>
+            <li>
+              <Typography.Text type="secondary">
+                Status:{" "}
+                {keyData?.length > 0 && (
+                  <Tag
+                    color={
+                      keyData[0].connected
+                        ? "green"
+                        : keyData[0].deviceID == null
+                        ? "orange"
+                        : "red"
+                    }
+                  >
+                    {keyData?.length > 0 && keyData[0].connected
+                      ? "Connected"
+                      : keyData[0].deviceID == null
+                      ? "No connection"
+                      : "Not Connected"}
+                  </Tag>
+                )}
+              </Typography.Text>
+            </li>
+          </ul>
+        </div>
+      </Menu.Item>
+      <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
         <Typography.Text type="secondary">
           {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
           {data.lastname &&

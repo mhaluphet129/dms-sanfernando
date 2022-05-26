@@ -160,7 +160,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='Indigenous Group'
+          placeholder="Indigenous Group"
           disabled={!otherInfo.isIP.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -198,7 +198,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='ID number'
+          placeholder="ID number"
           disabled={!otherInfo.hasID.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -236,7 +236,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='Specify'
+          placeholder="Specify"
           disabled={!otherInfo.isMember.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -282,18 +282,18 @@ export default ({ visible, setVisible, cb }) => {
       destroyOnClose
     >
       <Steps
-        size='small'
+        size="small"
         current={current}
-        type='navigation'
+        type="navigation"
         onChange={handleChange}
       >
-        <Step title='Part I' description='Personal Information' />
-        <Step title='Part II' description='Farm Profile' />
-        <Step title='Finish' description='Review' />
+        <Step title="Part I" description="Personal Information" />
+        <Step title="Part II" description="Farm Profile" />
+        <Step title="Finish" description="Review" />
       </Steps>
       <Divider />
       <Form
-        layout='vertical'
+        layout="vertical"
         onFinish={async (val) => {
           let flagError = 0;
 
@@ -395,10 +395,10 @@ export default ({ visible, setVisible, cb }) => {
             crops: val.type?.includes("Farmer")
               ? otherInfo.farmer.crops?.data || []
               : [],
-            livestock: val.type?.includes("Farmworker")
+            livestock: val.type?.includes("Farmer")
               ? otherInfo.farmer.livestock?.data || []
               : [],
-            poultry: val.type?.includes("Fisherfolk")
+            poultry: val.type?.includes("Farmer")
               ? otherInfo.farmer.poultry?.data || []
               : [],
             farmWorker: otherInfo.farmworker.status
@@ -458,36 +458,36 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Surname'
-                    name='surname'
+                    label="Surname"
+                    name="surname"
                     required={[{ required: true }]}
                   >
-                    <Input placeholder='Surname' allowClear />
+                    <Input placeholder="Surname" allowClear />
                   </Form.Item>
                   <Form.Item
-                    label='Firstname'
-                    name='firstname'
+                    label="Firstname"
+                    name="firstname"
                     required={[{ required: true }]}
                   >
-                    <Input placeholder='Firstname' allowClear />
+                    <Input placeholder="Firstname" allowClear />
                   </Form.Item>
-                  <Form.Item label='Middle Name' name='middlename'>
-                    <Input placeholder='Middle Name' allowClear />
+                  <Form.Item label="Middle Name" name="middlename">
+                    <Input placeholder="Middle Name" allowClear />
                   </Form.Item>
                 </Space>
               </Input.Group>
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Gender'
+                    label="Gender"
                     style={{ marginLeft: 5, width: 150 }}
-                    name='gender'
+                    name="gender"
                     required={[{ required: true }]}
-                    initialValue='male'
+                    initialValue="male"
                   >
                     <Select>
-                      <Select.Option value='male'>Male</Select.Option>
-                      <Select.Option value='female'>Female</Select.Option>
+                      <Select.Option value="male">Male</Select.Option>
+                      <Select.Option value="female">Female</Select.Option>
                     </Select>
                   </Form.Item>
                 </Space>
@@ -497,7 +497,7 @@ export default ({ visible, setVisible, cb }) => {
               <strong>Name and Gender</strong>
               <br />
               <span style={{ color: "#ff0a0a" }}>*</span>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 {" "}
                 means this field is required.
               </Typography.Text>
@@ -511,8 +511,8 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Barangay'
-                    name='barangay'
+                    label="Barangay"
+                    name="barangay"
                     required={[{ required: true }]}
                   >
                     <Select style={{ width: 200 }}>
@@ -522,8 +522,8 @@ export default ({ visible, setVisible, cb }) => {
                     </Select>
                   </Form.Item>
                   <Form.Item
-                    label='Street/Sitio/Subdv.'
-                    name='street'
+                    label="Street/Sitio/Subdv."
+                    name="street"
                     required={[{ required: true }]}
                   >
                     <Input allowClear />
@@ -544,12 +544,12 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Contact Number'
-                    name='contactnum'
+                    label="Contact Number"
+                    name="contactnum"
                     required={[{ required: true }]}
                   >
                     <InputNumber
-                      addonBefore='+63'
+                      addonBefore="+63"
                       maxLength={11}
                       controls={false}
                     />
@@ -569,13 +569,13 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Date of Birth'
-                    name='dateofbirth'
+                    label="Date of Birth"
+                    name="dateofbirth"
                     required={[{ required: true }]}
                   >
                     <DatePicker style={{ marginRight: 5 }} />
                   </Form.Item>
-                  <Form.Item label='Place of Birth' name='placeofbirth'>
+                  <Form.Item label="Place of Birth" name="placeofbirth">
                     <Input allowClear />
                   </Form.Item>
                 </Space>
@@ -593,9 +593,9 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Civil Status'
+                    label="Civil Status"
                     style={{ marginRight: 5 }}
-                    name='status'
+                    name="status"
                     required={[{ required: true }]}
                   >
                     <Select
@@ -603,15 +603,15 @@ export default ({ visible, setVisible, cb }) => {
                       style={{ width: 150 }}
                       onChange={(e) => setMaritalStatus(e)}
                     >
-                      <Select.Option value='Single'>Single</Select.Option>
-                      <Select.Option value='Married'>Married</Select.Option>
-                      <Select.Option value='Widowed'>Widowed</Select.Option>
-                      <Select.Option value='Separated'>Separated</Select.Option>
+                      <Select.Option value="Single">Single</Select.Option>
+                      <Select.Option value="Married">Married</Select.Option>
+                      <Select.Option value="Widowed">Widowed</Select.Option>
+                      <Select.Option value="Separated">Separated</Select.Option>
                     </Select>
                   </Form.Item>
                   <Form.Item
-                    label='Name of Spouse'
-                    name='spousename'
+                    label="Name of Spouse"
+                    name="spousename"
                     required={[{ required: true }]}
                   >
                     <Input
@@ -623,7 +623,7 @@ export default ({ visible, setVisible, cb }) => {
               </Input.Group>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Religion' name='religion'>
+                  <Form.Item label="Religion" name="religion">
                     <Input allowClear />
                   </Form.Item>
                 </Space>
@@ -641,24 +641,24 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Highest Formal Education'
+                    label="Highest Formal Education"
                     style={{ marginRight: 5 }}
-                    name='education'
-                    initialValue='None'
+                    name="education"
+                    initialValue="None"
                   >
-                    <Select value='None' style={{ width: 200 }}>
-                      <Select.Option value='None'>None</Select.Option>
-                      <Select.Option value='Elementary'>
+                    <Select value="None" style={{ width: 200 }}>
+                      <Select.Option value="None">None</Select.Option>
+                      <Select.Option value="Elementary">
                         Elementary
                       </Select.Option>
-                      <Select.Option value='High School'>
+                      <Select.Option value="High School">
                         High School
                       </Select.Option>
-                      <Select.Option value='Vocational'>
+                      <Select.Option value="Vocational">
                         Vocational
                       </Select.Option>
-                      <Select.Option value='College'>College</Select.Option>
-                      <Select.Option value='Post Graduate'>
+                      <Select.Option value="College">College</Select.Option>
+                      <Select.Option value="Post Graduate">
                         Post Graduate
                       </Select.Option>
                     </Select>
@@ -698,19 +698,19 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    label='Person to Contact'
-                    name='personToContact'
+                    label="Person to Contact"
+                    name="personToContact"
                     required={[{ required: true }]}
                   >
                     <Input allowClear />
                   </Form.Item>
                   <Form.Item
-                    label='Contact Number'
-                    name='emergencyContact'
+                    label="Contact Number"
+                    name="emergencyContact"
                     required={[{ required: true }]}
                   >
                     <InputNumber
-                      addonBefore='+63'
+                      addonBefore="+63"
                       maxLength={11}
                       controls={false}
                     />
@@ -731,14 +731,14 @@ export default ({ visible, setVisible, cb }) => {
               <Input.Group>
                 <Space>
                   <Form.Item
-                    name='type'
-                    label='Type of livelihood'
+                    name="type"
+                    label="Type of livelihood"
                     required={[{ required: true }]}
                   >
                     <Checkbox.Group>
                       <Checkbox
                         key={1}
-                        value='Farmer'
+                        value="Farmer"
                         onChange={(e) =>
                           setOtherInfo((el) => ({
                             ...el,
@@ -752,7 +752,7 @@ export default ({ visible, setVisible, cb }) => {
                       </Checkbox>
                       <Checkbox
                         key={2}
-                        value='Farmworker'
+                        value="Farmworker"
                         onChange={(e) =>
                           setOtherInfo((el) => ({
                             ...el,
@@ -766,7 +766,7 @@ export default ({ visible, setVisible, cb }) => {
                       </Checkbox>
                       <Checkbox
                         key={3}
-                        value='Fisherfolk'
+                        value="Fisherfolk"
                         onChange={(e) =>
                           setOtherInfo((el) => ({
                             ...el,
@@ -794,13 +794,13 @@ export default ({ visible, setVisible, cb }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Type of Farming Activity'>
+                  <Form.Item label="Type of Farming Activity">
                     <Checkbox.Group disabled={!otherInfo.farmer.status}>
                       <Row>
                         <Col>
                           <Checkbox
                             key={1}
-                            value='crops'
+                            value="crops"
                             onChange={(e) => {
                               setOtherInfo((el) => ({
                                 ...el,
@@ -828,10 +828,10 @@ export default ({ visible, setVisible, cb }) => {
                             Crops, please specify:
                           </Checkbox>
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             style={{ width: 500, marginLeft: 55 }}
-                            placeholder='Enter crops'
+                            placeholder="Enter crops"
                             onChange={(e) =>
                               setOtherInfo((el) => ({
                                 ...el,
@@ -856,7 +856,7 @@ export default ({ visible, setVisible, cb }) => {
                         <Col>
                           <Checkbox
                             key={1}
-                            value='livestocks'
+                            value="livestocks"
                             onChange={(e) =>
                               setOtherInfo((el) => ({
                                 ...el,
@@ -872,10 +872,10 @@ export default ({ visible, setVisible, cb }) => {
                             Livestock, please specify:
                           </Checkbox>
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             style={{ width: 500, marginLeft: 55 }}
-                            placeholder='Enter livestock'
+                            placeholder="Enter livestock"
                             onChange={(e) =>
                               setOtherInfo((el) => ({
                                 ...el,
@@ -900,7 +900,7 @@ export default ({ visible, setVisible, cb }) => {
                         <Col>
                           <Checkbox
                             key={1}
-                            value='poultry'
+                            value="poultry"
                             onChange={(e) =>
                               setOtherInfo((el) => ({
                                 ...el,
@@ -916,11 +916,11 @@ export default ({ visible, setVisible, cb }) => {
                             Poultry, please specify:
                           </Checkbox>
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             size={4}
                             style={{ width: 500, marginLeft: 55 }}
-                            placeholder='Enter poultry'
+                            placeholder="Enter poultry"
                             onChange={(e) =>
                               setOtherInfo((el) => ({
                                 ...el,
@@ -957,7 +957,7 @@ export default ({ visible, setVisible, cb }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Kind of Work'>
+                  <Form.Item label="Kind of Work">
                     <Checkbox.Group
                       onChange={(e) => {
                         setOtherInfo((el) => ({
@@ -971,22 +971,22 @@ export default ({ visible, setVisible, cb }) => {
                       disabled={!otherInfo.farmworker.status}
                     >
                       <Row>
-                        <Checkbox value='Land Preparation' key={1}>
+                        <Checkbox value="Land Preparation" key={1}>
                           Land Preparation
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Planting/Transplanting' key={2}>
+                        <Checkbox value="Planting/Transplanting" key={2}>
                           Planting/Transplanting
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Cultivation' key={3}>
+                        <Checkbox value="Cultivation" key={3}>
                           Cultivation
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Harvesting' key={4}>
+                        <Checkbox value="Harvesting" key={4}>
                           Harvesting
                         </Checkbox>
                       </Row>
@@ -994,10 +994,10 @@ export default ({ visible, setVisible, cb }) => {
                         <Col>
                           Others, please specify:
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             style={{ width: 500, marginLeft: 35 }}
-                            placeholder='Specify...'
+                            placeholder="Specify..."
                             disabled={!otherInfo.farmworker.status}
                             onChange={(e) => {
                               setOtherInfo((el) => ({
@@ -1031,7 +1031,7 @@ export default ({ visible, setVisible, cb }) => {
             <Col span={18} push={6}>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Type of Fishing Activity'>
+                  <Form.Item label="Type of Fishing Activity">
                     <Checkbox.Group
                       disabled={!otherInfo.fisherfolk.status}
                       onChange={(e) => {
@@ -1045,27 +1045,27 @@ export default ({ visible, setVisible, cb }) => {
                       }}
                     >
                       <Row>
-                        <Checkbox value='Fish Capture' key={1}>
+                        <Checkbox value="Fish Capture" key={1}>
                           Fish Capture
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Processing' key={2}>
+                        <Checkbox value="Fish Processing" key={2}>
                           Fish Processing
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Vending' key={3}>
+                        <Checkbox value="Fish Vending" key={3}>
                           Fish Vending
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Aquaculture' key={4}>
+                        <Checkbox value="Aquaculture" key={4}>
                           Aquaculture
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Gleaning' key={5}>
+                        <Checkbox value="Gleaning" key={5}>
                           Gleaning
                         </Checkbox>
                       </Row>
@@ -1073,10 +1073,10 @@ export default ({ visible, setVisible, cb }) => {
                         <Col>
                           Others, please specify:
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             style={{ width: 500, marginLeft: 35 }}
-                            placeholder='Enter crops'
+                            placeholder="Enter crops"
                             disabled={!otherInfo.fisherfolk.status}
                             onChange={(e) =>
                               setOtherInfo((el) => ({
@@ -1121,14 +1121,14 @@ export default ({ visible, setVisible, cb }) => {
           <Row>
             {/* Upload ID Picture */}
             <Col span={18} push={6}>
-              <Form layout='vertical'>
+              <Form layout="vertical">
                 <Input.Group>
                   <Space>
-                    <Form.Item label='Upload ID Picture'>
+                    <Form.Item label="Upload ID Picture">
                       <div>
                         <Upload
-                          action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                          listType='picture-card'
+                          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                          listType="picture-card"
                           maxCount={1}
                           onChange={() => {
                             setMaxCount(true);
@@ -1149,10 +1149,10 @@ export default ({ visible, setVisible, cb }) => {
           <Row>
             {/* Scanned Document */}
             <Col span={18} push={6}>
-              <Form layout='vertical'>
+              <Form layout="vertical">
                 <Input.Group>
                   <Space>
-                    <Form.Item label='Upload Scanned Documents'>
+                    <Form.Item label="Upload Scanned Documents">
                       <div>
                         <Upload
                           maxCount={3}
@@ -1187,7 +1187,7 @@ export default ({ visible, setVisible, cb }) => {
             )}
             {current < 2 && (
               <Button
-                type='primary'
+                type="primary"
                 onClick={handleNext}
                 style={{ width: 120 }}
               >
@@ -1195,7 +1195,7 @@ export default ({ visible, setVisible, cb }) => {
               </Button>
             )}
             {current == 2 && (
-              <Button type='primary' htmlType='submit'>
+              <Button type="primary" htmlType="submit">
                 Submit
               </Button>
             )}
