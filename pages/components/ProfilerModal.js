@@ -30,6 +30,9 @@ import TimelineDisplay from "../assets/js/TimelineDisplay";
 import ViewProfile from "./Livelihood/ViewProfile";
 import TitleText from "../assets/js/TitleText";
 
+import QRCode from "qrcode";
+import parse from "html-react-parser";
+
 import { getBase64 } from "../assets/js/utilities";
 
 export default ({ data, visible, setVisible }) => {
@@ -49,6 +52,9 @@ export default ({ data, visible, setVisible }) => {
   const [previewTitle, setPreviewTitle] = useState("");
 
   const [openModalPicture, setOpenModalPicture] = useState(false);
+
+  const [viewQRVisible, setViewQRVisible] = useState(false);
+  const [qr, setQr] = useState();
 
   const color = {
     Farmer: "green",
@@ -156,6 +162,12 @@ export default ({ data, visible, setVisible }) => {
     }
   }, [visible, trigger]);
 
+  useEffect(() => {
+    QRCode.toString(data?._id?.toString(), function (err, url) {
+      setQr(parse(url || ""));
+    });
+  }, [viewQRVisible]);
+
   return (
     <>
       <Modal
@@ -206,6 +218,17 @@ export default ({ data, visible, setVisible }) => {
           }}
           src={previewImage}
         />
+      </Modal>
+      <Modal
+        visible={viewQRVisible}
+        title="View QR"
+        footer={null}
+        onCancel={() => setViewQRVisible(false)}
+      >
+        <small style={{ color: "#aaa", textAlign: "center", width: "100%" }}>
+          id: {data?._id}
+        </small>
+        <div style={{ width: 200 }}>{qr}</div>
       </Modal>
       <Modal
         title="Logs"
@@ -344,6 +367,14 @@ export default ({ data, visible, setVisible }) => {
               }}
             >
               View Full Profile
+            </Button>
+            <Button
+              style={{ width: "100%", marginBottom: 5 }}
+              onClick={() => {
+                setViewQRVisible(true);
+              }}
+            >
+              View QR
             </Button>
             <Button
               type="dashed"
