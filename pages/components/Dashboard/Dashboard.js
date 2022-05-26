@@ -10,6 +10,8 @@ import {
   message,
   Modal,
   Button,
+  Avatar,
+  Alert,
 } from "antd";
 
 import {
@@ -78,8 +80,8 @@ export default () => {
       title: "Barangay",
       render: (_, row) => (
         <Typography.Link
-          href='#'
-          type='link'
+          href="#"
+          type="link"
           onClick={() => {
             setOpenFarmlandInfo(true);
             setLoc(row?._id);
@@ -277,13 +279,13 @@ export default () => {
               return (
                 <>
                   <Table.Summary.Row>
-                    <Table.Summary.Cell index={0} align='center'>
+                    <Table.Summary.Cell index={0} align="center">
                       Total
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={1} align='center'>
+                    <Table.Summary.Cell index={1} align="center">
                       <Typography.Text>{total}</Typography.Text>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} align='center'>
+                    <Table.Summary.Cell index={2} align="center">
                       <Typography.Text>
                         {_.length > 0 ? "100%" : "0%"}
                       </Typography.Text>
@@ -296,99 +298,176 @@ export default () => {
         </Card>
       </Modal>
       <div style={{ height: "100vh", overflowY: "scroll" }}>
-        <Card>
-          <Row gutter={[16, 16]}>
-            <Col span={8}>
-              <Card
-                style={{ height: 150 }}
-                onClick={() => console.log(data?.multipieData)}
+        <Row gutter={[16, 16]}>
+          <Col span={16}>
+            <Card>
+              <Row gutter={[16, 16]}>
+                <Col span={12}>
+                  <Card
+                    style={{ height: 150 }}
+                    onClick={() => console.log(data?.multipieData)}
+                  >
+                    <Typography.Title level={2}>
+                      {loader == "fetch" ? "-" : data?.visitToday}
+                    </Typography.Title>
+                    <Typography.Text>No. of Visitor Today</Typography.Text>
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card style={{ height: 150 }}>
+                    <Typography.Title level={2}>
+                      {" "}
+                      {loader == "fetch" ? "-" : data?.totalLivelihood}
+                    </Typography.Title>
+                    <Typography.Text>
+                      Total no. of registered livelihood
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      <Typography.Text strong>
+                        {loader == "fetch" ? 0 : data?.totalLivelihood}
+                      </Typography.Text>{" "}
+                      Livelihood Registered Today
+                    </Typography.Text>
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card style={{ height: 150 }}>
+                    <Typography.Title level={2}>
+                      {loader == "fetch" ? "-" : data?.totalPrograms}
+                    </Typography.Title>
+                    <Typography.Text>Total no. of Programs</Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      <Typography.Text strong>
+                        {loader == "fetch" ? 0 : data?.totalProgramsActive}
+                      </Typography.Text>{" "}
+                      Active Programs
+                    </Typography.Text>
+                  </Card>
+                </Col>
+                {/* <Col span={12}>
+                  <Card style={{ height: 150 }}>
+                    <Typography.Title level={2}>
+                      {loader == "fetch" ? "-" : data?.totalFarmers}
+                    </Typography.Title>
+                    <Typography.Text>Total no. of Farmers</Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      <Typography.Text strong>
+                        {loader == "fetch" ? 0 : data?.totalFarmersToday}
+                      </Typography.Text>{" "}
+                      Newly Added Today
+                    </Typography.Text>
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card style={{ height: 150 }}>
+                    <Typography.Title level={2}>
+                      {loader == "fetch" ? "-" : data?.totalFarmworkers}
+                    </Typography.Title>
+                    <Typography.Text>Total no. of Farmworkers</Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      <Typography.Text strong>
+                        {loader == "fetch" ? 0 : data?.totalFarmworkersToday}
+                      </Typography.Text>{" "}
+                      Newly Added Today
+                    </Typography.Text>
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card style={{ height: 150 }}>
+                    <Typography.Title level={2}>
+                      {loader == "fetch" ? "-" : data?.totalFisherfolks}
+                    </Typography.Title>
+                    <Typography.Text>Total no. of Fisherfolks</Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      <Typography.Text strong>
+                        {loader == "fetch" ? 0 : data?.totalFisherfolksToday}
+                      </Typography.Text>{" "}
+                      Newly Added Today
+                    </Typography.Text>
+                  </Card>
+                </Col> */}
+              </Row>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card style={{ height: 365 }}>
+              <Row>
+                <Col
+                  span={12}
+                  style={{
+                    display: "flex",
+                    justifyContent: "right",
+                    alignItems: "right",
+                  }}
+                >
+                  <Avatar
+                    src="http://openweathermap.org/img/wn/10d@2x.png"
+                    size={100}
+                    shape="square"
+                  />
+                </Col>
+                <Col span={12}>
+                  <Typography.Text style={{ fontSize: "1.5rem" }} strong>
+                    Today
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text strong>Thu 26 May </Typography.Text>
+                  <br />
+                  <Typography.Text>Rain</Typography.Text>
+                </Col>
+              </Row>
+              <Row
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
               >
-                <Typography.Title level={2}>
-                  {loader == "fetch" ? "-" : data?.visitToday}
-                </Typography.Title>
-                <Typography.Text>No. of Visitor Today</Typography.Text>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card style={{ height: 150 }}>
-                <Typography.Title level={2}>
-                  {" "}
-                  {loader == "fetch" ? "-" : data?.totalLivelihood}
-                </Typography.Title>
-                <Typography.Text>
-                  Total no. of registered livelihood
+                <Typography.Text
+                  style={{
+                    marginTop: 50,
+                    fontSize: "5.5rem",
+                    fontWeight: "bold",
+                    lineHeight: 0.3,
+                  }}
+                >
+                  23°C <br />
+                  <Typography.Text
+                    style={{ fontSize: "0.8rem", fontWeight: "bold" }}
+                  >
+                    Humidity: 93%
+                  </Typography.Text>
                 </Typography.Text>
-                <br />
-                <Typography.Text>
-                  <Typography.Text strong>
-                    {loader == "fetch" ? 0 : data?.totalLivelihood}
-                  </Typography.Text>{" "}
-                  Livelihood Registered Today
+                <Typography.Text
+                  style={{
+                    marginTop: 30,
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  San Fernando
                 </Typography.Text>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card style={{ height: 150 }}>
-                <Typography.Title level={2}>
-                  {loader == "fetch" ? "-" : data?.totalPrograms}
-                </Typography.Title>
-                <Typography.Text>Total no. of Programs</Typography.Text>
-                <br />
-                <Typography.Text>
-                  <Typography.Text strong>
-                    {loader == "fetch" ? 0 : data?.totalProgramsActive}
-                  </Typography.Text>{" "}
-                  Active Programs
-                </Typography.Text>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card style={{ height: 150 }}>
-                <Typography.Title level={2}>
-                  {loader == "fetch" ? "-" : data?.totalFarmers}
-                </Typography.Title>
-                <Typography.Text>Total no. of Farmers</Typography.Text>
-                <br />
-                <Typography.Text>
-                  <Typography.Text strong>
-                    {loader == "fetch" ? 0 : data?.totalFarmersToday}
-                  </Typography.Text>{" "}
-                  Newly Added Today
-                </Typography.Text>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card style={{ height: 150 }}>
-                <Typography.Title level={2}>
-                  {loader == "fetch" ? "-" : data?.totalFarmworkers}
-                </Typography.Title>
-                <Typography.Text>Total no. of Farmworkers</Typography.Text>
-                <br />
-                <Typography.Text>
-                  <Typography.Text strong>
-                    {loader == "fetch" ? 0 : data?.totalFarmworkersToday}
-                  </Typography.Text>{" "}
-                  Newly Added Today
-                </Typography.Text>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card style={{ height: 150 }}>
-                <Typography.Title level={2}>
-                  {loader == "fetch" ? "-" : data?.totalFisherfolks}
-                </Typography.Title>
-                <Typography.Text>Total no. of Fisherfolks</Typography.Text>
-                <br />
-                <Typography.Text>
-                  <Typography.Text strong>
-                    {loader == "fetch" ? 0 : data?.totalFisherfolksToday}
-                  </Typography.Text>{" "}
-                  Newly Added Today
-                </Typography.Text>
-              </Card>
-            </Col>
-          </Row>
-        </Card>
+              </Row>
+              <Alert
+                message="No Internet Connection"
+                type="error"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  bottom: -10,
+                }}
+              />
+            </Card>
+          </Col>
+        </Row>
         <Divider />
 
         {/* For Farmer */}
@@ -407,7 +486,7 @@ export default () => {
           <Col span={8}>
             <Card style={{ height: 375 }}>
               <Table
-                size='small'
+                size="small"
                 scroll={{ y: 300 }}
                 columns={columns}
                 pagination={false}
@@ -420,13 +499,13 @@ export default () => {
                   return (
                     <>
                       <Table.Summary.Row>
-                        <Table.Summary.Cell index={0} align='center'>
+                        <Table.Summary.Cell index={0} align="center">
                           Total
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={1} align='center'>
+                        <Table.Summary.Cell index={1} align="center">
                           <Typography.Text>{total}</Typography.Text>
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={2} align='center'>
+                        <Table.Summary.Cell index={2} align="center">
                           <Typography.Text>
                             {data?.farmlandSummary.length > 0 ? "100%" : "0%"}
                           </Typography.Text>

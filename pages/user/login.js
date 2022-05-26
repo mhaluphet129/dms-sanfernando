@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { Form, Tabs, Input, Button, Modal, message } from "antd";
+import { Form, Tabs, Input, Button, Modal, message, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
 import { isBrowser } from "react-device-detect";
 import axios from "axios";
@@ -128,8 +128,8 @@ export default () => {
             labelCol={{ span: 7 }}
           >
             <Form.Item
-              label='Name'
-              name='name'
+              label="Name"
+              name="name"
               rules={[
                 {
                   required: true,
@@ -140,8 +140,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Lastname'
-              name='lastname'
+              label="Lastname"
+              name="lastname"
               rules={[
                 {
                   required: true,
@@ -152,8 +152,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Username'
-              name='username'
+              label="Username"
+              name="username"
               rules={[
                 {
                   required: true,
@@ -164,8 +164,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Password'
-              name='password'
+              label="Password"
+              name="password"
               rules={[
                 {
                   required: true,
@@ -173,11 +173,11 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input type="password" />
             </Form.Item>
             <Form.Item
-              label='Confirm Password'
-              name='confirm'
+              label="Confirm Password"
+              name="confirm"
               rules={[
                 {
                   required: true,
@@ -185,7 +185,7 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input type="password" />
             </Form.Item>
           </Form>
         </Modal>
@@ -201,7 +201,7 @@ export default () => {
           }}
         >
           <div style={{ marginBottom: 10 }}>
-            <Image src='/logo.png' alt='me' width='128' height='64' />
+            <Image src="/logo.png" alt="me" width="128" height="64" />
           </div>
           <Form
             style={{
@@ -212,7 +212,38 @@ export default () => {
             }}
             onFinish={handleLogin}
           >
-            <Tabs activeKey={type} onChange={setType} type='card'>
+            <Form.Item
+              name="username"
+              rules={[
+                {
+                  required: type == "admin" ? true : false,
+                  message: "Please input your Username!",
+                },
+              ]}
+            >
+              <Input prefix={<UserOutlined />} size="large" />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                type="password"
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item name="remember" valuePropName="checked">
+              <Checkbox>Login as Super Admin</Checkbox>
+            </Form.Item>
+            {/* <Tabs activeKey={type} onChange={setType} type='card'>
               <Tabs.TabPane key='admin' tab='Admin'>
                 <Form.Item
                   name='username'
@@ -264,12 +295,12 @@ export default () => {
                   />
                 </Form.Item>
               </Tabs.TabPane>
-            </Tabs>
+            </Tabs> */}
             <Form.Item>
               <Button
-                type='primary'
+                type="primary"
                 style={{ width: "100%" }}
-                htmlType='submit'
+                htmlType="submit"
               >
                 Log In
               </Button>
