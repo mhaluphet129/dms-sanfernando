@@ -85,34 +85,109 @@ export default async function handler(req, res) {
             });
         }
 
-        if (mode == "fetch-search") {
-          const { searchWord } = req.query;
-          let search = {};
-          if (searchWord == " ") {
-            search = {};
-          } else {
-            var re = new RegExp(searchWord, "i");
-            search = {
-              $or: [{ "name.name": { $regex: re } }],
-            };
-          }
-          let data = await Livelihood.find({
-            $and: [search, { isActive: true }],
-          })
-            .collation({ locale: "en" })
-            .sort({ "name.name": 1 })
+        if (mode == "get-program") {
+          const { id } = req.query;
+          await Program.find({ _id: id })
+            .then((data) => {
+              console.log(data);
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Successfully fetched the data",
+                  data,
+                })
+              );
+              resolve();
+            })
             .catch((err) => {
               res.end(
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
+        }
 
-          res.status(200).end(
-            JSON.stringify({
-              success: true,
-              data,
+        if (mode == "fetch-search") {
+          let { searchWord, pattern } = req.query;
+          //pattern program, brgy
+
+          searchWord = searchWord.replace(`${pattern}:`, "");
+          let search = {};
+          if (searchWord == " ") {
+            search = {};
+          } else {
+            if (pattern == "program") {
+              var re = new RegExp(searchWord.trim(), "i");
+              search = {
+                $or: [{ name: { $regex: re } }],
+              };
+              let data = await Program.find({
+                $and: [search],
+              })
+                .collation({ locale: "en" })
+                .sort({ name: 1 })
+                .catch((err) => {
+                  res.end(
+                    JSON.stringify({ success: false, message: "Error: " + err })
+                  );
+                });
+
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  data,
+                })
+              );
+            } else if (pattern == "brgy") {
+              var re = new RegExp(searchWord.trim(), "i");
+              search = {
+                $or: [{ "address.barangay": { $regex: re } }],
+              };
+
+              let data = await Program.find({
+                $and: [search],
+              })
+                .collation({ locale: "en" })
+                .sort({ "address.barangay": 1 })
+                .catch((err) => {
+                  res.end(
+                    JSON.stringify({ success: false, message: "Error: " + err })
+                  );
+                });
+
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  data,
+                })
+              );
+            } else {
+              var re = new RegExp(searchWord.trim(), "i");
+              search = {
+                $or: [
+                  { "name.name": { $regex: re } },
+                  { "name.lastName": { $regex: re } },
+                ],
+              };
+            }
+
+            let data = await Livelihood.find({
+              $and: [search, { isActive: true }],
             })
-          );
+              .collation({ locale: "en" })
+              .sort({ "name.name": 1 })
+              .catch((err) => {
+                res.end(
+                  JSON.stringify({ success: false, message: "Error: " + err })
+                );
+              });
+
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                data,
+              })
+            );
+          }
           resolve();
         }
 

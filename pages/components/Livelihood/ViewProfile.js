@@ -202,7 +202,11 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
               >
                 <Typography.Text strong>
                   {TitleText(
-                    `${info?.name?.name} ${info?.name?.middleName[0]}. ${info?.name?.lastName}`
+                    `${info?.name?.name} ${
+                      info?.name?.middleName?.length > 0
+                        ? info?.name?.middleName[0] + "."
+                        : ""
+                    } ${info?.name?.lastName}`
                   )}
                 </Typography.Text>
                 <Typography.Text strong>
@@ -335,27 +339,27 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
                 Civil Status: <br />
-                <Typography.Text strong>
-                  {info?.civil?.civilStatus}
-                </Typography.Text>
+                <Typography.Text strong>{info?.civil}</Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Name of Spouse: <br />
                 <Typography.Text
-                  type={
-                    info?.civil?.civilStatus != "Married" ? "secondary" : null
-                  }
-                  strong={info?.civil.civilStatus != "Married"}
+                  type={info?.civil != "Married" ? "secondary" : null}
+                  strong={info?.civil != "Married"}
                 >
-                  {info?.civil?.civilStatus == "Married"
-                    ? info?.civil?.spouseName
-                    : "Not Applicable"}
+                  {info?.civil == "Married" ? "SPOUSENAME" : "Not Applicable"}
                 </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Religion: <br />
                 <Typography.Text strong>
-                  {TitleText(`${info?.religion}`)}
+                  {info?.religion ? (
+                    TitleText(`${info?.religion}`)
+                  ) : (
+                    <span style={{ color: "#aaa", fontStyle: "italic" }}>
+                      not set
+                    </span>
+                  )}
                 </Typography.Text>
               </Typography.Text>
             </Space>

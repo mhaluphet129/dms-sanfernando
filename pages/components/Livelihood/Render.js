@@ -38,16 +38,18 @@ export default ({ data, type, loader }) => {
       width: 180,
       render: (_, row) => (
         <Button
-          type="link"
+          type='link'
           onClick={async () => {
             setOpenModal(true);
             setRowData(row);
           }}
         >
           {titleText(
-            `${row?.name.name} ${row?.name.middleName[0] || ""}. ${
-              row?.name.lastName
-            } `
+            `${row?.name.name} ${
+              row?.name.middleName?.length > 0
+                ? row?.name.middleName[0] + "."
+                : ""
+            } ${row?.name.lastName}`
           )}
           {`${
             row?.name.extensionName?.length != 0 &&
@@ -72,7 +74,7 @@ export default ({ data, type, loader }) => {
       title: "Livelihood",
       width: 100,
       render: (_, row) => (
-        <Space direction="vertical">
+        <Space direction='vertical'>
           {row?.profile?.type.map((el, i) => (
             <Tag key={i} color={color[el]}>
               {el}
@@ -207,7 +209,7 @@ export default ({ data, type, loader }) => {
         <Col span={8} offset={1}>
           <Card>
             <Space>
-              <Space direction="vertical">
+              <Space direction='vertical'>
                 {type == "Farmer" && (
                   <Card
                     title={<span>{titleText(`${activeTab}`)}</span>}

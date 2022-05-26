@@ -24,6 +24,7 @@ import Page from "../components/Page";
 import ProfilerModal from "../components/ProfilerModal";
 import SidePane from "../components/Sider";
 import Profiler from "../components/ProfilerModal";
+import ViewProgam from "../components/Program/ViewProgam";
 
 import { UserOutlined } from "@ant-design/icons";
 const { Content, Header } = Layout;
@@ -31,9 +32,6 @@ let socket;
 
 const renderItem = (title, count) => ({
   value: title,
-  onClick: () => {
-    alert(title);
-  },
   label: (
     <div
       style={{
@@ -55,7 +53,6 @@ export default () => {
   const [keyData, setKeyData] = useState();
   const [openProfiler, setOpenProfiler] = useState(false);
   const [profilerData, setProfilerData] = useState();
-  const [selected, setSelected] = useState();
   const [names, setSearchNames] = useState([]);
   const timerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
@@ -65,6 +62,9 @@ export default () => {
   const [drawerData, setDrawerData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState();
+  const [viewModal, setViewModal] = useState(false);
+  const [modalData, setModalData] = useState();
+  const [typeSearch, setTypeSearch] = useState("");
 
   const [total, setTotal] = useState({
     farmer: 0,
@@ -83,9 +83,27 @@ export default () => {
     },
   ];
 
-  const handleSelect = async (e) => {
-    if (isTyping) {
-      let id = names.filter((el) => el.value == e)[0].id;
+  const handleSelect = async (e, i) => {
+    if (typeSearch == "program") {
+      let id = i.id;
+
+      let res = await axios.get("/api/main", {
+        params: {
+          mode: "get-program",
+          id,
+        },
+      });
+
+      if (res?.data.success) {
+        setModalData(res?.data.data[0]);
+        setViewModal(true);
+      }
+    } else if (typeSearch == "brgy") {
+    } else if (typeSearch == "") {
+      setSelectedName(e);
+      setOpenDrawer(true);
+    } else {
+      let id = i.id;
 
       let res = await axios.get("/api/main", {
         params: {
@@ -98,27 +116,63 @@ export default () => {
         setRowData(res?.data.data[0]);
         setOpenModal(true);
       }
-    } else {
-      setSelectedName(e);
-      setOpenDrawer(true);
     }
   };
 
   const searchName = async (searchKeyword) => {
+    let wordKey = searchKeyword.split(":")[0];
     let { data } = await axios.get("/api/main", {
       params: {
         mode: "fetch-search",
         searchWord: searchKeyword,
+        pattern: wordKey,
       },
     });
 
     if (data.success) {
-      data.data.map((el) => {
-        setSearchNames((el2) => [
-          ...el2,
-          { value: `${el.name.name} ${el.name.lastName}`, id: el?._id },
-        ]);
-      });
+      setTypeSearch(wordKey.trim());
+      if (wordKey.trim() == "program") {
+        let obj = { label: "Programs", options: [] };
+
+        data?.data.forEach((el) => {
+          obj["options"].push({
+            value: el.name,
+            id: el?._id,
+            label: (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                {el.name}
+              </div>
+            ),
+          });
+        });
+        setSearchNames((el2) => [...el2, obj]);
+      } else if (wordKey.trim() == "brgy") {
+      } else {
+        let obj = { label: "Profile", options: [] };
+
+        data?.data.forEach((el) => {
+          obj["options"].push({
+            value: `${el.name.name} ${el.name.lastName}`,
+            id: el?._id,
+            label: (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                {`${el.name.name} ${el.name.lastName}`}
+              </div>
+            ),
+          });
+        });
+        setSearchNames((el2) => [...el2, obj]);
+      }
     } else console.log(data.message);
   };
 
@@ -289,6 +343,12 @@ export default () => {
 
   return (
     <>
+      <ViewProgam
+        viewModal={viewModal}
+        setViewModal={setViewModal}
+        modalData={modalData}
+        cb={() => setTrigger(trigger + 1)}
+      />
       <Profiler data={rowData} visible={openModal} setVisible={setOpenModal} />
       <Drawer
         visible={openDrawer}
@@ -337,7 +397,14 @@ export default () => {
           }}
         >
           <Row style={{ width: "100%" }}>
-            <Col span={2}>
+            <Col
+              span={3}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Typography.Title
                 style={{ marginTop: 15, marginLeft: -40 }}
                 className='clock'
@@ -347,7 +414,7 @@ export default () => {
               </Typography.Title>
             </Col>
             <Col
-              span={16}
+              span={15}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -361,11 +428,10 @@ export default () => {
                 options={isTyping ? names : options}
                 filterOption={(inputValue, option) =>
                   option.value
-                    .toUpperCase()
+                    ?.toUpperCase()
                     .indexOf(inputValue.toUpperCase()) !== -1
                 }
                 onChange={(_, e) => {
-                  setSelected(e);
                   setSearchNames([]);
                   runTimer(_);
                   setIsTyping(_.length != 0);
@@ -376,7 +442,15 @@ export default () => {
                 <Input.Search size='large' placeholder='Search profile here' />
               </AutoComplete>
             </Col>
-            <Col span={1} offset={5}>
+            <Col
+              span={1}
+              offset={5}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Dropdown overlay={menu}>
                 <Avatar
                   size='large'

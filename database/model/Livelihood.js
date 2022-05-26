@@ -12,6 +12,18 @@ let nameSchema = new mongoose.Schema({
   },
 });
 
+let spouseSchema = new mongoose.Schema({
+  name: {
+    type: String,
+  },
+  middleName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+});
+
 let addressSchema = new mongoose.Schema({
   barangay: {
     type: String,
@@ -26,15 +38,6 @@ let birthSchema = new mongoose.Schema({
     type: String,
   },
   placeOfBirth: {
-    type: String,
-  },
-});
-
-let civilSchema = new mongoose.Schema({
-  civilStatus: {
-    type: String,
-  },
-  spouseName: {
     type: String,
   },
 });
@@ -136,11 +139,14 @@ let livelihoodSchema = new mongoose.Schema(
     profileImage: {
       type: String,
     },
+    civil: {
+      type: String,
+    },
     profile: profileSchema,
+    spouse: spouseSchema,
     hasCoopOrAssoc: memberSchema,
     address: addressSchema,
     birth: birthSchema,
-    civil: civilSchema,
     ethnicity: ethnicitySchema,
     government: governmentSchema,
     emergency: emergencySchema,

@@ -60,13 +60,12 @@ export default () => {
         position: "top",
       },
     },
-    // lagyan mo to min 0, max = surban
-    // scales: {
-    //   y: {
-    //     min: 0,
-    //     max: 100,
-    //   },
-    // },
+    scales: {
+      y: {
+        min: 0,
+        max: 10,
+      },
+    },
   };
 
   const farmerdata = {
@@ -179,7 +178,7 @@ export default () => {
           backgroundColor: "rgba(255, 0, 0, 1)",
           data: Array(jason.barangays.length).fill(0),
         };
-        let fishfolk = {
+        let fisherfolk = {
           label: data?.res?.bar[2]?._id,
           backgroundColor: "rgba(0, 255, 0, 1)",
           data: Array(jason.barangays.length).fill(0),
@@ -195,13 +194,13 @@ export default () => {
         });
         data?.res?.bar[2]?.barangay.forEach((el) => {
           if (jason.barangays.includes(el))
-            fishfolk.data[jason.barangays.indexOf(el)]++;
+            fisherfolk.data[jason.barangays.indexOf(el)]++;
         });
 
         let _data = [];
-        if (farmer.length > 0) _data.push(farmer);
-        if (farmworker > 0) _data.push(farmworker);
-        if (fishfolk > 0) _data.push(fishfolk);
+        if (farmer.data.some((el) => el > 0)) _data.push(farmer);
+        if (farmworker.data.some((el) => el > 0)) _data.push(farmworker);
+        if (fisherfolk.data.some((el) => el > 0)) _data.push(fisherfolk);
         setBarData(_data);
 
         setNewData(() => {
@@ -393,16 +392,15 @@ export default () => {
         <Divider />
 
         {/* For Farmer */}
-        {farmerdata.length > 0 ? (
-          <Row>
-            {/* For Farmer Bargraph */}
-            <Col span={24}>
-              <Card style={{ height: 700 }}>
-                <Bar options={options} data={farmerdata} />
-              </Card>
-            </Col>
-          </Row>
-        ) : null}
+        <Row>
+          {/* For Farmer Bargraph */}
+          <Col span={24}>
+            <Card>
+              <Button>View Table List of barangay</Button>
+              <Bar options={options} data={farmerdata} />
+            </Card>
+          </Col>
+        </Row>
 
         <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
           {/* For Farmer Total hectares */}

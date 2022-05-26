@@ -162,12 +162,12 @@ export default ({ data, visible, setVisible }) => {
         visible={openModalPicture}
         onCancel={() => setOpenModalPicture(false)}
         closable={false}
-        okText="Upload"
+        okText='Upload'
         onOk={handleUpload2}
       >
         <Upload
           onChange={(e) => setProfile(e.file)}
-          listType="picture-card"
+          listType='picture-card'
           onPreview={handlePreview}
         >
           {!profile ? uploadButton : null}
@@ -177,13 +177,13 @@ export default ({ data, visible, setVisible }) => {
         visible={openModal}
         onCancel={() => setOpenModal(false)}
         closable={false}
-        okText="Upload"
+        okText='Upload'
         onOk={handleUpload}
       >
         <Upload
           fileList={files}
           onPreview={handlePreview}
-          listType="picture-card"
+          listType='picture-card'
           onChange={(e) => {
             setFiles(e.fileList);
             setOpenModal(true);
@@ -200,7 +200,7 @@ export default ({ data, visible, setVisible }) => {
         onCancel={() => setPreviewVisible(false)}
       >
         <img
-          alt="example"
+          alt='example'
           style={{
             width: "100%",
           }}
@@ -208,11 +208,11 @@ export default ({ data, visible, setVisible }) => {
         />
       </Modal>
       <Modal
-        title="Logs"
+        title='Logs'
         visible={loggerModal}
         onCancel={() => setLoggerModal(false)}
         closable={false}
-        okText="Add"
+        okText='Add'
         onOk={form.submit}
       >
         <Form
@@ -240,11 +240,11 @@ export default ({ data, visible, setVisible }) => {
             }
           }}
         >
-          <Form.Item label="Message" name="message">
+          <Form.Item label='Message' name='message'>
             <Input.TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
           </Form.Item>
-          <Form.Item label="Date" initialValue={moment()} name="date">
-            <DatePicker defaultValue={moment()} format="MM-DD-YYYY" />
+          <Form.Item label='Date' initialValue={moment()} name='date'>
+            <DatePicker defaultValue={moment()} format='MM-DD-YYYY' />
           </Form.Item>
         </Form>
       </Modal>
@@ -268,7 +268,7 @@ export default ({ data, visible, setVisible }) => {
             </Tag>
 
             <div style={{ float: "right" }}>
-              <Space direction="horizontal">
+              <Space direction='horizontal'>
                 <Button
                   style={{ width: "100%", marginBottom: 5 }}
                   onClick={() => setOpenModal(true)}
@@ -276,7 +276,7 @@ export default ({ data, visible, setVisible }) => {
                   Upload File
                 </Button>
                 <Button
-                  type="primary"
+                  type='primary'
                   style={{ width: "100%", marginBottom: 5 }}
                   onClick={() => setLoggerModal(true)}
                 >
@@ -346,8 +346,8 @@ export default ({ data, visible, setVisible }) => {
               View Full Profile
             </Button>
             <Button
-              type="dashed"
-              size="large"
+              type='dashed'
+              size='large'
               style={{
                 backgroundColor: "#70e040",
                 color: "#fff",
@@ -380,20 +380,24 @@ export default ({ data, visible, setVisible }) => {
           </Col>
           <Col span={8}>
             <Space
-              direction="vertical"
-              size="small"
+              direction='vertical'
+              size='small'
               style={{ display: "flex" }}
             >
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Name: <br />
                 <Typography.Text strong>
                   {TitleText(
-                    `${data?.name?.name} ${data?.name?.middleName[0]}. ${data?.name?.lastName}`
+                    `${data?.name?.name} ${
+                      data?.name?.middleName?.length > 0
+                        ? data?.name?.middleName[0] + "."
+                        : ""
+                    } ${data?.name?.lastName}`
                   )}
                 </Typography.Text>
               </Typography.Text>
 
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Address: <br />
                 <Typography.Text strong>
                   {TitleText(
@@ -401,11 +405,11 @@ export default ({ data, visible, setVisible }) => {
                   )}
                 </Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Contact Number: <br />
                 <Typography.Text strong>{data?.contactNum}</Typography.Text>
               </Typography.Text>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 In case of emergency: <br />
                 <Typography.Text strong>
                   {data?.emergency?.name || "Not set"}

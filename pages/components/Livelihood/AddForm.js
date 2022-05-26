@@ -428,6 +428,12 @@ export default ({ visible, setVisible, cb }) => {
             livestock: [...el.arr2],
           }));
 
+          let spouseObj = {
+            name: val.spousename,
+            middleName: val.spousemiddlename,
+            lastName: val.spousesurname,
+          };
+
           const newLivelihood = {
             ...obj,
             name: nameObj,
@@ -435,10 +441,11 @@ export default ({ visible, setVisible, cb }) => {
             hasCoopOrAssoc: hasCoopOrAssocObj,
             address: addressObj,
             birth: birthObj,
-            civil: civilObj,
+            civil: val.status,
             ethnicity: ethnicObj,
             government: governObj,
             emergency: emergencyObj,
+            spouse: spouseObj,
           };
 
           let { data } = await axios.post("/api/livelihood", {
@@ -614,22 +621,42 @@ export default ({ visible, setVisible, cb }) => {
                       <Select.Option value='Separated'>Separated</Select.Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item
-                    label='Name of Spouse'
-                    name='spousename'
-                    required={[{ required: true }]}
-                  >
-                    <Input
-                      disabled={maritalStatus.toLowerCase() != "married"}
-                      allowClear
-                    />
+
+                  <Form.Item label='Religion' name='religion'>
+                    <Input allowClear />
                   </Form.Item>
                 </Space>
               </Input.Group>
               <Input.Group>
                 <Space>
-                  <Form.Item label='Religion' name='religion'>
-                    <Input allowClear />
+                  <Form.Item
+                    label='Spouse Name'
+                    name='spousesurname'
+                    required={[{ required: true }]}
+                  >
+                    <Input
+                      disabled={maritalStatus.toLowerCase() != "married"}
+                      placeholder='Surname'
+                      allowClear
+                    />
+                  </Form.Item>
+                  <Form.Item name='spousename' label=' '>
+                    <Input
+                      disabled={maritalStatus.toLowerCase() != "married"}
+                      placeholder='Name'
+                      allowClear
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name='spousemiddlename'
+                    label=' '
+                    required={[{ required: true }]}
+                  >
+                    <Input
+                      disabled={maritalStatus.toLowerCase() != "married"}
+                      placeholder='Middlename'
+                      allowClear
+                    />
                   </Form.Item>
                 </Space>
               </Input.Group>
