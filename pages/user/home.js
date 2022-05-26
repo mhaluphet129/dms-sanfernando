@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Clock from "react-digital-clock";
 import {
   Layout,
@@ -6,8 +6,14 @@ import {
   Avatar,
   Dropdown,
   Menu,
-  Button,
+  AutoComplete,
   Tag,
+  Input,
+  Row,
+  Col,
+  Table,
+  Drawer,
+  Spin,
   message,
 } from "antd";
 import Cookies from "js-cookie";
@@ -17,9 +23,31 @@ import axios from "axios";
 import Page from "../components/Page";
 import ProfilerModal from "../components/ProfilerModal";
 import SidePane from "../components/Sider";
+import Profiler from "../components/ProfilerModal";
 
+import { UserOutlined } from "@ant-design/icons";
 const { Content, Header } = Layout;
 let socket;
+
+const renderItem = (title, count) => ({
+  value: title,
+  onClick: () => {
+    alert(title);
+  },
+  label: (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
+      {title}
+      <span>
+        <UserOutlined /> {count}
+      </span>
+    </div>
+  ),
+});
 
 export default () => {
   const [page, setPage] = useState();
@@ -27,6 +55,81 @@ export default () => {
   const [keyData, setKeyData] = useState();
   const [openProfiler, setOpenProfiler] = useState(false);
   const [profilerData, setProfilerData] = useState();
+  const [selected, setSelected] = useState();
+  const [names, setSearchNames] = useState([]);
+  const timerRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedName, setSelectedName] = useState("");
+  const [loader, setLoader] = useState("");
+  const [drawerData, setDrawerData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [rowData, setRowData] = useState();
+
+  const [total, setTotal] = useState({
+    farmer: 0,
+    farmworker: 0,
+    fisherfolk: 0,
+  });
+
+  const options = [
+    {
+      label: "Power Search",
+      options: [
+        renderItem("Farmer", total.farmer),
+        renderItem("Farmworker", total.farmworker),
+        renderItem("Fisherfolk", total.fisherfolk),
+      ],
+    },
+  ];
+
+  const handleSelect = async (e) => {
+    if (isTyping) {
+      let id = names.filter((el) => el.value == e)[0].id;
+
+      let res = await axios.get("/api/main", {
+        params: {
+          mode: "qr",
+          id,
+        },
+      });
+
+      if (res?.data.success) {
+        setRowData(res?.data.data[0]);
+        setOpenModal(true);
+      }
+    } else {
+      setSelectedName(e);
+      setOpenDrawer(true);
+    }
+  };
+
+  const searchName = async (searchKeyword) => {
+    let { data } = await axios.get("/api/main", {
+      params: {
+        mode: "fetch-search",
+        searchWord: searchKeyword,
+      },
+    });
+
+    if (data.success) {
+      data.data.map((el) => {
+        setSearchNames((el2) => [
+          ...el2,
+          { value: `${el.name.name} ${el.name.lastName}`, id: el?._id },
+        ]);
+      });
+    } else console.log(data.message);
+  };
+
+  const runTimer = (searchKeyword) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(function () {
+      searchName(searchKeyword);
+    }, 500);
+  };
 
   const menu = () => (
     <Menu>
@@ -35,7 +138,7 @@ export default () => {
           <ul style={{ listStyle: "none" }}>
             <li>
               <Typography.Text
-                type="secondary"
+                type='secondary'
                 onClick={() => console.log(keyData)}
               >
                 System Key:{" "}
@@ -45,7 +148,7 @@ export default () => {
               </Typography.Text>
             </li>
             <li>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Device ID:
                 <Typography.Text keyboard>
                   {keyData?.length > 0 ? keyData[0].deviceID : ""}
@@ -53,7 +156,7 @@ export default () => {
               </Typography.Text>
             </li>
             <li>
-              <Typography.Text type="secondary">
+              <Typography.Text type='secondary'>
                 Status:{" "}
                 {keyData?.length > 0 && (
                   <Tag
@@ -78,18 +181,18 @@ export default () => {
         </div>
       </Menu.Item>
       <Menu.Item style={{ marginTop: 10, marginBottom: 10 }}>
-        <Typography.Text type="secondary">
+        <Typography.Text type='secondary'>
           {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
           {data.lastname &&
             data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}{" "}
           {`(${data?.role})`}
         </Typography.Text>
       </Menu.Item>
-      <Menu.Item key="2">
+      <Menu.Item key='2'>
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
       <Menu.Item
-        key="3"
+        key='3'
         onClick={() => {
           socket.emit("remove-system", Cookies.get("key"));
           Cookies.remove("user");
@@ -99,7 +202,7 @@ export default () => {
           window.location.href = "/user/login";
         }}
       >
-        <Typography.Text type="danger">Logout</Typography.Text>
+        <Typography.Text type='danger'>Logout</Typography.Text>
       </Menu.Item>
     </Menu>
   );
@@ -154,8 +257,68 @@ export default () => {
     });
   }, []);
 
+  //search api call
+  useEffect(async () => {
+    if (!isTyping) {
+      let res = await axios.get("/api/main", {
+        params: {
+          mode: "get-total",
+        },
+      });
+      if (res?.data.success) setTotal(res?.data.data);
+    }
+  }, [isTyping]);
+
+  //drawer api call
+  useEffect(async () => {
+    if (selectedName != "") {
+      setLoader("fetch-drawer");
+      let res = await axios.get("/api/main", {
+        params: {
+          mode: "get-specific",
+          name: selectedName,
+        },
+      });
+
+      if (res?.data.success) {
+        setLoader("");
+        setDrawerData(res?.data.data);
+      }
+    }
+  }, [selectedName]);
+
   return (
     <>
+      <Profiler data={rowData} visible={openModal} setVisible={setOpenModal} />
+      <Drawer
+        visible={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        title={`${selectedName} List`}
+      >
+        <Spin spinning={loader == "fetch-drawer"}>
+          <Table
+            dataSource={drawerData}
+            pagination={{
+              pageSize: 10,
+            }}
+            columns={[
+              {
+                title: "Full Name",
+                render: (_, row) => (
+                  <Typography.Link
+                    onClick={() => {
+                      setOpenModal(true);
+                      setRowData(row);
+                    }}
+                  >
+                    {`${row?.name.name} ${row?.name.lastName}`}
+                  </Typography.Link>
+                ),
+              },
+            ]}
+          />
+        </Spin>
+      </Drawer>
       <ProfilerModal
         data={profilerData}
         visible={openProfiler}
@@ -170,27 +333,61 @@ export default () => {
             position: "fixed",
             zIndex: 1,
             width: "100%",
+            background: "#44ac5c",
           }}
         >
-          <div>
-            <Typography.Title
-              style={{ marginTop: 15, marginLeft: -40 }}
-              className="clock"
-              level={3}
+          <Row style={{ width: "100%" }}>
+            <Col span={2}>
+              <Typography.Title
+                style={{ marginTop: 15, marginLeft: -40 }}
+                className='clock'
+                level={3}
+              >
+                <Clock />
+              </Typography.Title>
+            </Col>
+            <Col
+              span={16}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <Clock />
-            </Typography.Title>
-          </div>
-
-          <Dropdown overlay={menu}>
-            <Avatar
-              size="large"
-              style={{ marginLeft: "auto", cursor: "pointer" }}
-            >
-              {data.name && data.name[0].toUpperCase()}
-              {data.lastname && data.lastname[0].toUpperCase()}
-            </Avatar>
-          </Dropdown>
+              <AutoComplete
+                style={{
+                  width: 450,
+                }}
+                options={isTyping ? names : options}
+                filterOption={(inputValue, option) =>
+                  option.value
+                    .toUpperCase()
+                    .indexOf(inputValue.toUpperCase()) !== -1
+                }
+                onChange={(_, e) => {
+                  setSelected(e);
+                  setSearchNames([]);
+                  runTimer(_);
+                  setIsTyping(_.length != 0);
+                }}
+                onSelect={handleSelect}
+                autoFocus
+              >
+                <Input.Search size='large' placeholder='Search profile here' />
+              </AutoComplete>
+            </Col>
+            <Col span={1} offset={5}>
+              <Dropdown overlay={menu}>
+                <Avatar
+                  size='large'
+                  style={{ marginLeft: "auto", cursor: "pointer" }}
+                >
+                  {data.name && data.name[0].toUpperCase()}
+                  {data.lastname && data.lastname[0].toUpperCase()}
+                </Avatar>
+              </Dropdown>
+            </Col>
+          </Row>
         </Header>
 
         <SidePane setPage={setPage} />

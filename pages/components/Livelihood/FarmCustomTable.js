@@ -182,7 +182,7 @@ export default ({ data, setData }) => {
                       dataSource={row.arr1?.length == 0 ? [null] : row.arr1}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
-                      rowKey={(row) => row._id}
+                      // rowKey={(row) => row._id}
                       bordered
                     />
                   </Col>
@@ -194,7 +194,7 @@ export default ({ data, setData }) => {
                       dataSource={row.arr2?.length == 0 ? [null] : row.arr2}
                       pagination={false}
                       style={{ border: "1px solid #aaa" }}
-                      rowKey={(row) => row._id}
+                      // rowKey={(row) => row._id}
                       bordered
                     />
                   </Col>

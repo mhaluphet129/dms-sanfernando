@@ -12,6 +12,7 @@ import {
   AutoComplete,
   Popconfirm,
   notification,
+  message,
 } from "antd";
 import axios from "axios";
 
@@ -108,9 +109,11 @@ export default ({
     });
 
     if (data.success) {
-      setSelected(data.data);
       data.data.map((el) => {
-        setSearchNames((el2) => [...el2, { value: el.name.name }]);
+        setSearchNames((el2) => [
+          ...el2,
+          { value: `${el.name.name} ${el.name.lastName}`, id: el?._id },
+        ]);
       });
     } else console.log(data.message);
   };
@@ -124,24 +127,30 @@ export default ({
     }, 500);
   };
 
-  const handleAddProgram = async (_id) => {
-    let { data } = await axios.post("/api/programs", {
-      payload: {
-        mode: "add-to-programs",
-        programID: id,
-        livelihoodID: _id,
-        name: title,
-      },
-    });
-
-    if (data.success) {
-      setAddClientModal(false);
-      notification["success"]({
-        placement: "bottomRight",
-        description: data.message,
+  const handleAddProgram = async () => {
+    if (Object.keys(selected).length > 0) {
+      let { data } = await axios.post("/api/programs", {
+        payload: {
+          mode: "add-to-programs",
+          programID: id,
+          livelihoodID: selected.id,
+          name: title,
+        },
       });
-      setTrigger(trigger + 1);
-    }
+
+      if (data.success) {
+        setAddClientModal(false);
+        notification["success"]({
+          placement: "bottomRight",
+          description: data.message,
+        });
+        setTrigger(trigger + 1);
+      } else
+        notification["error"]({
+          placement: "bottomRight",
+          description: data.message,
+        });
+    } else message.error("Select a profile is a must.");
   };
 
   useEffect(async () => {
@@ -172,9 +181,7 @@ export default ({
         <>
           <Row>
             <Col span={12}>
-              <Typography.Title level={5} onClick={() => console.log(names)}>
-                {title}
-              </Typography.Title>
+              <Typography.Title level={5}>{title}</Typography.Title>
             </Col>
             <Col span={12}>
               <Button
@@ -229,24 +236,14 @@ export default ({
               option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
               -1
             }
-            onChange={(e) => {
-              setSelected([]);
+            onChange={(_, e) => {
+              setSelected(e);
               setSearchNames([]);
-              runTimer(e);
+              runTimer(_);
             }}
             allowClear
           />
-          <Button
-            style={{ width: 130 }}
-            onClick={() => {
-              if (selected[0]?.programs.includes(id))
-                notification["warn"]({
-                  placement: "bottomRight",
-                  description: "This person is already added in the program",
-                });
-              else handleAddProgram(selected[0]?._id);
-            }}
-          >
+          <Button style={{ width: 130 }} onClick={handleAddProgram}>
             ADD
           </Button>
         </Space>

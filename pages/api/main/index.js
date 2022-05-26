@@ -15,6 +15,56 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { mode } = req.query;
 
+        if (mode == "get-total") {
+          try {
+            let farmer = await Livelihood.countDocuments({
+              "profile.type": { $in: ["Farmer"] },
+              isActive: true,
+            });
+            let farmworker = await Livelihood.countDocuments({
+              "profile.type": { $in: ["Farmworker"] },
+              isActive: true,
+            });
+            let fisherfolk = await Livelihood.countDocuments({
+              "profile.type": { $in: ["Fisherfolk"] },
+              isActive: true,
+            });
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                data: { farmer, farmworker, fisherfolk },
+              })
+            );
+            resolve();
+          } catch {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          }
+        }
+
+        if (mode == "get-specific") {
+          const { name } = req.query;
+
+          try {
+            let data = await Livelihood.find({
+              "profile.type": { $in: [name] },
+              isActive: true,
+            });
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                data,
+              })
+            );
+            resolve();
+          } catch {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          }
+        }
+
         if (mode == "qr") {
           const { id } = req.query;
           await Livelihood.find({ _id: id })
@@ -33,6 +83,37 @@ export default async function handler(req, res) {
                 JSON.stringify({ success: false, message: "Error: " + err })
               );
             });
+        }
+
+        if (mode == "fetch-search") {
+          const { searchWord } = req.query;
+          let search = {};
+          if (searchWord == " ") {
+            search = {};
+          } else {
+            var re = new RegExp(searchWord, "i");
+            search = {
+              $or: [{ "name.name": { $regex: re } }],
+            };
+          }
+          let data = await Livelihood.find({
+            $and: [search, { isActive: true }],
+          })
+            .collation({ locale: "en" })
+            .sort({ "name.name": 1 })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              data,
+            })
+          );
+          resolve();
         }
 
         if (mode == "dashboard-data") {

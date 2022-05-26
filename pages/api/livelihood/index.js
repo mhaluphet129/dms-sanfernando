@@ -91,6 +91,56 @@ export default async function handler(req, res) {
               resolve();
             });
         }
+
+        if (mode == "get-land-info") {
+          const { location } = req.query;
+
+          let data = await Livelihood.aggregate([
+            {
+              $match: {
+                "address.barangay": location,
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  name: "$name.name",
+                  lastname: "$name.lastName",
+                },
+                farmlandID: {
+                  $push: "$farmlandID",
+                },
+              },
+            },
+            {
+              $unwind: "$farmlandID",
+            },
+            {
+              $lookup: {
+                from: "farmlands",
+                let: { farmlandID: "$farmlandID" },
+                pipeline: [
+                  { $match: { $expr: { $in: ["$_id", "$$farmlandID"] } } },
+                ],
+                as: "farmobj",
+              },
+            },
+            {
+              $unwind: "$farmobj",
+            },
+          ]).catch((error) => {
+            res.end(JSON.stringify(error));
+            resolve();
+          });
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              data,
+            })
+          );
+          resolve();
+        }
       });
     }
     case "POST": {

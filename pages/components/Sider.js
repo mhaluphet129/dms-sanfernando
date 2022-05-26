@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, Layout } from "antd";
 import {
   ApartmentOutlined,
@@ -7,6 +7,7 @@ import {
   LoginOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
+import Cookie from "js-cookie";
 
 import Admin from "./Admin/Admin";
 import Farmers from "./Livelihood";
@@ -18,13 +19,13 @@ import EventHistory from "./EventHistory";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
-  useEffect(
-    () =>
-      setPage({
-        children: <Dashboard />,
-      }),
-    []
-  );
+  const [role, setRole] = useState();
+  useEffect(() => {
+    setPage({
+      children: <Dashboard />,
+    });
+    setRole(JSON.parse(Cookie.get("user")).role);
+  }, []);
 
   return (
     <Sider
@@ -46,17 +47,19 @@ export default ({ setPage }) => {
         >
           Dashboard
         </Menu.Item>
-        <Menu.Item
-          key='2'
-          onClick={() =>
-            setPage({
-              children: <Admin />,
-            })
-          }
-          icon={<TeamOutlined />}
-        >
-          Admins
-        </Menu.Item>
+        {role == "superadmin" ? (
+          <Menu.Item
+            key='2'
+            onClick={() =>
+              setPage({
+                children: <Admin />,
+              })
+            }
+            icon={<TeamOutlined />}
+          >
+            Admins
+          </Menu.Item>
+        ) : null}
         <Menu.Item
           key='3'
           onClick={() => {
