@@ -16,6 +16,7 @@ import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
 import VisitHistory from "./VisitHistory";
 import EventHistory from "./EventHistory";
+import EditProgram from "./Program/EditProgram";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
@@ -30,14 +31,14 @@ export default ({ setPage }) => {
   return (
     <Sider
       collapsible
-      theme='light'
+      theme="light"
       style={{
         marginTop: 65,
       }}
     >
-      <Menu defaultSelectedKeys={["1"]} mode='inline'>
+      <Menu defaultSelectedKeys={["1"]} mode="inline">
         <Menu.Item
-          key='1'
+          key="1"
           onClick={() => {
             setPage({
               children: <Dashboard />,
@@ -49,7 +50,7 @@ export default ({ setPage }) => {
         </Menu.Item>
         {role == "superadmin" ? (
           <Menu.Item
-            key='2'
+            key="2"
             onClick={() =>
               setPage({
                 children: <Admin />,
@@ -61,7 +62,7 @@ export default ({ setPage }) => {
           </Menu.Item>
         ) : null}
         <Menu.Item
-          key='3'
+          key="3"
           onClick={() => {
             setPage({
               children: <Farmers />,
@@ -72,7 +73,7 @@ export default ({ setPage }) => {
           Livelihood
         </Menu.Item>
         <Menu.Item
-          key='4'
+          key="4"
           onClick={() => {
             setPage({
               children: <ProgramList />,
@@ -82,9 +83,9 @@ export default ({ setPage }) => {
         >
           Program
         </Menu.Item>
-        <Menu.SubMenu key='logs' title='Logs' icon={<LoginOutlined />}>
+        <Menu.SubMenu key="logs" title="Logs" icon={<LoginOutlined />}>
           <Menu.Item
-            key='log1'
+            key="log1"
             onClick={() => {
               setPage({
                 children: <VisitHistory />,
@@ -94,7 +95,7 @@ export default ({ setPage }) => {
             Visit History
           </Menu.Item>
           <Menu.Item
-            key='log2'
+            key="log2"
             onClick={() => {
               setPage({
                 children: <EventHistory />,
@@ -105,7 +106,7 @@ export default ({ setPage }) => {
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item
-          key='6'
+          key="6"
           onClick={() => {
             setPage({
               children: <QRSample />,
@@ -113,6 +114,16 @@ export default ({ setPage }) => {
           }}
         >
           Scan
+        </Menu.Item>
+        <Menu.Item
+          key="7"
+          onClick={() => {
+            setPage({
+              children: <EditProgram />,
+            });
+          }}
+        >
+          ViewProgram
         </Menu.Item>
       </Menu>
     </Sider>

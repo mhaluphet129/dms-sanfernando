@@ -51,9 +51,9 @@ export default () => {
     {
       title: "Name",
       render: (_, row) => (
-        <Tooltip title='Click to view program details.'>
+        <Tooltip title="Click to view program details.">
           <Button
-            type='link'
+            type="link"
             onClick={() => {
               setViewModal(true);
               setModalData(row);
@@ -77,9 +77,9 @@ export default () => {
       title: "No. of Benificiaries",
       align: "center",
       render: (_, row, index) => (
-        <Tooltip title='Click to view list.'>
+        <Tooltip title="Click to view list.">
           <Button
-            type='link'
+            type="link"
             onClick={() => {
               setVisible(true);
               setListID(row?._id);
@@ -105,10 +105,10 @@ export default () => {
       align: "center",
       render: (_, row) => (
         <Popconfirm
-          title='Are you sure to remove this program?'
+          title="Are you sure to remove this program?"
           onConfirm={() => handleRemoveProgram(row?._id)}
-          okText='Yes'
-          cancelText='No'
+          okText="Yes"
+          cancelText="No"
         >
           <Button danger>Remove</Button>
         </Popconfirm>
@@ -158,7 +158,7 @@ export default () => {
           <Button
             style={{ width: 130, float: "right" }}
             onClick={() => setAddProgramModal(true)}
-            type='primary'
+            type="primary"
           >
             Add Program
           </Button>
