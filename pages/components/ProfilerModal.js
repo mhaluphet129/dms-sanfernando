@@ -295,11 +295,28 @@ export default ({ data, visible, setVisible, callback }) => {
         title='View QR'
         footer={null}
         onCancel={() => setViewQRVisible(false)}
+        width={200}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          textAlign: "center",
+        }}
       >
+        <div style={{ width: 250 }}>{qr}</div>
         <small style={{ color: "#aaa", textAlign: "center", width: "100%" }}>
           id: {data?._id}
         </small>
-        <div style={{ width: 200 }}>{qr}</div>
+        <br />
+        <Typography.Text strong>
+          {TitleText(
+            `${data?.name?.name} ${
+              data?.name?.middleName?.length > 0
+                ? data?.name?.middleName[0] + "."
+                : ""
+            } ${data?.name?.lastName}`
+          )}
+        </Typography.Text>
       </Modal>
       <Modal
         title='Logs'

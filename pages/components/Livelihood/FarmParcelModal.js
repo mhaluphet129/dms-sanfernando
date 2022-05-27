@@ -12,13 +12,17 @@ import {
   Form,
   InputNumber,
   Radio,
+  Alert,
   message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 export default ({ visible, setVisible, pushData }) => {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const [loader, setLoader] = useState("");
+  const [docStatus, setDocStatus] = useState();
 
   const [data, setData] = useState({
     loc: "",
@@ -373,15 +377,38 @@ export default ({ visible, setVisible, pushData }) => {
                   label='Ownership Document No.'
                   rules={[{ required: true, message: "This field is empty" }]}
                 >
-                  <Input
-                    onChange={(e) =>
-                      setData((el) => ({
-                        ...el,
-                        docNum: e.target.value,
-                      }))
-                    }
-                    allowClear
-                  />
+                  <Input.Group compact>
+                    <Input
+                      onChange={(e) =>
+                        setData((el) => ({
+                          ...el,
+                          docNum: e.target.value,
+                        }))
+                      }
+                      style={{
+                        width: "calc(100% - 80px)",
+                      }}
+                      status={docStatus ? "error" : ""}
+                      allowClear
+                    />
+                    <Button
+                      type='primary'
+                      loading={loader == "check-docnum"}
+                      onClick={async () => {
+                        setLoader("check-docnum");
+
+                        let a = await axios.get("/api/livelihood", {
+                          params: {
+                            mode: "check",
+                            docnum: data?.docNum,
+                          },
+                        });
+                        setDocStatus(a?.data.success);
+                      }}
+                    >
+                      {loader == "check-docnum" ? "" : "Check"}
+                    </Button>
+                  </Input.Group>
                 </Form.Item>
               </Space>
             </Col>

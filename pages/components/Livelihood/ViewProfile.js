@@ -17,6 +17,8 @@ import {
 } from "antd";
 import moment from "moment";
 import QRCode from "qrcode";
+import CustomModal from "./FarmParcelModal";
+import FarmCustomTable from "./FarmCustomTable";
 import parse from "html-react-parser";
 
 import TitleText from "../../assets/js/TitleText";
@@ -25,6 +27,7 @@ const { Step } = Steps;
 
 export default ({ profileVisible, setProfileVisible, info, programs }) => {
   const [current, setCurrent] = useState(0);
+  const [farmlandData, setFarmlandData] = useState([]);
   const [qr, setQr] = useState();
 
   // columns and data for other info.
@@ -232,12 +235,12 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
             />
           </Col>
           <Col span={7}>
-            <div style={{ width: 200 }}>{qr}</div>
+            {/* <div style={{ width: 200 }}>{qr}</div>
             <small
               style={{ color: "#aaa", textAlign: "center", width: "100%" }}
             >
               id: {info?._id}
-            </small>
+            </small> */}
           </Col>
         </Row>
         <Divider />
@@ -513,17 +516,8 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
 
         <Row>
           {/* Farm Land */}
-          <Col span={18} push={6}>
-            <Space direction='vertical'>
-              <Typography.Text type='secondary'>
-                No. of Farm Parcel:
-                <Typography.Text strong>0</Typography.Text>
-              </Typography.Text>
-            </Space>
-          </Col>
-          <Col span={6} pull={18}>
-            <strong>Farm Land</strong>
-          </Col>
+          <br />
+          <FarmCustomTable setData={setFarmlandData} data={farmlandData} />
         </Row>
       </div>
 

@@ -13,6 +13,20 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { type, mode } = req.query;
 
+        if (mode == "check") {
+          const { docnum } = req.query;
+          await Farmland.find({ documentNumber: docnum })
+            .then((data) => {
+              res.status(200).end(JSON.stringify({ success: data.length > 0 }));
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        }
+
         if (mode == "fetch") {
           await Livelihood.find({ "profile.type": { $in: [type] } })
             .then((data) => {
