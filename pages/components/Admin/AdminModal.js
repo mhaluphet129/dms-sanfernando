@@ -73,11 +73,12 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
       payload: obj,
     });
     let resp = res.data;
+    console.log(resp);
     if (resp.success) {
       notification["success"]({
         message: resp.message,
       });
-      Cookie.set("user", JSON.stringify(data));
+      Cookie.set("user", JSON.stringify(resp.user));
       window.location.href = "/";
     } else message.error(resp.message);
   };
@@ -111,21 +112,26 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
       return;
     }
 
-    await axios
-      .put("api/admin", {
-        payload: {
-          mode: "changepassword",
-          id: data?._id,
-          password: newPass,
-          addtimeline: {
-            time: moment(),
-            label: data?.hasOwnProperty("password")
-              ? "Password is changed."
-              : "Password is set",
-          },
+    let res2 = await axios.put("api/admin", {
+      payload: {
+        mode: "changepassword",
+        id: data?._id,
+        password: newPass,
+        addtimeline: {
+          time: moment(),
+          label: data?.hasOwnProperty("password")
+            ? "Password is changed."
+            : "Password is set",
         },
-      })
-      .then(() => message.success("Successfully change the password"));
+      },
+    });
+
+    if (res2?.data.success) {
+      message.success(res2?.data.message);
+      setViewModalPass(false);
+      setVisible(false);
+      Cookie.set("user", JSON.stringify(res2?.data.user));
+    }
   };
 
   const changeToSuperadmin = async () => {
@@ -188,7 +194,7 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
         onCancel={() => setOpenUploadModal(false)}
         onOk={handleUpload}
       >
-        <Upload onChange={({ file }) => setFile(file)}>
+        <Upload onChange={({ file }) => setFile(file)} accept='image/*'>
           <Button>UPLOAD</Button>
         </Upload>
       </Modal>

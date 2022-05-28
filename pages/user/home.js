@@ -488,7 +488,7 @@ export default () => {
             position: "fixed",
             zIndex: 1,
             width: "100%",
-            background: "#44ac5c",
+            background: "#55bd6d",
           }}
         >
           <Row style={{ width: "100%" }}>
@@ -500,16 +500,16 @@ export default () => {
                 justifyContent: "center",
               }}
             >
-              <Typography.Title
-                style={{ marginTop: 15, marginLeft: -40 }}
-                className='clock'
-                level={3}
-              >
-                <Clock />
-              </Typography.Title>
+              <a href='/'>
+                <Image
+                  src='/header_logo.png'
+                  style={{ marginLeft: -20 }}
+                  preview={false}
+                />
+              </a>
             </Col>
             <Col
-              span={15}
+              span={12}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -541,27 +541,33 @@ export default () => {
               </AutoComplete>
             </Col>
             <Col
-              span={1}
+              span={4}
               offset={5}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "space-between",
               }}
             >
+              <Typography.Title
+                style={{ marginTop: 15, marginLeft: -40 }}
+                className='clock'
+                level={3}
+              >
+                <Clock />
+              </Typography.Title>
               <Dropdown overlay={menu}>
-                {data.profile != undefined ? (
-                  <div>
-                    <Image
-                      src={data.profile}
-                      preview={false}
-                      style={{
-                        borderRadius: "100%",
-                        width: 50,
-                        aspectRatio: "1/1",
-                      }}
-                    />
-                  </div>
+                {data.profile ? (
+                  <Image
+                    src={data.profile}
+                    preview={false}
+                    style={{
+                      borderRadius: "100%",
+                      width: 40,
+                      aspectRatio: "1/1",
+                      marginLeft: "auto",
+                    }}
+                  />
                 ) : (
                   <Avatar
                     size='large'

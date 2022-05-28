@@ -25,4 +25,18 @@ export default {
     "Santo Domingo",
     "Tugop",
   ],
+  docType: [
+    "Certificate of Land Transfer",
+    "Emancipation Patent",
+    "Individual Certificate of Land Ownership Award (CLOA)",
+    "Collective CLOA",
+    "Co-ownership CLOA",
+    "Agricultural sales patent",
+    "Homestead patent",
+    "Free patent",
+    "Certificate of Title or Regular Title",
+    "Certificate of Ancestral Domain Title",
+    "Certificate of Ancestral Land Title",
+    "Tax Declaration",
+  ],
 };

@@ -72,7 +72,7 @@ export default () => {
         </Col>
         <Col span={8}>
           <Row justify='space-around' gutter={[16, 16]}>
-            <Col span={9}>
+            <Col span={23}>
               <Card
                 onClick={() => {
                   fetch("admin");
@@ -87,11 +87,6 @@ export default () => {
                     </Typography.Text>
                   }
                 />
-              </Card>
-            </Col>
-            <Col span={13}>
-              <Card onClick={() => setModalVisible(true)} hoverable>
-                <Typography.Text>View Super Admin Info</Typography.Text>
               </Card>
             </Col>
             <Col span={23}>

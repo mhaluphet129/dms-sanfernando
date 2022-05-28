@@ -186,17 +186,17 @@ export default () => {
 
         let farmer = {
           label: data?.res?.bar[0]?._id,
-          backgroundColor: "rgba(53, 162, 235, 1)",
+          backgroundColor: "rgba(0, 255, 0, 0.65)",
           data: Array(jason.barangays.length).fill(0),
         };
         let farmworker = {
           label: data?.res?.bar[1]?._id,
-          backgroundColor: "rgba(255, 0, 0, 1)",
+          backgroundColor: "rgba(0, 255, 255, 0.65)",
           data: Array(jason.barangays.length).fill(0),
         };
         let fisherfolk = {
           label: data?.res?.bar[2]?._id,
-          backgroundColor: "rgba(0, 255, 0, 1)",
+          backgroundColor: "rgba(0, 0, 255, 0.65)",
           data: Array(jason.barangays.length).fill(0),
         };
 
@@ -475,51 +475,6 @@ export default () => {
                     ) : null}
                   </Card>
                 </Col>
-                {/* <Col span={12}>
-                  <Card style={{ height: 150 }}>
-                    <Typography.Title level={2}>
-                      {loader == "fetch" ? "-" : data?.totalFarmers}
-                    </Typography.Title>
-                    <Typography.Text>Total no. of Farmers</Typography.Text>
-                    <br />
-                    <Typography.Text>
-                      <Typography.Text strong>
-                        {loader == "fetch" ? 0 : data?.totalFarmersToday}
-                      </Typography.Text>{" "}
-                      Newly Added Today
-                    </Typography.Text>
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card style={{ height: 150 }}>
-                    <Typography.Title level={2}>
-                      {loader == "fetch" ? "-" : data?.totalFarmworkers}
-                    </Typography.Title>
-                    <Typography.Text>Total no. of Farmworkers</Typography.Text>
-                    <br />
-                    <Typography.Text>
-                      <Typography.Text strong>
-                        {loader == "fetch" ? 0 : data?.totalFarmworkersToday}
-                      </Typography.Text>{" "}
-                      Newly Added Today
-                    </Typography.Text>
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card style={{ height: 150 }}>
-                    <Typography.Title level={2}>
-                      {loader == "fetch" ? "-" : data?.totalFisherfolks}
-                    </Typography.Title>
-                    <Typography.Text>Total no. of Fisherfolks</Typography.Text>
-                    <br />
-                    <Typography.Text>
-                      <Typography.Text strong>
-                        {loader == "fetch" ? 0 : data?.totalFisherfolksToday}
-                      </Typography.Text>{" "}
-                      Newly Added Today
-                    </Typography.Text>
-                  </Card>
-                </Col> */}
               </Row>
             </Card>
           </Col>
@@ -642,6 +597,25 @@ export default () => {
                   description={<span>There are no livestock information</span>}
                 />
               )}
+              {livestockdata?.labels?.map((el, i) => (
+                <>
+                  <Typography.Text
+                    style={{
+                      marginLeft: i % 2 == 1 ? 50 : 0,
+                    }}
+                  >
+                    {`${el}: ${(
+                      (livestockdata.datasets[0].data[i] /
+                        livestockdata.datasets[0].data.reduce(
+                          (p, n) => p + n,
+                          0
+                        )) *
+                      100
+                    ).toFixed(2)}%`}
+                  </Typography.Text>
+                  {i % 2 == 1 ? <br /> : null}
+                </>
+              ))}
             </Card>
           </Col>
           <Col span={8}>
@@ -667,6 +641,25 @@ export default () => {
                   description={<span>There are no poultry information</span>}
                 />
               )}
+              {poultrydata?.labels?.map((el, i) => (
+                <>
+                  <Typography.Text
+                    style={{
+                      marginLeft: i % 2 == 1 ? 50 : 0,
+                    }}
+                  >
+                    {`${el}: ${(
+                      (poultrydata.datasets[0].data[i] /
+                        poultrydata.datasets[0].data.reduce(
+                          (p, n) => p + n,
+                          0
+                        )) *
+                      100
+                    ).toFixed(2)}%`}
+                  </Typography.Text>
+                  {i % 2 == 1 ? <br /> : null}
+                </>
+              ))}
             </Card>
           </Col>
         </Row>

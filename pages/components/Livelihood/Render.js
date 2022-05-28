@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Row,
   Col,
@@ -9,22 +9,29 @@ import {
   Card,
   Typography,
   Empty,
-  message,
+  Input,
 } from "antd";
 import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
+import { SearchOutlined } from "@ant-design/icons";
+
 import Profiler from "../ProfilerModal";
+import AddForm from "./AddForm";
+
 import titleText from "../../assets/js/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default ({ data, type, loader, setTrigger }) => {
+export default ({ data, loader, setTrigger }) => {
   const [openModal, setOpenModal] = useState(false);
   const [rowData, setRowData] = useState({});
   const [modifiedData, setModifiedData] = useState({});
   const [activeTab, setActiveTab] = useState("crops");
+  const [visible, setVisible] = useState(false);
+
+  const searchInput = useRef(null);
 
   const color = {
     Farmer: "green",
@@ -59,11 +66,139 @@ export default ({ data, type, loader, setTrigger }) => {
           }`}
         </Button>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+            style={{
+              marginBottom: 8,
+              display: "block",
+            }}
+          />
+          <Space>
+            <Button
+              type='primary'
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size='small'
+              style={{
+                width: 90,
+              }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters()}
+              size='small'
+              style={{
+                width: 110,
+              }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1890ff" : undefined,
+          }}
+        />
+      ),
+      onFilter: (value, record) =>
+        record.name.name.toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
     },
     {
       title: "Brgy",
       width: 150,
       render: (_, row) => row?.address.barangay,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder='Search barangay'
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onBlur={() => setSelectedKeys([])}
+            onPressEnter={() => confirm()}
+            style={{
+              marginBottom: 8,
+              display: "block",
+            }}
+          />
+          <Space>
+            <Button
+              type='primary'
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size='small'
+              style={{
+                width: 90,
+              }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters()}
+              size='small'
+              style={{
+                width: 110,
+              }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1890ff" : undefined,
+          }}
+        />
+      ),
+      onFilter: (value, record) =>
+        record.address.barangay
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
     },
     {
       title: "Contact No.",
@@ -82,6 +217,21 @@ export default ({ data, type, loader, setTrigger }) => {
           ))}
         </Space>
       ),
+      filters: [
+        {
+          text: "Farmer",
+          value: "Farmer",
+        },
+        {
+          text: "Farmworker",
+          value: "Farmworker",
+        },
+        {
+          text: "Fisherfolk",
+          value: "Fisherfolk",
+        },
+      ],
+      onFilter: (_, row) => row?.profile.type.includes(_),
     },
   ];
 
@@ -142,27 +292,6 @@ export default ({ data, type, loader, setTrigger }) => {
           poultryTotal.push(el);
         });
 
-        // res?.data?.cropsData?.forEach((el) => {
-        //   cropsLabel.push(el?.name);
-        //   cropsTotal.push(el?.total);
-        // });
-        // res?.data?.res?.livestockData.forEach((el) => {
-        //   livestockLabel.push(el?.name);
-        //   livestockTotal.push(el?.total);
-        // });
-        // res?.data?.res?.poultryData.forEach((el) => {
-        //   poultryLabel.push(el?.name);
-        //   poultryTotal.push(el?.total);
-        // });
-        // res?.data?.res?.farmworkerData?.forEach((el) => {
-        //   farmworkerLabel.push(el.name);
-        //   farmworkerTotal.push(el.total);
-        // });
-        // res?.data?.res?.fisherfolkdata?.forEach((el) => {
-        //   fisherfolkLabel.push(el.name);
-        //   fisherfolkTotal.push(el.total);
-        // });
-
         return {
           crops: {
             label: cropsLabel,
@@ -187,10 +316,15 @@ export default ({ data, type, loader, setTrigger }) => {
         };
       });
     }
-  }, [type]);
+  }, []);
 
   return (
     <>
+      <AddForm
+        visible={visible}
+        setVisible={setVisible}
+        cb={() => setTrigger(Math.random() * 100)}
+      />
       <Profiler
         data={rowData}
         visible={openModal}
@@ -203,7 +337,20 @@ export default ({ data, type, loader, setTrigger }) => {
             columns={columns}
             dataSource={data}
             scroll={{ y: 500 }}
-            title={() => "Livelihood"}
+            title={() => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography.Text>Profiles</Typography.Text>
+                <Button style={{ width: 150 }} onClick={() => setVisible(true)}>
+                  Add
+                </Button>
+              </div>
+            )}
             rowKey={(_) => _._id}
             loading={loader == "fetch-livelihood"}
             pagination={{
@@ -215,43 +362,41 @@ export default ({ data, type, loader, setTrigger }) => {
           <Card>
             <Space>
               <Space direction='vertical'>
-                {type == "Farmer" && (
-                  <Card
-                    title={<span>{titleText(`${activeTab}`)}</span>}
-                    style={{ width: 325 }}
-                    tabList={[
-                      {
-                        key: "crops",
-                        tab: "Crops",
-                      },
-                      {
-                        key: "livestock",
-                        tab: "Livestocks",
-                      },
-                      { key: "poultry", tab: "Poultry" },
-                    ]}
-                    activeTabKey={activeTab}
-                    onTabChange={(k) => {
-                      setActiveTab(k);
-                    }}
-                  >
-                    {_data.labels?.length > 0 ? (
-                      <Pie
-                        data={_data}
-                        options={{
-                          plugins: {
-                            legend: {
-                              position: "right",
-                            },
+                <Card
+                  title={<span>{titleText(`${activeTab}`)}</span>}
+                  style={{ width: 325 }}
+                  tabList={[
+                    {
+                      key: "crops",
+                      tab: "Crops",
+                    },
+                    {
+                      key: "livestock",
+                      tab: "Livestocks",
+                    },
+                    { key: "poultry", tab: "Poultry" },
+                  ]}
+                  activeTabKey={activeTab}
+                  onTabChange={(k) => {
+                    setActiveTab(k);
+                  }}
+                >
+                  {_data.labels?.length > 0 ? (
+                    <Pie
+                      data={_data}
+                      options={{
+                        plugins: {
+                          legend: {
+                            position: "right",
                           },
-                          responsive: true,
-                        }}
-                      />
-                    ) : (
-                      <Empty />
-                    )}
-                  </Card>
-                )}
+                        },
+                        responsive: true,
+                      }}
+                    />
+                  ) : (
+                    <Empty />
+                  )}
+                </Card>
               </Space>
             </Space>
           </Card>

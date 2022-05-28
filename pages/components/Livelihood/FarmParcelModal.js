@@ -15,14 +15,35 @@ import {
   Alert,
   message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import axios from "axios";
+
+import jason from "../../assets/json/index";
+
+const label2 = (doc, loader, bool) => {
+  if (doc == undefined || bool) return "Check";
+  if (doc != undefined && loader == "check-docnum") return "";
+  if (doc == true && loader == "")
+    return (
+      <Typography.Text type='danger'>
+        <CloseOutlined /> Invalid
+      </Typography.Text>
+    );
+  if (doc == false && loader == "")
+    return (
+      <Typography.Text type='success'>
+        <CheckOutlined /> Valid
+      </Typography.Text>
+    );
+};
 
 export default ({ visible, setVisible, pushData }) => {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [loader, setLoader] = useState("");
   const [docStatus, setDocStatus] = useState();
+  const [doc, docChange] = useState(false);
+  const [docname, setDocname] = useState("");
 
   const [data, setData] = useState({
     loc: "",
@@ -37,20 +58,8 @@ export default ({ visible, setVisible, pushData }) => {
     arr2: [],
   });
 
-  const optionsData = [
-    "Certificate of Land Transfer",
-    "Emancipation Patent",
-    "Individual Certificate of Land Ownership Award (CLOA)",
-    "Collective CLOA",
-    "Co-ownership CLOA",
-    "Agricultural sales patent",
-    "Homestead patent",
-    "Free patent",
-    "Certificate of Title or Regular Title",
-    "Certificate of Ancestral Domain Title",
-    "Certificate of Ancestral Land Title",
-    "Tax Declaration",
-  ];
+  // for farmlandinfo
+  const [docNum, setDocNum] = useState();
 
   const columns = [
     [
@@ -303,11 +312,29 @@ export default ({ visible, setVisible, pushData }) => {
               message.warn("Crops/Commodity land area exceed the total area.");
               return;
             }
+            console.log(val);
+            console.log(data);
+            if (docStatus) {
+              message.warn("Document number is invalid.");
+              return;
+            }
+            if (docStatus == undefined) {
+              message.warn("Please check your document number validity first.");
+              return;
+            }
+            if (
+              data?.owner.type != "Registered Owner" &&
+              data?.owner.data == ""
+            ) {
+              message.error("Please fill up the name of land Owner.");
+              return;
+            }
+
             pushData(data);
             setVisible(false);
           }}
         >
-          <Row>
+          <Row gutter={[8, 8]}>
             <Col span={8}>
               <Space direction='vertical'>
                 <Form.Item
@@ -315,15 +342,18 @@ export default ({ visible, setVisible, pushData }) => {
                   label='Barangay'
                   rules={[{ required: true, message: "This field is empty" }]}
                 >
-                  <Input
+                  <Select
                     onChange={(e) =>
                       setData((el) => ({
                         ...el,
-                        loc: e.target.value,
+                        loc: e,
                       }))
                     }
-                    allowClear
-                  />
+                  >
+                    {jason.barangays.map((el) => (
+                      <Select.Option value={el}>{el}</Select.Option>
+                    ))}
+                  </Select>
                 </Form.Item>
                 <Form.Item
                   name='ownDoc'
@@ -340,16 +370,18 @@ export default ({ visible, setVisible, pushData }) => {
                         .indexOf(input.toLowerCase()) >= 0
                     }
                     style={{
-                      width: "100%",
+                      width: 250,
                     }}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      setDocname(e);
+                      setDocStatus();
                       setData((el) => ({
                         ...el,
                         docType: e,
-                      }))
-                    }
+                      }));
+                    }}
                   >
-                    {optionsData.map((el, i) => (
+                    {jason.docType.map((el, i) => (
                       <Select.Option key={i} value={el}>{`${
                         i + 1
                       }. ${el}`}</Select.Option>
@@ -358,55 +390,69 @@ export default ({ visible, setVisible, pushData }) => {
                 </Form.Item>
               </Space>
             </Col>
-            <Col span={8} push={2}>
+            <Col span={8} push={1} offset={1}>
               <Space direction='vertical'>
                 <Form.Item
                   name='totalArea'
                   label='Total Farm Area (ha):'
                   rules={[{ required: true, message: "This field is empty" }]}
                 >
-                  <Input
-                    onChange={(e) =>
-                      setData((el) => ({ ...el, totalArea: e.target.value }))
-                    }
+                  <InputNumber
+                    onChange={(e) => {
+                      setData((el) => ({ ...el, totalArea: e }));
+                    }}
+                    controls={false}
+                    style={{
+                      width: "100%",
+                    }}
                     allowClear
                   />
                 </Form.Item>
-                <Form.Item
-                  name='ownDocNum'
-                  label='Ownership Document No.'
-                  rules={[{ required: true, message: "This field is empty" }]}
-                >
+                <Form.Item name='ownDocNum' label='Ownership Document No.'>
                   <Input.Group compact>
                     <Input
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setData((el) => ({
                           ...el,
                           docNum: e.target.value,
-                        }))
-                      }
+                        }));
+                        docChange(true);
+                        setDocStatus();
+                      }}
                       style={{
-                        width: "calc(100% - 80px)",
+                        width: "calc(100% - 100px)",
                       }}
                       status={docStatus ? "error" : ""}
                       allowClear
                     />
                     <Button
-                      type='primary'
                       loading={loader == "check-docnum"}
                       onClick={async () => {
-                        setLoader("check-docnum");
+                        if (data?.docNum != "" && data?.docNum != undefined) {
+                          console.log(data?.docNum);
+                          setLoader("check-docnum");
+                          docChange(false);
+                          let a = await axios.get("/api/livelihood", {
+                            params: {
+                              mode: "check",
+                              docnum: data?.docNum,
+                              docname,
+                            },
+                          });
+                          if (a?.data) {
+                            setDocStatus(a?.data.success);
+                            setLoader("");
 
-                        let a = await axios.get("/api/livelihood", {
-                          params: {
-                            mode: "check",
-                            docnum: data?.docNum,
-                          },
-                        });
-                        setDocStatus(a?.data.success);
+                            if (a?.data.success) {
+                              message.error(
+                                `Reason: Already registered as ${a?.data.type} by ${a?.data.name}`
+                              );
+                            }
+                          }
+                        } else message.error("Input document number");
                       }}
                     >
-                      {loader == "check-docnum" ? "" : "Check"}
+                      {label2(docStatus, loader, doc)}
                     </Button>
                   </Input.Group>
                 </Form.Item>

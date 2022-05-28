@@ -31,14 +31,14 @@ export default ({ setPage }) => {
   return (
     <Sider
       collapsible
-      theme="light"
+      theme='light'
       style={{
         marginTop: 65,
       }}
     >
-      <Menu defaultSelectedKeys={["1"]} mode="inline">
+      <Menu defaultSelectedKeys={["1"]} mode='inline'>
         <Menu.Item
-          key="1"
+          key='1'
           onClick={() => {
             setPage({
               children: <Dashboard />,
@@ -48,9 +48,54 @@ export default ({ setPage }) => {
         >
           Dashboard
         </Menu.Item>
+
+        <Menu.Item
+          key='3'
+          onClick={() => {
+            setPage({
+              children: <Farmers />,
+            });
+          }}
+          icon={<ApartmentOutlined />}
+        >
+          Profiles
+        </Menu.Item>
+        <Menu.Item
+          key='4'
+          onClick={() => {
+            setPage({
+              children: <ProgramList />,
+            });
+          }}
+          icon={<DeploymentUnitOutlined />}
+        >
+          Program
+        </Menu.Item>
+        <Menu.SubMenu key='logs' title='Logs' icon={<LoginOutlined />}>
+          <Menu.Item
+            key='log1'
+            onClick={() => {
+              setPage({
+                children: <VisitHistory />,
+              });
+            }}
+          >
+            Visit History
+          </Menu.Item>
+          <Menu.Item
+            key='log2'
+            onClick={() => {
+              setPage({
+                children: <EventHistory />,
+              });
+            }}
+          >
+            Event History
+          </Menu.Item>
+        </Menu.SubMenu>
         {role == "superadmin" ? (
           <Menu.Item
-            key="2"
+            key='2'
             onClick={() =>
               setPage({
                 children: <Admin />,
@@ -62,51 +107,7 @@ export default ({ setPage }) => {
           </Menu.Item>
         ) : null}
         <Menu.Item
-          key="3"
-          onClick={() => {
-            setPage({
-              children: <Farmers />,
-            });
-          }}
-          icon={<ApartmentOutlined />}
-        >
-          Profile
-        </Menu.Item>
-        <Menu.Item
-          key="4"
-          onClick={() => {
-            setPage({
-              children: <ProgramList />,
-            });
-          }}
-          icon={<DeploymentUnitOutlined />}
-        >
-          Program
-        </Menu.Item>
-        <Menu.SubMenu key="logs" title="Logs" icon={<LoginOutlined />}>
-          <Menu.Item
-            key="log1"
-            onClick={() => {
-              setPage({
-                children: <VisitHistory />,
-              });
-            }}
-          >
-            Visit History
-          </Menu.Item>
-          <Menu.Item
-            key="log2"
-            onClick={() => {
-              setPage({
-                children: <EventHistory />,
-              });
-            }}
-          >
-            Event History
-          </Menu.Item>
-        </Menu.SubMenu>
-        <Menu.Item
-          key="6"
+          key='6'
           onClick={() => {
             setPage({
               children: <QRSample />,
@@ -116,7 +117,7 @@ export default ({ setPage }) => {
           Scan
         </Menu.Item>
         <Menu.Item
-          key="7"
+          key='7'
           onClick={() => {
             setPage({
               children: <EditProgram />,

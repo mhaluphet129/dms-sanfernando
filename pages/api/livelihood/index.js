@@ -11,13 +11,22 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET": {
       return new Promise(async (resolve, reject) => {
-        let { type, mode } = req.query;
+        let { mode } = req.query;
 
         if (mode == "check") {
-          const { docnum } = req.query;
-          await Farmland.find({ documentNumber: docnum })
+          const { docnum, docname } = req.query;
+          await Farmland.find({
+            documentNumber: docnum,
+            ownershipDocument: docname,
+          })
             .then((data) => {
-              res.status(200).end(JSON.stringify({ success: data.length > 0 }));
+              res.status(200).end(
+                JSON.stringify({
+                  success: data.length > 0,
+                  type: data[0].ownerType,
+                  name: data[0].ownerName,
+                })
+              );
               resolve();
             })
             .catch((err) => {
@@ -28,7 +37,7 @@ export default async function handler(req, res) {
         }
 
         if (mode == "fetch") {
-          await Livelihood.find({ "profile.type": { $in: [type] } })
+          await Livelihood.find({})
             .then((data) => {
               res.status(200).end(
                 JSON.stringify({

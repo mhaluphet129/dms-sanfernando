@@ -14,6 +14,7 @@ export default ({ type, data, visible, onClose, cb }) => {
     {
       title: "Email",
       render: (_, row) => <Typography.Text>{row?.email}</Typography.Text>,
+      sorter: (p, n) => p.email.localeCompare(n.email),
     },
     {
       title: "Action",

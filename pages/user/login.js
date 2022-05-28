@@ -47,6 +47,7 @@ export default () => {
           username: data?.user?.username,
           email: data?.user?.email,
           role: data?.user?.role,
+          profile: data?.user?.profile,
         };
 
         let key = keyGenerator(5);

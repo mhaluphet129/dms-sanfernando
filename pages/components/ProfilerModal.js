@@ -227,6 +227,7 @@ export default ({ data, visible, setVisible, callback }) => {
           <Upload
             onChange={(e) => setBrgyFile(e.file)}
             disabled={brgyFile != undefined}
+            accept='image/*'
           >
             <Button
               style={{ width: 200, marginTop: 5 }}
@@ -252,6 +253,7 @@ export default ({ data, visible, setVisible, callback }) => {
           onChange={(e) => setProfile(e.file)}
           listType='picture-card'
           onPreview={handlePreview}
+          accept='image/*'
         >
           {!profile ? uploadButton : null}
         </Upload>
@@ -271,6 +273,7 @@ export default ({ data, visible, setVisible, callback }) => {
             setFiles(e.fileList);
             setOpenModal(true);
           }}
+          accept='image/*'
           multiple
         >
           {files.length > 10 ? null : uploadButton}

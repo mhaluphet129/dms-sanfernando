@@ -205,13 +205,22 @@ export default async function handler(req, res) {
               timeline: { time, label },
             };
           }
-          await User.findOneAndUpdate({ _id: id }, obj)
-            .then(async () => {
+          await User.findOneAndUpdate({ _id: id }, obj, { new: true })
+            .then(async (data) => {
               let newVisit = Log({
                 type: "event",
-                description: obj.$push.timeline.label.join(" "),
+                description: req.body.payload.addtimeline.label,
               });
-
+              let _obj = {
+                _id: data?._id,
+                password: data?.password,
+                lastname: data?.lastname,
+                name: data?.name,
+                username: data?.username,
+                email: data?.email,
+                role: data?.role,
+                profile: data?.profile,
+              };
               await newVisit
                 .save()
                 .then(() => {
@@ -219,6 +228,7 @@ export default async function handler(req, res) {
                     JSON.stringify({
                       success: true,
                       message: "Updated successfully",
+                      user: _obj,
                     })
                   );
 

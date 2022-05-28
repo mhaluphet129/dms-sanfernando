@@ -18,11 +18,6 @@ export default ({ data, setData }) => {
   const columns = [
     [
       {
-        title: "Farm Parcel No.",
-        width: 200,
-        render: () => "-",
-      },
-      {
         title: (
           <span>
             Farm Land Description{" "}
@@ -151,9 +146,6 @@ export default ({ data, setData }) => {
                       overlay={
                         <Menu>
                           <Menu.Item key={1}>
-                            <EditOutlined /> Edit
-                          </Menu.Item>
-                          <Menu.Item key={2}>
                             <Popconfirm
                               title='Are you sure to delete this parcel?'
                               okText='Yes'
@@ -239,7 +231,9 @@ export default ({ data, setData }) => {
         title: "Organic Practioner (Y/N) ?",
         width: 250,
         render: (_) => (
-          <Typography.Text>{_?.bool ? "Yes" : "No"}</Typography.Text>
+          <Typography.Text>
+            {_?.bool ? "Yes" : _?.bool == false ? "No" : ""}
+          </Typography.Text>
         ),
       },
     ],
@@ -258,7 +252,9 @@ export default ({ data, setData }) => {
         title: "Organic Practioner (Y/N) ?",
         width: 250,
         render: (_) => (
-          <Typography.Text>{_?.bool ? "Yes" : "No"}</Typography.Text>
+          <Typography.Text>
+            {_?.bool ? "Yes" : _?.bool == false ? "No" : ""}
+          </Typography.Text>
         ),
       },
     ],

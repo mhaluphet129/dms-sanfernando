@@ -562,7 +562,7 @@ export default ({ visible, setVisible, cb }) => {
                   >
                     <InputNumber
                       addonBefore='+63'
-                      maxLength={11}
+                      maxLength={10}
                       controls={false}
                     />
                   </Form.Item>
@@ -743,7 +743,7 @@ export default ({ visible, setVisible, cb }) => {
                   >
                     <InputNumber
                       addonBefore='+63'
-                      maxLength={11}
+                      maxLength={10}
                       controls={false}
                     />
                   </Form.Item>
@@ -1148,7 +1148,7 @@ export default ({ visible, setVisible, cb }) => {
             </Col>
           </Row>
         </div>
-
+        {/* ID oh yeah */}
         <div style={{ display: current != 2 ? "none" : null }}>
           <Row>
             {/* Upload ID Picture */}
@@ -1157,18 +1157,17 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item label='Upload ID Picture'>
-                      <div>
-                        <Upload
-                          action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                          listType='picture-card'
-                          maxCount={1}
-                          onChange={() => {
-                            setMaxCount(true);
-                          }}
-                        >
-                          {maxCount ? null : uploadButton}
-                        </Upload>
-                      </div>
+                      <Upload
+                        action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                        listType='picture-card'
+                        maxCount={1}
+                        onChange={() => {
+                          setMaxCount(true);
+                        }}
+                        accept='image/*'
+                      >
+                        {maxCount ? null : uploadButton}
+                      </Upload>
                     </Form.Item>
                   </Space>
                 </Input.Group>
@@ -1189,6 +1188,7 @@ export default ({ visible, setVisible, cb }) => {
                         <Upload
                           maxCount={3}
                           onChange={(e) => setFiles(e.fileList)}
+                          accept='image/*'
                           multiple
                         >
                           <Button icon={<UploadOutlined />}>Upload</Button>
