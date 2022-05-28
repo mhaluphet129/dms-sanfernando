@@ -10,23 +10,29 @@ import {
   Popconfirm,
 } from "antd";
 import CustomModal from "./FarmParcelModal";
-import { MoreOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { MoreOutlined, DeleteOutlined } from "@ant-design/icons";
 
-export default ({ data, setData }) => {
+export default ({ data, setData, viewOnly }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const columns = [
     [
       {
         title: (
-          <span>
-            Farm Land Description{" "}
-            {data?.length == 0 ? (
-              <Typography.Text type='secondary'>(Example form)</Typography.Text>
-            ) : (
-              ""
+          <>
+            {!viewOnly && (
+              <span>
+                Farm Land Description{" "}
+                {data?.length == 0 ? (
+                  <Typography.Text type='secondary'>
+                    (Example form)
+                  </Typography.Text>
+                ) : (
+                  ""
+                )}
+              </span>
             )}
-          </span>
+          </>
         ),
         render: (_, row, index) => (
           <>
@@ -36,49 +42,55 @@ export default ({ data, setData }) => {
               pushData={(e) => setData([...data, e])}
             />
             {data?.length == 0 ? (
-              <div style={{ padding: 10 }}>
-                <Row>
-                  <Col
-                    span={12}
-                    style={{ display: "flex", flexDirection: "column" }}
-                  >
-                    <Typography.Text>Location: </Typography.Text>
-                    <Typography.Text>Ownership Document: </Typography.Text>
-                    <Typography.Text>Ownership: </Typography.Text>
-                    <Typography.Text>Name of Land Owner: </Typography.Text>
-                  </Col>
-                  <Col
-                    spamn={12}
-                    style={{ display: "flex", flexDirection: "column" }}
-                  >
-                    <Typography.Text>Total Farm Area: </Typography.Text>
-                    <Typography.Text>Ownership Document no: </Typography.Text>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 10 }}>
-                  <Col span={24}>
-                    <Table
-                      columns={columns[1]}
-                      dataSource={[{ key: 1 }]}
-                      pagination={false}
-                      style={{ border: "1px solid #aaa" }}
-                      bordered
-                    />
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 15 }}>
-                  <Col span={24}>
-                    <Table
-                      columns={columns[2]}
-                      dataSource={[{ key: 2 }]}
-                      pagination={false}
-                      style={{ border: "1px solid #aaa" }}
-                      rowKey={(row) => row.key}
-                      bordered
-                    />
-                  </Col>
-                </Row>
-              </div>
+              <>
+                {!viewOnly && (
+                  <div style={{ padding: 10 }}>
+                    <Row>
+                      <Col
+                        span={12}
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <Typography.Text>Location: </Typography.Text>
+                        <Typography.Text>Ownership Document: </Typography.Text>
+                        <Typography.Text>Ownership: </Typography.Text>
+                        <Typography.Text>Name of Land Owner: </Typography.Text>
+                      </Col>
+                      <Col
+                        spamn={12}
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <Typography.Text>Total Farm Area: </Typography.Text>
+                        <Typography.Text>
+                          Ownership Document no:{" "}
+                        </Typography.Text>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: 10 }}>
+                      <Col span={24}>
+                        <Table
+                          columns={columns[1]}
+                          dataSource={[{ key: 1 }]}
+                          pagination={false}
+                          style={{ border: "1px solid #aaa" }}
+                          bordered
+                        />
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: 15 }}>
+                      <Col span={24}>
+                        <Table
+                          columns={columns[2]}
+                          dataSource={[{ key: 2 }]}
+                          pagination={false}
+                          style={{ border: "1px solid #aaa" }}
+                          rowKey={(row) => row.key}
+                          bordered
+                        />
+                      </Col>
+                    </Row>
+                  </div>
+                )}
+              </>
             ) : (
               <div
                 style={{
@@ -134,38 +146,40 @@ export default ({ data, setData }) => {
                       </span>
                     </Typography.Text>
                   </Col>
-                  <Col
-                    span={2}
-                    style={{
-                      display: "flex",
-                      height: 0,
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <Dropdown
-                      overlay={
-                        <Menu>
-                          <Menu.Item key={1}>
-                            <Popconfirm
-                              title='Are you sure to delete this parcel?'
-                              okText='Yes'
-                              cancelText='No'
-                              onConfirm={() =>
-                                setData(data.filter((_, _i) => _i != index))
-                              }
-                            >
-                              <Typography.Text type='danger'>
-                                <DeleteOutlined /> Delete
-                              </Typography.Text>
-                            </Popconfirm>
-                          </Menu.Item>
-                        </Menu>
-                      }
-                      placement='bottomRight'
+                  {!viewOnly && (
+                    <Col
+                      span={2}
+                      style={{
+                        display: "flex",
+                        height: 0,
+                        justifyContent: "flex-end",
+                      }}
                     >
-                      <MoreOutlined />
-                    </Dropdown>
-                  </Col>
+                      <Dropdown
+                        overlay={
+                          <Menu>
+                            <Menu.Item key={1}>
+                              <Popconfirm
+                                title='Are you sure to delete this parcel?'
+                                okText='Yes'
+                                cancelText='No'
+                                onConfirm={() =>
+                                  setData(data.filter((_, _i) => _i != index))
+                                }
+                              >
+                                <Typography.Text type='danger'>
+                                  <DeleteOutlined /> Delete
+                                </Typography.Text>
+                              </Popconfirm>
+                            </Menu.Item>
+                          </Menu>
+                        }
+                        placement='bottomRight'
+                      >
+                        <MoreOutlined />
+                      </Dropdown>
+                    </Col>
+                  )}
                 </Row>
                 <Row style={{ marginTop: 10 }}>
                   <Col span={24}>
@@ -193,19 +207,20 @@ export default ({ data, setData }) => {
                 </Row>
               </div>
             )}
-
-            <Row>
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  justifyContent: "flex-end",
-                  marginTop: 5,
-                }}
-              >
-                <Button onClick={() => setModalOpen(true)}>Add Parcel</Button>
-              </div>
-            </Row>
+            {!viewOnly && (
+              <Row>
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    marginTop: 5,
+                  }}
+                >
+                  <Button onClick={() => setModalOpen(true)}>Add Parcel</Button>
+                </div>
+              </Row>
+            )}
           </>
         ),
       },

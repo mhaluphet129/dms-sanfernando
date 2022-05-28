@@ -312,7 +312,6 @@ export default ({ visible, setVisible, pushData }) => {
               message.warn("Crops/Commodity land area exceed the total area.");
               return;
             }
-            console.log(val);
             console.log(data);
             if (docStatus) {
               message.warn("Document number is invalid.");

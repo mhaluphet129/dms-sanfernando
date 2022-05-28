@@ -310,7 +310,15 @@ export default () => {
           <Button onClick={() => setOpenFarmlandInfo(false)}>Close</Button>
         }
       >
-        <Card loading={loader == "load-farm"} title={loc}>
+        <Card
+          loading={loader == "load-farm"}
+          title={
+            <Typography.Text>
+              <span style={{ fontWeight: 900 }}>{loc}</span> Farmland
+              Information
+            </Typography.Text>
+          }
+        >
           <Table
             columns={colums2}
             dataSource={farmInfo}
@@ -336,6 +344,7 @@ export default () => {
                 </>
               );
             }}
+            bordered
           />
         </Card>
       </Modal>
@@ -371,7 +380,7 @@ export default () => {
                     <br />
                     <Typography.Text>
                       <Typography.Text strong>
-                        {loader == "fetch" ? 0 : data?.totalLivelihood}
+                        {loader == "fetch" ? 0 : data?.totalLivelihood}{" "}
                       </Typography.Text>
                       New Profile Registered Today
                     </Typography.Text>

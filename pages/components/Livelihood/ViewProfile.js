@@ -16,10 +16,9 @@ import {
   Badge,
 } from "antd";
 import moment from "moment";
-import QRCode from "qrcode";
-import CustomModal from "./FarmParcelModal";
+import { UserOutlined } from "@ant-design/icons";
+
 import FarmCustomTable from "./FarmCustomTable";
-import parse from "html-react-parser";
 
 import TitleText from "../../assets/js/TitleText";
 
@@ -28,7 +27,6 @@ const { Step } = Steps;
 export default ({ profileVisible, setProfileVisible, info, programs }) => {
   const [current, setCurrent] = useState(0);
   const [farmlandData, setFarmlandData] = useState([]);
-  const [qr, setQr] = useState();
 
   // columns and data for other info.
   const columns = [
@@ -117,18 +115,33 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
       {info?.profile?.crops.map((el, i) => (
         <Tag key={i}>{el}</Tag>
       ))}
+      {info?.profile?.crops.length == 0 && (
+        <Typography.Text type='secondary' italic>
+          No Data
+        </Typography.Text>
+      )}
     </Typography.Text>,
     <Typography.Text>
       Livestock:{" "}
       {info?.profile?.livestock.map((el, i) => (
         <Tag key={i}>{el}</Tag>
       ))}
+      {info?.profile?.livestock.length == 0 && (
+        <Typography.Text type='secondary' italic>
+          No Data
+        </Typography.Text>
+      )}
     </Typography.Text>,
     <Typography.Text>
       Poultry:{" "}
       {info?.profile?.poultry.map((el, i) => (
         <Tag key={i}>{el}</Tag>
       ))}
+      {info?.profile?.poultry.length == 0 && (
+        <Typography.Text type='secondary' italic>
+          No Data
+        </Typography.Text>
+      )}
     </Typography.Text>,
   ];
 
@@ -163,10 +176,27 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
   };
 
   useEffect(() => {
-    QRCode.toString(info?._id?.toString(), function (err, url) {
-      setQr(parse(url || ""));
-    });
-  }, [profileVisible]);
+    if (info?.farmobj?.length > 0) {
+      info.farmobj.map((el, i) =>
+        setFarmlandData((naol) => [
+          ...naol,
+          {
+            index: i,
+            loc: el?.location,
+            docType: el?.ownershipDocument,
+            owner: {
+              type: el.ownerType,
+              data: el.ownerName,
+            },
+            totalArea: el.totalArea,
+            docNum: el.documentNumber,
+            arr1: [...el.crops],
+            arr2: [...el.livestock],
+          },
+        ])
+      );
+    }
+  }, [info]);
 
   return (
     <Modal
@@ -175,6 +205,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
       onCancel={() => {
         setProfileVisible(false);
         setCurrent(0);
+        setFarmlandData([]);
       }}
       footer={null}
       closable={false}
@@ -190,14 +221,25 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 flexDirection: "column",
               }}
             >
-              <Image
-                width={150}
-                height={150}
-                style={{
-                  borderRadius: "50%",
-                }}
-                src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-              />
+              {data?.profileImage ? (
+                <Image
+                  width={150}
+                  height={150}
+                  style={{
+                    borderRadius: "50%",
+                  }}
+                  src={info?.profileImage}
+                />
+              ) : (
+                <UserOutlined
+                  style={{
+                    fontSize: 150,
+                    color: "#aaa",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                />
+              )}
               <Space
                 direction='vertical'
                 size='small'
@@ -233,14 +275,6 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
               scroll={{ y: 200 }}
               rowKey={(row) => row._id}
             />
-          </Col>
-          <Col span={7}>
-            {/* <div style={{ width: 200 }}>{qr}</div>
-            <small
-              style={{ color: "#aaa", textAlign: "center", width: "100%" }}
-            >
-              id: {info?._id}
-            </small> */}
           </Col>
         </Row>
         <Divider />
@@ -283,11 +317,14 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           {/* Address Details */}
           <Col span={18} push={6}>
             <Typography.Text type='secondary'>
-              Address: <br />
+              Barangay:{"  "}
               <Typography.Text strong>
-                {TitleText(
-                  `${info?.address.street}, ${info?.address.barangay}`
-                )}
+                {TitleText(`${info?.address.barangay}`)}
+              </Typography.Text>
+              <br />
+              Street:{"  "}
+              <Typography.Text strong>
+                {TitleText(`${info?.address.street}`)}
               </Typography.Text>
             </Typography.Text>
           </Col>
@@ -303,7 +340,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           <Col span={18} push={6}>
             <Typography.Text type='secondary'>
               Contact Number: <br />
-              <Typography.Text strong>{info?.contactNum}</Typography.Text>
+              <Typography.Text strong>0{info?.contactNum}</Typography.Text>
             </Typography.Text>
           </Col>
           <Col span={6} pull={18}>
@@ -350,7 +387,11 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   type={info?.civil != "Married" ? "secondary" : null}
                   strong={info?.civil != "Married"}
                 >
-                  {info?.civil == "Married" ? "SPOUSENAME" : "Not Applicable"}
+                  {info?.civil == "Married"
+                    ? TitleText(
+                        `${info?.spouse.name} ${info?.spouse.middleName} ${info?.spouse.lastName}`
+                      )
+                    : "Not Applicable"}
                 </Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
@@ -424,7 +465,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
               <Typography.Text type='secondary'>
                 Contact Number <br />
                 <Typography.Text strong>
-                  {info?.emergency?.number}
+                  0{info?.emergency?.number}
                 </Typography.Text>
               </Typography.Text>
             </Space>
@@ -447,12 +488,13 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     Type of Farming Activity:
                   </Typography.Text>
                 }
-                dataSource={farmerActivity}
                 renderItem={(item) => (
                   <List.Item>
                     <Typography.Text strong>{item}</Typography.Text>
                   </List.Item>
                 )}
+                dataSource={farmerActivity}
+                rowKey={(row) => row}
               />
             </Space>
           </Col>
@@ -517,7 +559,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Farm Land */}
           <br />
-          <FarmCustomTable setData={setFarmlandData} data={farmlandData} />
+          <FarmCustomTable setData={null} data={farmlandData} viewOnly={true} />
         </Row>
       </div>
 

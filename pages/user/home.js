@@ -28,7 +28,7 @@ import Page from "../components/Page";
 import ProfilerModal from "../components/ProfilerModal";
 import SidePane from "../components/Sider";
 import Profiler from "../components/ProfilerModal";
-import ViewProgam from "../components/Program/ViewProgam";
+import ViewProgram from "../components/Program/ViewProgram";
 import FarmList from "../components/FarmListReport";
 import jason from "../assets/json";
 import AdminModal from "../components/Admin/AdminModal";
@@ -110,18 +110,15 @@ export default () => {
           id,
         },
       });
-
       if (res?.data.success) {
         setModalData(res?.data.data[0]);
         setViewModal(true);
       }
-    } else if (typeSearch == "brgy") {
     } else if (typeSearch == "") {
       setSelectedName(e);
       setOpenDrawer(true);
     } else {
       let id = i.id;
-
       let res = await axios.get("/api/main", {
         params: {
           mode: "qr",
@@ -438,7 +435,7 @@ export default () => {
         barangay={barangay}
         name={TitleText(`${data?.name} ${data?.lastname}`)}
       />
-      <ViewProgam
+      <ViewProgram
         viewModal={viewModal}
         setViewModal={setViewModal}
         modalData={modalData}

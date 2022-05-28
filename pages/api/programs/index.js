@@ -147,7 +147,7 @@ export default async function handler(req, res) {
 
         if (mode == "remove-to-programs") {
           const { livelihoodID, programsID } = req.query;
-          console.log(req.query);
+
           await Livelihood.findOneAndUpdate(
             { _id: livelihoodID },
             {
@@ -158,6 +158,13 @@ export default async function handler(req, res) {
               JSON.stringify({ success: false, message: "Error: " + err })
             );
           });
+
+          await Program.findOneAndUpdate(
+            { _id: programsID },
+            {
+              $pull: { beneficiaries: ObjectId(livelihoodID) },
+            }
+          );
 
           res.status(200).end(
             JSON.stringify({
@@ -230,14 +237,29 @@ export default async function handler(req, res) {
               },
             }
           )
-            .then(() => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "Successfully added to program",
+            .then(async () => {
+              await Program.findOneAndUpdate(
+                { _id: programID },
+                {
+                  $push: {
+                    beneficiaries: livelihoodID,
+                  },
+                }
+              )
+                .then(() => {
+                  res.status(200).end(
+                    JSON.stringify({
+                      success: true,
+                      message: "Successfully added to program",
+                    })
+                  );
+                  resolve();
                 })
-              );
-              resolve();
+                .catch((err) => {
+                  res.end(
+                    JSON.stringify({ success: false, message: "Error: " + err })
+                  );
+                });
             })
             .catch((err) => {
               res.end(

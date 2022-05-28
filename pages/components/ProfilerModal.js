@@ -537,7 +537,7 @@ export default ({ data, visible, setVisible, callback }) => {
               </Typography.Text>
               <Typography.Text type='secondary'>
                 Contact Number: <br />
-                <Typography.Text strong>{data?.contactNum}</Typography.Text>
+                <Typography.Text strong>0{data?.contactNum}</Typography.Text>
               </Typography.Text>
               <Typography.Text type='secondary'>
                 In case of emergency: <br />
@@ -546,7 +546,9 @@ export default ({ data, visible, setVisible, callback }) => {
                 </Typography.Text>
                 <br />
                 <Typography.Text strong>
-                  {data?.emergency?.number || "Not set"}
+                  {data?.emergency?.number
+                    ? "0" + data?.emergency?.number
+                    : "Not set"}
                 </Typography.Text>
               </Typography.Text>
             </Space>

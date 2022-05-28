@@ -4,6 +4,8 @@ import Log from "../../../database/model/Log";
 import Program from "../../../database/model/Program";
 import Farmland from "../../../database/model/Farmland";
 import jason from "../../assets/json/index";
+
+var ObjectId = require("mongodb").ObjectId;
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -67,22 +69,35 @@ export default async function handler(req, res) {
 
         if (mode == "qr") {
           const { id } = req.query;
-          await Livelihood.find({ _id: id })
-            .then((data) => {
-              res.status(200).end(
-                JSON.stringify({
-                  success: true,
-                  message: "Successfully fetched the data",
-                  data,
-                })
-              );
-              resolve();
+          let _ = await Livelihood.aggregate([
+            {
+              $match: {
+                _id: ObjectId(id),
+              },
+            },
+            {
+              $lookup: {
+                from: "farmlands",
+                let: { farmlandID: "$farmlandID" },
+                pipeline: [
+                  { $match: { $expr: { $in: ["$_id", "$$farmlandID"] } } },
+                ],
+                as: "farmobj",
+              },
+            },
+          ]).catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              message: "Successfully fetched the data",
+              data: _,
             })
-            .catch((err) => {
-              res.end(
-                JSON.stringify({ success: false, message: "Error: " + err })
-              );
-            });
+          );
+          resolve();
         }
 
         if (mode == "get-program") {

@@ -16,7 +16,7 @@ import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
 import VisitHistory from "./VisitHistory";
 import EventHistory from "./EventHistory";
-import EditProgram from "./Program/EditProgram";
+import EditProgram from "./Program/ViewProgram";
 const { Sider } = Layout;
 
 export default ({ setPage }) => {
@@ -115,16 +115,6 @@ export default ({ setPage }) => {
           }}
         >
           Scan
-        </Menu.Item>
-        <Menu.Item
-          key='7'
-          onClick={() => {
-            setPage({
-              children: <EditProgram />,
-            });
-          }}
-        >
-          ViewProgram
         </Menu.Item>
       </Menu>
     </Sider>

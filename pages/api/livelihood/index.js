@@ -37,7 +37,23 @@ export default async function handler(req, res) {
         }
 
         if (mode == "fetch") {
-          await Livelihood.find({})
+          await Livelihood.aggregate([
+            {
+              $lookup: {
+                from: "farmlands",
+                let: { farmlandID: "$farmlandID" },
+                pipeline: [
+                  { $match: { $expr: { $in: ["$_id", "$$farmlandID"] } } },
+                ],
+                as: "farmobj",
+              },
+            },
+            {
+              $sort: {
+                "name.name": 1,
+              },
+            },
+          ])
             .then((data) => {
               res.status(200).end(
                 JSON.stringify({

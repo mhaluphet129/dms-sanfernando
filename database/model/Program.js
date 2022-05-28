@@ -11,6 +11,9 @@ let ProgramSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  beneficiaries: {
+    type: Array,
+  },
   inCharge: {
     type: String,
   },
