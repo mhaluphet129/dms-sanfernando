@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import {
   Drawer,
   Button,
@@ -12,7 +12,6 @@ import {
 } from "antd";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
-import Cookie from "js-cookie";
 
 import TitleText from "../assets/js/TitleText";
 
@@ -22,7 +21,7 @@ class PDF extends React.Component {
   }
 }
 
-export default ({ visible, setVisible, data, barangay }) => {
+export default ({ visible, setVisible, data, barangay, name }) => {
   const ref = useRef();
   const handlePrint = useReactToPrint({
     content: () => ref.current,
@@ -65,8 +64,6 @@ export default ({ visible, setVisible, data, barangay }) => {
       dataIndex: "gender",
     },
   ];
-
-  useEffect(() => {}, [visible]);
 
   return (
     <>
@@ -200,7 +197,7 @@ export default ({ visible, setVisible, data, barangay }) => {
                       {data?.filter((el) => el?.gender == "female").length}
                     </Col>
                     <Col span={12} offset={3} style={{ marginTop: 100 }}>
-                      <Typography.Text>Juan Dela Cruz</Typography.Text>
+                      <Typography.Text>{name}</Typography.Text>
                       <br />
                       <Typography.Text style={{ borderTop: "1px solid #000" }}>
                         Agriculture Technician

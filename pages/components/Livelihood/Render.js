@@ -244,6 +244,7 @@ export default ({ data, type, loader, setTrigger }) => {
                               position: "right",
                             },
                           },
+                          responsive: true,
                         }}
                       />
                     ) : (

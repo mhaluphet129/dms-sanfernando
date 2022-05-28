@@ -366,7 +366,7 @@ export default async function handler(req, res) {
             },
           ]);
           let cropsData = {};
-          if (crops.length > 4) cropsData.others = 0;
+          if (crops.length > 3) cropsData.others = 0;
           crops.forEach((el, i) => {
             if (i < 3) cropsData[el._id] = el.count;
             else cropsData.others++;
@@ -394,7 +394,7 @@ export default async function handler(req, res) {
             },
           ]);
           let livestockData = {};
-          if (livestock.length > 4) livestockData.others = 0;
+          if (livestock.length > 3) livestockData.others = 0;
           livestock.forEach((el, i) => {
             if (i < 3) livestockData[el._id] = el.count;
             else livestockData.others++;
@@ -422,56 +422,11 @@ export default async function handler(req, res) {
             },
           ]);
           let poultryData = {};
-          if (poultry.length > 4) poultryData.others = 0;
+          if (poultry.length > 3) poultryData.others = 0;
           poultry.forEach((el, i) => {
             if (i < 3) poultryData[el._id] = el.count;
             else poultryData.others++;
           });
-
-          let multipieData = { labels: [], datasets: [] };
-          let color1 = [];
-          let data1 = [];
-          let color2 = [];
-          let data2 = [];
-          let color3 = [];
-          let data3 = [];
-
-          Object.keys(cropsData).forEach((el, i) => {
-            multipieData.labels.push(`Crops: ${el}`);
-            color1.push(`hsl(0, 100%, ${15 * (i + 1)}%)`);
-            data1.push(cropsData[el]);
-          });
-          if (color1.length != 0 && data1.length != 0) {
-            multipieData.datasets.push({
-              backgroundColor: color1,
-              data: data1,
-            });
-          }
-
-          Object.keys(livestockData).forEach((el, i) => {
-            multipieData.labels.push(`Livestock: ${el}`);
-            color2.push(`hsl(90, 100%, ${15 * (i + 1)}%)`);
-            data2.push(livestockData[el]);
-          });
-
-          if (color2.length != 0 && data2.length != 0) {
-            multipieData.datasets.push({
-              backgroundColor: color2,
-              data: data2,
-            });
-          }
-
-          Object.keys(poultryData).forEach((el, i) => {
-            multipieData.labels.push(`Poultry: ${el}`);
-            color3.push(`hsl(180, 100%, ${15 * (i + 1)}%)`);
-            data3.push(poultryData[el]);
-          });
-          if (color3.length != 0 && data3.length != 0) {
-            multipieData.datasets.push({
-              backgroundColor: color3.length,
-              data: data3,
-            });
-          }
 
           let farmWorker = await Livelihood.aggregate([
             {
@@ -560,7 +515,6 @@ export default async function handler(req, res) {
                 fisherfolk,
                 fisherfolkdata,
                 bar,
-                multipieData,
                 farmlandSummary,
                 cropsData,
                 livestockData,

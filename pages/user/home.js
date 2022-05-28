@@ -17,6 +17,7 @@ import {
   Modal,
   Select,
   Form,
+  Image,
   message,
 } from "antd";
 import Cookies from "js-cookie";
@@ -30,8 +31,10 @@ import Profiler from "../components/ProfilerModal";
 import ViewProgam from "../components/Program/ViewProgam";
 import FarmList from "../components/FarmListReport";
 import jason from "../assets/json";
+import AdminModal from "../components/Admin/AdminModal";
 
 import { UserOutlined } from "@ant-design/icons";
+import TitleText from "../assets/js/TitleText";
 const { Content, Header } = Layout;
 let socket;
 
@@ -74,6 +77,8 @@ export default () => {
   const [typeOfReport, setTypeOfReport] = useState("");
   const [openGenerator, setOpenGenerator] = useState(false);
   const [extraData, setExtraData] = useState();
+  const [openAccountSettings, setOpenAccountSettings] = useState(false);
+  const [personalData, setPersonalData] = useState({});
   const [form] = Form.useForm();
 
   // report filtere
@@ -254,7 +259,22 @@ export default () => {
           {`(${data?.role})`}
         </Typography.Text>
       </Menu.Item>
-      <Menu.Item key='2'>
+      <Menu.Item
+        key='2'
+        onClick={async () => {
+          let res = await axios.get("/api/admin", {
+            params: {
+              mode: "fetch-by-id",
+              id: data?._id,
+            },
+          });
+
+          if (res?.data.success) {
+            setPersonalData(res?.data.data[0]);
+            setOpenAccountSettings(true);
+          }
+        }}
+      >
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
       <Menu.Item key='3'>
@@ -280,7 +300,7 @@ export default () => {
 
   useEffect(() => {
     setData(JSON.parse(Cookies.get("user")));
-  }, []);
+  }, [openGenerator]);
 
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
@@ -360,6 +380,14 @@ export default () => {
 
   return (
     <>
+      <AdminModal
+        visibility={openAccountSettings}
+        onClose={() => setOpenAccountSettings(false)}
+        setVisible={setOpenAccountSettings}
+        data={personalData}
+        type={data?.role}
+        // callback={() => setTrigger(trigger + 1)}
+      />
       <Modal
         title='Report Maker'
         visible={openReport}
@@ -408,6 +436,7 @@ export default () => {
         setVisible={setOpenGenerator}
         data={extraData}
         barangay={barangay}
+        name={TitleText(`${data?.name} ${data?.lastname}`)}
       />
       <ViewProgam
         viewModal={viewModal}
@@ -521,13 +550,27 @@ export default () => {
               }}
             >
               <Dropdown overlay={menu}>
-                <Avatar
-                  size='large'
-                  style={{ marginLeft: "auto", cursor: "pointer" }}
-                >
-                  {data.name && data.name[0].toUpperCase()}
-                  {data.lastname && data.lastname[0].toUpperCase()}
-                </Avatar>
+                {data.profile != undefined ? (
+                  <div>
+                    <Image
+                      src={data.profile}
+                      preview={false}
+                      style={{
+                        borderRadius: "100%",
+                        width: 50,
+                        aspectRatio: "1/1",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <Avatar
+                    size='large'
+                    style={{ marginLeft: "auto", cursor: "pointer" }}
+                  >
+                    {data.name && data.name[0].toUpperCase()}
+                    {data.lastname && data.lastname[0].toUpperCase()}
+                  </Avatar>
+                )}
               </Dropdown>
             </Col>
           </Row>

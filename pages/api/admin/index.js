@@ -12,6 +12,27 @@ export default async function handler(req, res) {
       return await new Promise(async (resolve, reject) => {
         const { mode } = req.query;
 
+        if (mode == "fetch-by-id") {
+          const { id } = req.query;
+
+          await User.find({ _id: id })
+            .then((data) => {
+              res.status(200).end(
+                JSON.stringify({
+                  success: true,
+                  message: "Fetch successfully",
+                  data,
+                })
+              );
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
+        }
+
         if (mode == "fetch") {
           const { current, pageSize } = req.query;
           let totalAdmins = await User.countDocuments({ role: "admin" });

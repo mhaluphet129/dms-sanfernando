@@ -5,7 +5,7 @@ import {
   Col,
   Typography,
   Divider,
-  Tabs,
+  Empty,
   Table,
   message,
   Modal,
@@ -118,10 +118,21 @@ export default () => {
     },
   ];
 
-  //here
-  const cropsdata = {
-    labels: [...(data?.multipieData?.labels || [])],
-    datasets: [...(data?.multipieData?.datasets || [])],
+  const cropsData = {
+    labels: Object.keys(data?.cropsData || {}),
+    datasets: [
+      {
+        label: "Crops",
+        data: Object.values(data?.cropsData || {}),
+        backgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
   };
 
   //for livestock pie graph data
@@ -241,6 +252,16 @@ export default () => {
               value: value3,
               total: value3.reduce((_, __) => _ + __, 0),
             },
+            pie: {
+              livestock: {
+                label: Object.keys(data?.res.livestockData || {}),
+                value: Object.values(data?.res.livestockData || {}),
+              },
+              poultry: {
+                label: Object.keys(data?.res.poultryData || {}),
+                value: Object.values(data?.res.poultryData || {}),
+              },
+            },
           };
         });
       }
@@ -326,7 +347,7 @@ export default () => {
                 <Col span={12}>
                   <Card
                     style={{ height: 150, backgroundColor: "#bcd2d6" }}
-                    onClick={() => console.log(data?.multipieData)}
+                    onClick={() => console.log(data?.cropsData)}
                   >
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.visitToday}
@@ -359,7 +380,7 @@ export default () => {
                 <Col span={12}>
                   <Card
                     style={{
-                      height: 150,
+                      height: 210,
                       backgroundColor: "rgb(128,172,199,0.5)",
                     }}
                   >
@@ -374,6 +395,84 @@ export default () => {
                       </Typography.Text>{" "}
                       Active Programs
                     </Typography.Text>
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card style={{ height: 210 }}>
+                    <Row>
+                      <Col
+                        span={12}
+                        style={{
+                          display: "flex",
+                          justifyContent: "right",
+                          alignItems: "right",
+                        }}
+                      >
+                        <Avatar
+                          src={`http://openweathermap.org/img/wn/${
+                            weatherData && weatherData?.weather[0].icon
+                          }.png`}
+                          size={100}
+                          shape='square'
+                        />
+                      </Col>
+                      <Col span={12}>
+                        <Typography.Text style={{ fontSize: "1.5rem" }} strong>
+                          Today
+                        </Typography.Text>
+                        <br />
+                        <Typography.Text strong>
+                          {moment().format("dddd DD MMM")}{" "}
+                        </Typography.Text>
+                        <br />
+                        <Typography.Text>
+                          {weatherData ? weatherData?.weather[0].main : "-"}
+                        </Typography.Text>
+                      </Col>
+                    </Row>
+                    <Row
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography.Text
+                        style={{
+                          marginTop: 20,
+                          fontSize: "3.5rem",
+                          fontWeight: "bold",
+                          lineHeight: 0.3,
+                        }}
+                      >
+                        {weatherData
+                          ? `${(weatherData?.main.temp - 273.15).toFixed(2)}°C`
+                          : "-°C"}
+                        <Typography.Text
+                          style={{ fontSize: "0.8rem", fontWeight: "bold" }}
+                        >
+                          <br />
+
+                          {weatherData
+                            ? `Humidity ${weatherData?.main.humidity}%`
+                            : "Humidity: -%"}
+                        </Typography.Text>
+                      </Typography.Text>
+                    </Row>
+                    {weatherData == undefined ? (
+                      <Alert
+                        message='No Internet Connection'
+                        type='error'
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          textAlign: "center",
+                          bottom: -10,
+                        }}
+                      />
+                    ) : null}
                   </Card>
                 </Col>
                 {/* <Col span={12}>
@@ -425,111 +524,7 @@ export default () => {
             </Card>
           </Col>
           <Col span={8}>
-            <Card style={{ height: 365 }}>
-              <Row>
-                <Col
-                  span={12}
-                  style={{
-                    display: "flex",
-                    justifyContent: "right",
-                    alignItems: "right",
-                  }}
-                >
-                  <Avatar
-                    src={`http://openweathermap.org/img/wn/${
-                      weatherData && weatherData?.weather[0].icon
-                    }.png`}
-                    size={100}
-                    shape='square'
-                  />
-                </Col>
-                <Col span={12}>
-                  <Typography.Text style={{ fontSize: "1.5rem" }} strong>
-                    Today
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text strong>
-                    {moment().format("dddd DD MMM")}{" "}
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text>
-                    {weatherData ? weatherData?.weather[0].main : "-"}
-                  </Typography.Text>
-                </Col>
-              </Row>
-              <Row
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                <Typography.Text
-                  style={{
-                    marginTop: 50,
-                    fontSize: "3.5rem",
-                    fontWeight: "bold",
-                    lineHeight: 0.3,
-                  }}
-                >
-                  {weatherData
-                    ? `${(weatherData?.main.temp - 273.15).toFixed(2)}°C`
-                    : "-°C"}
-                  <Typography.Text
-                    style={{ fontSize: "0.8rem", fontWeight: "bold" }}
-                  >
-                    <br />
-
-                    {weatherData
-                      ? `Humidity ${weatherData?.main.humidity}%`
-                      : "Humidity: -%"}
-                  </Typography.Text>
-                </Typography.Text>
-                <br />
-                <Typography.Text
-                  style={{
-                    marginTop: 30,
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  San Fernando
-                </Typography.Text>
-              </Row>
-              {weatherData == undefined ? (
-                <Alert
-                  message='No Internet Connection'
-                  type='error'
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    textAlign: "center",
-                    bottom: -10,
-                  }}
-                />
-              ) : null}
-            </Card>
-          </Col>
-        </Row>
-        <Divider />
-
-        {/* For Farmer */}
-        <Row>
-          {/* For Farmer Bargraph */}
-          <Col span={24}>
-            <Card>
-              <Button>View Table List of barangay</Button>
-              <Bar options={options} data={farmerdata} />
-            </Card>
-          </Col>
-        </Row>
-
-        <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
-          {/* For Farmer Total hectares */}
-          <Col span={8}>
-            <Card style={{ height: 375 }}>
+            <Card style={{ height: 425 }}>
               <Table
                 size='small'
                 scroll={{ y: 300 }}
@@ -562,60 +557,116 @@ export default () => {
               />
             </Card>
           </Col>
+        </Row>
+        <Divider />
 
+        {/* For Farmer */}
+        <Row>
+          {/* For Farmer Bargraph */}
+          <Col span={24}>
+            <Card>
+              <Button>View Table List of barangay</Button>
+              <Bar options={options} data={farmerdata} />
+            </Card>
+          </Col>
+        </Row>
+
+        <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
+          {/* For Farmer Total hectares */}
+          <Col span={8}>
+            <Card style={{ height: 400 }}>
+              {cropsData?.labels.length > 0 ? (
+                <Pie
+                  data={cropsData}
+                  options={{
+                    plugins: {
+                      legend: {
+                        position: "right",
+                      },
+                      title: {
+                        display: true,
+                        text: "Farmers Crop Information",
+                      },
+                    },
+                    responsive: true,
+                  }}
+                />
+              ) : (
+                <Empty
+                  description={<span>There are no crops information</span>}
+                />
+              )}
+
+              {cropsData?.labels.map((el, i) => (
+                <>
+                  <Typography.Text
+                    style={{
+                      marginLeft: i % 2 == 1 ? 50 : 0,
+                    }}
+                  >
+                    {`${el}: ${(
+                      (cropsData?.datasets[0].data[i] /
+                        cropsData?.datasets[0].data.reduce(
+                          (p, n) => p + n,
+                          0
+                        )) *
+                      100
+                    ).toFixed(2)}%`}
+                  </Typography.Text>
+                  {i % 2 == 1 ? <br /> : null}
+                </>
+              ))}
+            </Card>
+          </Col>
           {/*for pie chart crops */}
           <Col span={8}>
-            <Card>
-              <Pie
-                data={cropsdata}
-                options={{
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: "Farmer's crops, livestocks, and poultry summary",
-                    },
-                    legend: {
-                      position: "right",
-                      labels: {
-                        generateLabels: function (chart) {
-                          const original =
-                            ChartJS.overrides.pie.plugins.legend.labels
-                              .generateLabels;
-                          const labelsOriginal = original.call(this, chart);
-
-                          let datasetColors = chart.data.datasets.map(function (
-                            e
-                          ) {
-                            return e.backgroundColor;
-                          });
-                          datasetColors = datasetColors.flat();
-
-                          labelsOriginal.forEach((label) => {
-                            label.datasetIndex =
-                              (label.index - (label.index % 2)) / 2;
-
-                            label.hidden = !chart.isDatasetVisible(
-                              label.datasetIndex
-                            );
-
-                            label.fillStyle = datasetColors[label.index];
-                          });
-
-                          return labelsOriginal;
-                        },
+            <Card style={{ height: 400 }}>
+              {newData?.pie?.livestock?.label.length > 0 ? (
+                <Pie
+                  data={livestockdata}
+                  options={{
+                    plugins: {
+                      legend: {
+                        position: "right",
                       },
-                      onClick: function (mouseEvent, legendItem, legend) {
-                        legend.chart.getDatasetMeta(
-                          legendItem.datasetIndex
-                        ).hidden = legend.chart.isDatasetVisible(
-                          legendItem.datasetIndex
-                        );
-                        legend.chart.update();
+                      title: {
+                        display: true,
+                        text: "Farmers Livestock Information",
                       },
                     },
-                  },
-                }}
-              />
+                    responsive: true,
+                  }}
+                />
+              ) : (
+                <Empty
+                  description={<span>There are no livestock information</span>}
+                />
+              )}
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card style={{ height: 400 }}>
+              {newData?.pie?.poultry?.label.length > 0 ? (
+                <Pie
+                  data={poultrydata}
+                  options={{
+                    plugins: {
+                      legend: {
+                        position: "right",
+                      },
+                      title: {
+                        display: true,
+                        text: "Farmers Poultry Information",
+                      },
+                    },
+                    responsive: true,
+                  }}
+                />
+              ) : (
+                <Empty
+                  description={<span>There are no poultry information</span>}
+                />
+              )}
             </Card>
           </Col>
         </Row>

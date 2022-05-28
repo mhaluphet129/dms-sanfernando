@@ -22,7 +22,6 @@ import FloatLabel from "../../assets/js/FloatLabel";
 import Label01 from "../../assets/js/Labels";
 import TimelineDisplay from "../../assets/js/TimelineDisplay";
 
-import { getBase64, b64toBlob } from "../../assets/js/utilities";
 import { UserOutlined } from "@ant-design/icons";
 
 export default ({ type, visibility, setVisible, onClose, data, callback }) => {
@@ -78,6 +77,8 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
       notification["success"]({
         message: resp.message,
       });
+      Cookie.set("user", JSON.stringify(data));
+      window.location.href = "/";
     } else message.error(resp.message);
   };
 
