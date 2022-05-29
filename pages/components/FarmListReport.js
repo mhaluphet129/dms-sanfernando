@@ -81,14 +81,14 @@ export default ({ visible, setVisible, data, barangay, name }) => {
               children={
                 <>
                   <Row>
-                    <Col span={8}>
+                    <Col span={7}>
                       <Row justify='space-around'>
                         <Col>
                           <Image preview={false} src='/logo.png' width={150} />
                         </Col>
                       </Row>
                     </Col>
-                    <Col span={8}>
+                    <Col span={10}>
                       <Space
                         style={{
                           width: "100%",
@@ -125,7 +125,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                         </Typography.Text>
                       </Space>
                     </Col>
-                    <Col span={8}>
+                    <Col span={7}>
                       <Row justify='space-around'>
                         <Col>
                           <Image

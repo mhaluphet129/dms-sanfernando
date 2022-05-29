@@ -11,7 +11,6 @@ import Cookie from "js-cookie";
 
 import Admin from "./Admin/Admin";
 import Farmers from "./Livelihood";
-import QRSample from "./QR";
 import ProgramList from "./Program/ProgramList";
 import Dashboard from "./Dashboard/Dashboard";
 import VisitHistory from "./VisitHistory";
@@ -106,16 +105,6 @@ export default ({ setPage }) => {
             Admins
           </Menu.Item>
         ) : null}
-        <Menu.Item
-          key='6'
-          onClick={() => {
-            setPage({
-              children: <QRSample />,
-            });
-          }}
-        >
-          Scan
-        </Menu.Item>
       </Menu>
     </Sider>
   );
