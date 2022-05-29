@@ -422,38 +422,6 @@ export default ({ visible, setVisible, cb }) => {
             lastName: val.spousesurname,
           };
 
-          let filenames = [];
-          let _profile = "";
-          let formData = new FormData();
-          let formData2 = new FormData();
-
-          //ERROR no id
-          formData.append("id", data?._id);
-          formData2.append("id", data?._id);
-          files.forEach((el) => formData.append("photos", el.originFileObj));
-          formData2.append("photo", profile.originFileObj);
-          console.log("id1: ", data?._id);
-
-          const res = await axios.post("/api/uploadlivelihood", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-
-          const res2 = await axios.post("/api/livelihoodprofile", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-
-          if (res?.data.success) {
-            res?.data?.files.forEach((el) => {
-              filenames.push(el.filename);
-            });
-          }
-          message.error(res.data.message);
-
-          if (res2?.data.success) {
-            _profile = res2.data?.path.replace("public", "");
-          }
-          message.error(res2?.data.message);
-
           // FORM data
           let obj = {
             gender: val.gender,
@@ -463,8 +431,6 @@ export default ({ visible, setVisible, cb }) => {
             isDisabledPerson: otherInfo.isPWD,
             is4Ps: otherInfo.is4Ps,
             education: val.education,
-            personalfiles: [...filenames],
-            profileImage: _profile,
           };
 
           const newLivelihood = {
@@ -481,7 +447,7 @@ export default ({ visible, setVisible, cb }) => {
             spouse: spouseObj,
           };
 
-          let { data } = await axios.post("/api/livelihood", {
+          let res3 = await axios.post("/api/livelihood", {
             payload: {
               newLivelihood,
               arrayFarm,
@@ -489,10 +455,53 @@ export default ({ visible, setVisible, cb }) => {
             mode: "add",
           });
 
-          if (data.success && res?.data.success && res2?.data.success) {
-            message.success(data.message);
-            cb();
-            setVisible(false);
+          if (res3?.data.success) {
+            let formData = new FormData();
+            let formData2 = new FormData();
+            let _obj = { filenames: [], profile: "" };
+            formData.append("id", res3?.data?.id);
+            formData2.append("id", res3?.data?.id);
+            files.forEach((el) => formData.append("photos", el.originFileObj));
+            formData2.append("photo", profile.originFileObj);
+
+            if (files.length > 0) {
+              const res = await axios.post("/api/uploadfiles", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              });
+
+              if (res?.data.success) {
+                res?.data.files.forEach((el) => {
+                  _obj.filenames.push(el.originalname);
+                });
+              }
+            }
+
+            if (Object.keys(profile).length > 0) {
+              const res2 = await axios.post(
+                "/api/livelihoodprofile",
+                formData2,
+                {
+                  headers: { "Content-Type": "multipart/form-data" },
+                }
+              );
+              if (res2?.data.success) {
+                _obj.profile = res2?.data.path.replace("public", "");
+              }
+            }
+
+            let _res = await axios.put("/api/livelihood", {
+              payload: {
+                mode: "set-imgs",
+                images: _obj,
+                id: res3?.data?.id,
+              },
+            });
+
+            if (_res?.data.success) {
+              message.success(data.message);
+              cb();
+              setVisible(false);
+            }
           } else message.error(data.message);
         }}
       >

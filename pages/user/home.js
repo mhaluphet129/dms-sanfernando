@@ -554,7 +554,7 @@ export default () => {
                 <Clock />
               </Typography.Title>
               <Dropdown overlay={menu}>
-                {data.profile ? (
+                {data.profile && data.profile != "" ? (
                   <Image
                     src={data.profile}
                     preview={false}

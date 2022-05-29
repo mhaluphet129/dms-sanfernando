@@ -235,6 +235,7 @@ export default async function handler(req, res) {
                     JSON.stringify({
                       success: true,
                       message: "New profile added successfully",
+                      id: newLivelihood._id,
                     })
                   );
                   resolve();
@@ -331,33 +332,61 @@ export default async function handler(req, res) {
       });
     }
     case "PUT": {
-      const { mode } = req.body.payload;
+      return new Promise(async (resolve, reject) => {
+        const { mode } = req.body.payload;
 
-      if (mode == "change-profile") {
-        const { id, path } = req.body.payload;
-        await Livelihood.findOneAndUpdate(
-          { _id: id },
-          {
-            $set: {
-              brgyImage: path,
-            },
-          }
-        )
-          .then(() => {
-            res.status(200).end(
-              JSON.stringify({
-                success: true,
-                message: "Successfully uploaded the image.",
-              })
-            );
-            resolve();
-          })
-          .catch((err) => {
+        if (mode == "set-imgs") {
+          const { id, images } = req.body.payload;
+          const { filenames, profile } = images;
+          console.log(filenames, profile);
+
+          // let set = { personalfiles: [], profileImage: "" };
+          // if (filenames.length > 0) set.personalfiles = [...filenames];
+          // if (Object.keys(profile).length > 0) set.profileImage = profile;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: {
+                personalfiles: filenames,
+                profileImage: profile,
+              },
+            }
+          ).catch((error) => {
+            res.end(JSON.stringify(error));
+          });
+
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+            })
+          );
+          resolve();
+        }
+
+        if (mode == "change-profile") {
+          const { id, path } = req.body.payload;
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: {
+                brgyImage: path,
+              },
+            }
+          ).catch((err) => {
             res.end(
               JSON.stringify({ success: false, message: "Error: " + err })
             );
           });
-      }
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              message: "Successfully uploaded the image.",
+            })
+          );
+          resolve();
+        }
+      });
     }
     default:
       res.status(400).end(JSON.stringify({ success: false }));

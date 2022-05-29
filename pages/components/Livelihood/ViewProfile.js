@@ -221,7 +221,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 flexDirection: "column",
               }}
             >
-              {data?.profileImage ? (
+              {info?.profileImage ? (
                 <Image
                   width={150}
                   height={150}

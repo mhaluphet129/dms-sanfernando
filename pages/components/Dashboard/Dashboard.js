@@ -295,7 +295,6 @@ export default () => {
       let resp = await axios.get(
         "https://api.openweathermap.org/data/2.5/weather?lat=7.8464&lon=125.3466&appid=84effa33cf13ed6c17415671c6ce7b54"
       );
-      console.log(resp.data);
       setWeatherData(resp.data);
     } catch {}
   }, []);
