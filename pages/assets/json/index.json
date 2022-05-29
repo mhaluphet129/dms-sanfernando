@@ -1,5 +1,5 @@
-export default {
-  barangays: [
+{
+  "barangays": [
     "Bonacao",
     "Bulalang",
     "Cabuling",
@@ -23,9 +23,9 @@ export default {
     "Sacramento Valley",
     "San Jose",
     "Santo Domingo",
-    "Tugop",
+    "Tugop"
   ],
-  docType: [
+  "docType": [
     "Certificate of Land Transfer",
     "Emancipation Patent",
     "Individual Certificate of Land Ownership Award (CLOA)",
@@ -37,6 +37,6 @@ export default {
     "Certificate of Title or Regular Title",
     "Certificate of Ancestral Domain Title",
     "Certificate of Ancestral Land Title",
-    "Tax Declaration",
-  ],
-};
+    "Tax Declaration"
+  ]
+}

@@ -29,3 +29,5 @@ export function b64toBlob({ b64Data, contentType, sliceSize }) {
   var blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
+
+export default () => <></>;

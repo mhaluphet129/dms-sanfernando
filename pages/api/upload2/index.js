@@ -11,7 +11,7 @@ const upload = multer({
       cb(null, path);
     },
     filename: (req, file, cb) =>
-      cb(null, "profile" + path.extname(file.originalname)),
+      cb(null, "profile" + path.extname(file.originalname.toLowerCase())),
   }),
 });
 

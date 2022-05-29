@@ -1,6 +1,7 @@
 import nextConnect from "next-connect";
 import multer from "multer";
 import fs from "fs-extra";
+import path from "path";
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -10,7 +11,11 @@ const upload = multer({
       cb(null, path);
     },
     filename: (req, file, cb) => {
-      cb(null, file.originalname);
+      cb(
+        null,
+        Math.random() * 100000000000000000 +
+          path.extname(file.originalname.toLowerCase())
+      );
     },
   }),
 });
