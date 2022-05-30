@@ -13,6 +13,113 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { mode } = req.query;
 
+        if (mode == "fetch-commodity-report-data") {
+          const { brgy, commodity, commodityType } = req.query;
+
+          let _query = {
+            $match: {
+              crops: {
+                $elemMatch: {
+                  farmtype: commodityType,
+                  crop: commodity,
+                },
+              },
+              location: brgy,
+            },
+          };
+
+          let query = [
+            {
+              $project: {
+                obj: {
+                  $filter: {
+                    input: "$crops",
+                    as: "crops",
+                    cond: { $eq: ["$$crops.crop", commodity] },
+                  },
+                },
+                _id: 0,
+                totalArea: 1,
+                location: 1,
+              },
+            },
+            {
+              $unwind: "$obj",
+            },
+            {
+              $group: {
+                _id: "$location",
+                qty: { $sum: "$totalArea" },
+                unit: { $first: "$obj.unit" },
+                commodityType: { $first: "$obj.farmtype" },
+                commodityName: { $first: "$obj.crop" },
+              },
+            },
+          ];
+
+          if (brgy == "all") delete _query.$match.location;
+          if (commodity == "all") delete _query.$match.crops.$elemMatch.crop;
+          if (commodityType == "all")
+            delete _query.$match.crops.$elemMatch.farmtype;
+          if (!(commodity == "all" && commodityType == "all" && brgy == "all"))
+            query.unshift(_query);
+
+          let farmlands = await Farmland.aggregate(query).catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+          console.log(_query);
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              data: farmlands,
+            })
+          );
+          resolve();
+        }
+
+        if (mode == "get-commodity") {
+          let a = await Livelihood.aggregate([
+            {
+              $lookup: {
+                from: "farmlands",
+                let: { farmlandID: "$farmlandID" },
+                pipeline: [
+                  { $match: { $expr: { $in: ["$_id", "$$farmlandID"] } } },
+                ],
+                as: "farmobj",
+              },
+            },
+
+            {
+              $unwind: "$farmobj",
+            },
+            {
+              $unwind: "$farmobj.crops",
+            },
+            {
+              $replaceRoot: { newRoot: "$farmobj.crops" },
+            },
+            {
+              $group: {
+                _id: "$crop",
+              },
+            },
+          ]).catch((err) => {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          });
+          res.status(200).end(
+            JSON.stringify({
+              success: true,
+              data: a,
+            })
+          );
+          resolve();
+        }
+
         if (mode == "check") {
           const { docnum, docname } = req.query;
           await Farmland.find({
@@ -74,10 +181,14 @@ export default async function handler(req, res) {
         if (mode == "fetch-farmer-barangay") {
           const { brgy } = req.query;
 
-          await Livelihood.find({
-            "address.barangay": brgy,
-            "profile.type": { $in: ["Farmer"] },
-          })
+          let query = {};
+          if (brgy == "all") query = { "profile.type": { $in: ["Farmer"] } };
+          else
+            query = {
+              "address.barangay": brgy,
+              "profile.type": { $in: ["Farmer"] },
+            };
+          await Livelihood.find(query)
             .then((data) => {
               res.status(200).end(
                 JSON.stringify({

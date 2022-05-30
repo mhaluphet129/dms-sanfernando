@@ -12,7 +12,7 @@ import {
 import CustomModal from "./FarmParcelModal";
 import { MoreOutlined, DeleteOutlined } from "@ant-design/icons";
 
-export default ({ data, setData, viewOnly }) => {
+export default ({ data, setData, viewOnly, selectedBarangay }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const columns = [
@@ -40,6 +40,7 @@ export default ({ data, setData, viewOnly }) => {
               visible={modalOpen}
               setVisible={setModalOpen}
               pushData={(e) => setData([...data, e])}
+              selectedBarangay={selectedBarangay}
             />
             {data?.length == 0 ? (
               <>
@@ -107,9 +108,11 @@ export default ({ data, setData, viewOnly }) => {
                   >
                     <Typography.Text>
                       Location:{" "}
-                      <span style={{ fontWeight: 900 }}>{row.loc || ""}</span>
+                      <span style={{ fontWeight: 900 }}>
+                        {row.loc != "" ? row.loc : selectedBarangay}
+                      </span>
                     </Typography.Text>
-                    <Typography.Text>
+                    <Typography.Text onClick={() => console.log(row)}>
                       Ownership Document:{" "}
                       <span style={{ fontWeight: 900 }}>
                         {row.docType || ""}
@@ -207,7 +210,7 @@ export default ({ data, setData, viewOnly }) => {
                 </Row>
               </div>
             )}
-            {!viewOnly && (
+            {!viewOnly && (index == data.length - 1 || data.length == 0) && (
               <Row>
                 <div
                   style={{
@@ -231,10 +234,15 @@ export default ({ data, setData, viewOnly }) => {
         render: (_) => <Typography.Text>{_?.crop}</Typography.Text>,
       },
       {
-        title: "Farm Type",
+        title: "Commodity Type",
         width: 200,
         align: "center",
         render: (_) => <Typography.Text>{_?.farmtype}</Typography.Text>,
+      },
+      {
+        title: "Unit",
+        align: "center",
+        render: (_) => <Typography.Text>{_?.unit}</Typography.Text>,
       },
       {
         title: "Size (ha)",

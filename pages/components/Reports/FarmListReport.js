@@ -13,7 +13,7 @@ import {
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 
-import TitleText from "../assets/js/TitleText";
+import TitleText from "../../assets/js/TitleText";
 
 class PDF extends React.Component {
   render() {
@@ -44,9 +44,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
         <Typography.Text>
           {row?.address?.street}
           <br />
-          {row?.address?.barangay}
-          <br />
-          SAN FERNANDO
+          {row?.address?.barangay}, SAN FERNANDO
           <br />
           PROVINCE OF BUKIDNON
         </Typography.Text>
@@ -61,7 +59,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
     {
       title: "Gender",
       align: "center",
-      dataIndex: "gender",
+      render: (_, row) => row?.gender[0].toUpperCase(),
     },
   ];
 
@@ -69,7 +67,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
     <>
       <Drawer
         visible={visible}
-        onClose={() => setVisible(false)}
+        onClose={() => setVisible("")}
         height='100%'
         placement='bottom'
       >

@@ -390,9 +390,12 @@ export default () => {
                     style={{
                       height: 210,
                       backgroundColor: "rgb(128,172,199,0.5)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    <Typography.Title level={2}>
+                    <Typography.Title level={1} style={{ textAlign: "center" }}>
                       {loader == "fetch" ? "-" : data?.totalPrograms}
                     </Typography.Title>
                     <Typography.Text>Total no. of Programs</Typography.Text>

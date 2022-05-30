@@ -20,8 +20,8 @@ import {
   message,
 } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import Cookie from "js-cookie";
 import axios from "axios";
+import moment from "moment";
 import jason from "../../assets/json";
 
 import FarmCustomTable from "./FarmCustomTable";
@@ -29,10 +29,10 @@ import FarmCustomTable from "./FarmCustomTable";
 export default ({ visible, setVisible, cb }) => {
   const [current, setCurrent] = useState(0);
   const [maritalStatus, setMaritalStatus] = useState("single");
-  const [maxCount, setMaxCount] = useState(false);
   const [farmlandData, setFarmlandData] = useState([]);
   const [files, setFiles] = useState([]);
   const [profile, setProfile] = useState({});
+  const [selectedBarangay, setSelectedBarangay] = useState("");
 
   const uploadButton = (
     <div>
@@ -401,12 +401,11 @@ export default ({ visible, setVisible, cb }) => {
               ? otherInfo.fisherfolk.data
               : [],
           };
-
           // end
 
           // Farm description
           let arrayFarm = farmlandData.map((el) => ({
-            location: el.loc,
+            location: el.loc != "" ? el.loc : selectedBarangay,
             ownershipDocument: el.docType,
             ownerType: el.owner.type,
             ownerName: el.owner.data,
@@ -569,7 +568,10 @@ export default ({ visible, setVisible, cb }) => {
                     name='barangay'
                     required={[{ required: true }]}
                   >
-                    <Select style={{ width: 200 }}>
+                    <Select
+                      style={{ width: 200 }}
+                      onChange={(e) => setSelectedBarangay(e)}
+                    >
                       {jason.barangays.map((el) => (
                         <Select.Option value={el}>{el}</Select.Option>
                       ))}
@@ -627,7 +629,11 @@ export default ({ visible, setVisible, cb }) => {
                     name='dateofbirth'
                     required={[{ required: true }]}
                   >
-                    <DatePicker style={{ marginRight: 5 }} />
+                    <DatePicker
+                      format='MMMM DD, YYYY'
+                      disabledDate={(_) => _ && _ > moment().endOf("day")}
+                      style={{ marginRight: 5 }}
+                    />
                   </Form.Item>
                   <Form.Item label='Place of Birth' name='placeofbirth'>
                     <Input allowClear />
@@ -1185,6 +1191,7 @@ export default ({ visible, setVisible, cb }) => {
                 <FarmCustomTable
                   setData={setFarmlandData}
                   data={farmlandData}
+                  selectedBarangay={selectedBarangay}
                 />
               </Form.Item>
             </Col>

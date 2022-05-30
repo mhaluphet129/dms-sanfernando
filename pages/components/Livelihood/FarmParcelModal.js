@@ -12,13 +12,12 @@ import {
   Form,
   InputNumber,
   Radio,
-  Alert,
   message,
 } from "antd";
 import { PlusOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-import jason from "../../assets/json/index";
+import jason from "../../assets/json";
 
 const label2 = (doc, loader, bool) => {
   if (doc == undefined || bool) return "Check";
@@ -37,7 +36,7 @@ const label2 = (doc, loader, bool) => {
     );
 };
 
-export default ({ visible, setVisible, pushData }) => {
+export default ({ visible, setVisible, pushData, selectedBarangay }) => {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [loader, setLoader] = useState("");
@@ -57,9 +56,6 @@ export default ({ visible, setVisible, pushData }) => {
     arr1: [],
     arr2: [],
   });
-
-  // for farmlandinfo
-  const [docNum, setDocNum] = useState();
 
   const columns = [
     [
@@ -93,9 +89,13 @@ export default ({ visible, setVisible, pushData }) => {
         render: (_, row) => <Typography.Text>{row?.size}</Typography.Text>,
       },
       {
-        title: "Farm Type",
+        title: "Unit",
+        render: (_, row) => <Typography.Text>{row?.unit}</Typography.Text>,
+      },
+      {
+        title: "Commodity Type",
         align: "center",
-        render: (_, row) => <Typography.Text>{row?.farmtype}</Typography.Text>,
+        render: (__, _) => <Typography.Text>{_?.farmtype}</Typography.Text>,
       },
       {
         title: (
@@ -198,11 +198,11 @@ export default ({ visible, setVisible, pushData }) => {
           </Form.Item>
           <Form.Item
             name='farmtype'
-            label='Farm Type'
+            label='Commodity Type'
             rules={[{ required: true, message: "This field is blank." }]}
           >
             <Select
-              placeholder='Select a farm type'
+              placeholder='Select a commodity type'
               optionFilterProp='children'
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -211,14 +211,30 @@ export default ({ visible, setVisible, pushData }) => {
                 width: "70%",
               }}
             >
-              <Select.Option key='1' value='irrigated'>
-                1. Irrigated
+              {jason.commodity.map((el) => (
+                <Select.Option key={el} value={el}>
+                  {el}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name='unit'
+            label='Unit'
+            rules={[{ required: true, message: "This field is blank." }]}
+          >
+            <Select
+              placeholder='Select unit...'
+              optionFilterProp='children'
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              <Select.Option value='area' key='1'>
+                AREA
               </Select.Option>
-              <Select.Option key='2' value='rainfedUpland'>
-                2. Rainfed Upland
-              </Select.Option>
-              <Select.Option key='3' value='rainfedLowland'>
-                3. Rainfed Lowland
+              <Select.Option value='hills' key='2'>
+                Hills
               </Select.Option>
             </Select>
           </Form.Item>
@@ -312,7 +328,7 @@ export default ({ visible, setVisible, pushData }) => {
               message.warn("Crops/Commodity land area exceed the total area.");
               return;
             }
-            console.log(data);
+
             if (docStatus) {
               message.warn("Document number is invalid.");
               return;
@@ -339,6 +355,7 @@ export default ({ visible, setVisible, pushData }) => {
                 <Form.Item
                   name='location'
                   label='Barangay'
+                  initialValue={selectedBarangay}
                   rules={[{ required: true, message: "This field is empty" }]}
                 >
                   <Select
@@ -419,7 +436,7 @@ export default ({ visible, setVisible, pushData }) => {
                         setDocStatus();
                       }}
                       style={{
-                        width: "calc(100% - 100px)",
+                        width: "calc(100% - 85px)",
                       }}
                       status={docStatus ? "error" : ""}
                       allowClear
@@ -428,7 +445,6 @@ export default ({ visible, setVisible, pushData }) => {
                       loading={loader == "check-docnum"}
                       onClick={async () => {
                         if (data?.docNum != "" && data?.docNum != undefined) {
-                          console.log(data?.docNum);
                           setLoader("check-docnum");
                           docChange(false);
                           let a = await axios.get("/api/livelihood", {

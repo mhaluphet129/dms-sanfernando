@@ -29,7 +29,8 @@ import ProfilerModal from "../components/ProfilerModal";
 import SidePane from "../components/Sider";
 import Profiler from "../components/ProfilerModal";
 import ViewProgram from "../components/Program/ViewProgram";
-import FarmList from "../components/FarmListReport";
+import FarmList from "../components/Reports/FarmListReport";
+import ListByCommodity from "../components/Reports/ListByCommodity";
 import jason from "../assets/json";
 import AdminModal from "../components/Admin/AdminModal";
 
@@ -75,14 +76,17 @@ export default () => {
   const [typeSearch, setTypeSearch] = useState("");
   const [openReport, setOpenReport] = useState(false);
   const [typeOfReport, setTypeOfReport] = useState("");
-  const [openGenerator, setOpenGenerator] = useState(false);
+  const [openGenerator, setOpenGenerator] = useState("");
   const [extraData, setExtraData] = useState();
   const [openAccountSettings, setOpenAccountSettings] = useState(false);
   const [personalData, setPersonalData] = useState({});
   const [form] = Form.useForm();
 
   // report filtere
-  const [barangay, setBarangay] = useState("");
+  const [barangay, setBarangay] = useState("all");
+  const [commodity, setCommodity] = useState("all");
+  const [commodityType, setCommodityType] = useState("all");
+  const [availableCommodity, setAvailableCommodity] = useState();
   const [total, setTotal] = useState({
     farmer: 0,
     farmworker: 0,
@@ -299,6 +303,22 @@ export default () => {
     setData(JSON.parse(Cookies.get("user")));
   }, [openGenerator]);
 
+  useEffect(async () => {
+    if (openReport) {
+      setLoader("fetch-comm");
+      let res = await axios.get("/api/livelihood", {
+        params: {
+          mode: "get-commodity",
+        },
+      });
+
+      if (res?.data.success) {
+        setAvailableCommodity(res?.data.data);
+        setLoader("");
+      }
+    }
+  }, [openReport]);
+
   useEffect(() => {
     fetch("/api/socketio").finally(() => {
       socket = io();
@@ -388,6 +408,7 @@ export default () => {
       <Modal
         title='Report Maker'
         visible={openReport}
+        width={250}
         onCancel={() => setOpenReport(false)}
         closable={false}
         okText='Generate'
@@ -402,34 +423,112 @@ export default () => {
 
             if (res?.data.success) {
               setExtraData(res?.data.data);
-              setOpenGenerator(true);
+              setOpenGenerator("list-farmer");
+            }
+          }
+
+          if (typeOfReport == "comm-list") {
+            let res = await axios.get("/api/livelihood", {
+              params: {
+                mode: "fetch-commodity-report-data",
+                brgy: barangay,
+                commodity,
+                commodityType,
+              },
+            });
+
+            if (res?.data.success) {
+              setExtraData(res?.data.data);
+              setOpenGenerator("fetch-commodity-report-data");
             }
           }
         }}
       >
-        <Form>
-          <Form.Item name='type' label='Type of report' labelCol={{ span: 24 }}>
-            <Select style={{ width: 200 }} onChange={(e) => setTypeOfReport(e)}>
-              <Select.Option value='list-farmer'>
-                Listing of farmer
-              </Select.Option>
-            </Select>
-          </Form.Item>
-          {typeOfReport == "list-farmer" && (
-            <>
-              <Form.Item label='Barangay' labelCol={{ span: 24 }}>
-                <Select style={{ width: 200 }} onChange={(e) => setBarangay(e)}>
-                  {jason.barangays.map((el) => (
-                    <Select.Option key={el}>{el}</Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </>
-          )}
-        </Form>
+        <Spin spinning={loader == "fetch-comm"}>
+          <Form>
+            <Form.Item
+              name='type'
+              label='Type of report'
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                style={{ width: 200 }}
+                onChange={(e) => setTypeOfReport(e)}
+              >
+                <Select.Option value='list-farmer'>
+                  Listing of farmer
+                </Select.Option>
+                <Select.Option value='comm-list'>Commodity List</Select.Option>
+              </Select>
+            </Form.Item>
+            {typeOfReport == "list-farmer" && (
+              <>
+                <Form.Item label='Barangay' labelCol={{ span: 24 }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={(e) => setBarangay(e)}
+                    defaultValue='all'
+                  >
+                    <Select.Option key='all'>All</Select.Option>
+                    {jason.barangays.map((el) => (
+                      <Select.Option key={el}>{el}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+            {typeOfReport == "comm-list" && (
+              <>
+                <Form.Item label='Barangay' labelCol={{ span: 24 }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={(e) => setBarangay(e)}
+                    defaultValue='all'
+                  >
+                    <Select.Option key='all'>All</Select.Option>
+                    {jason.barangays.map((el) => (
+                      <Select.Option key={el}>{el}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item label='Commodity' labelCol={{ span: 24 }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={(e) => setCommodity(e)}
+                    defaultValue='all'
+                  >
+                    <Select.Option key='all'>All</Select.Option>
+                    {availableCommodity.map(({ _id }) => (
+                      <Select.Option key={_id}>{_id}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item label='Commodity Type' labelCol={{ span: 24 }}>
+                  <Select
+                    style={{ width: 200 }}
+                    onChange={(e) => setCommodityType(e)}
+                    defaultValue='all'
+                  >
+                    <Select.Option key='all'>All</Select.Option>
+                    {jason.commodity.map((el) => (
+                      <Select.Option key={el}>{el}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+          </Form>
+        </Spin>
       </Modal>
       <FarmList
-        visible={openGenerator}
+        visible={openGenerator == "list-farmer"}
+        setVisible={setOpenGenerator}
+        data={extraData}
+        barangay={barangay}
+        name={TitleText(`${data?.name} ${data?.lastname}`)}
+      />
+      <ListByCommodity
+        visible={openGenerator == "fetch-commodity-report-data"}
         setVisible={setOpenGenerator}
         data={extraData}
         barangay={barangay}

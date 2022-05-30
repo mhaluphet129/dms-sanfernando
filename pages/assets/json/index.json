@@ -38,5 +38,19 @@
     "Certificate of Ancestral Domain Title",
     "Certificate of Ancestral Land Title",
     "Tax Declaration"
+  ],
+  "commodity": [
+    "Irritated",
+    "Upland",
+    "Rainfed",
+    "Fruits",
+    "Herbs",
+    "High Value Vegetables",
+    "Leafy",
+    "Legumes",
+    "Root",
+    "Rootorops",
+    "Tree Vegetables",
+    "Spices"
   ]
 }
