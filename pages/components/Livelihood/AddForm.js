@@ -416,9 +416,9 @@ export default ({ visible, setVisible, cb }) => {
           }));
 
           let spouseObj = {
-            name: val.spousename,
-            middleName: val.spousemiddlename,
-            lastName: val.spousesurname,
+            name: val.spousename || "",
+            middleName: val.spousemiddlename || "",
+            lastName: val.spousesurname || "",
           };
 
           // FORM data

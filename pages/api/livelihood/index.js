@@ -588,10 +588,6 @@ export default async function handler(req, res) {
           const { id, images } = req.body.payload;
           const { filenames, profile } = images;
 
-          // let set = { personalfiles: [], profileImage: "" };
-          // if (filenames.length > 0) set.personalfiles = [...filenames];
-          // if (Object.keys(profile).length > 0) set.profileImage = profile;
-
           await Livelihood.findOneAndUpdate(
             { _id: id },
             {
@@ -633,6 +629,25 @@ export default async function handler(req, res) {
             })
           );
           resolve();
+        }
+
+        if (mode == "update") {
+          const { update, id } = req.body.payload;
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $set: update,
+            }
+          )
+            .then(() => {
+              res.status(200).end(JSON.stringify({ success: true }));
+              resolve();
+            })
+            .catch((err) => {
+              res.end(
+                JSON.stringify({ success: false, message: "Error: " + err })
+              );
+            });
         }
       });
     }
