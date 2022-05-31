@@ -17,6 +17,89 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { mode } = req.query;
 
+        if (mode == "analysis") {
+          const { name, middlename, lastname } = req.query;
+
+          try {
+            let mainNameOccurence = await Livelihood.countDocuments({
+              "name.name": name,
+            });
+            let mainMiddlenameOccurence = await Livelihood.countDocuments({
+              "name.middleName": middlename,
+            });
+            let mainLastnameOccurence = await Livelihood.countDocuments({
+              "name.lastName": lastname,
+            });
+            let totalMain = await Livelihood.countDocuments();
+
+            let spouseNameOccurence = await Livelihood.countDocuments({
+              "spouse.name": name,
+            });
+            let spouseMiddlenameOccurence = await Livelihood.countDocuments({
+              "spouse.middleName": middlename,
+            });
+            let spouseLastnameOccurence = await Livelihood.countDocuments({
+              "spouse.lastName": lastname,
+            });
+            let exactMainOccurence = await Livelihood.countDocuments({
+              "name.name": name,
+              "name.middleName": middlename,
+              "name.lastName": lastname,
+            });
+            let exactSpouseOccurence = await Livelihood.countDocuments({
+              "spouse.name": name,
+              "spouse.middleName": middlename,
+              "spouse.lastName": lastname,
+            });
+            let totalSpouse = await Livelihood.countDocuments({
+              "spouse.name": { $ne: "" },
+              "spouse.name": { $ne: undefined },
+            });
+
+            console.log({
+              main: {
+                name: mainNameOccurence,
+                middlename: mainMiddlenameOccurence,
+                lastname: mainLastnameOccurence,
+                exact: exactMainOccurence,
+                total: totalMain,
+              },
+              spouse: {
+                name: spouseNameOccurence,
+                middlename: spouseMiddlenameOccurence,
+                lastname: spouseLastnameOccurence,
+                exact: exactSpouseOccurence,
+                total: totalSpouse,
+              },
+            });
+            res.status(200).end(
+              JSON.stringify({
+                success: true,
+                analysis: {
+                  main: {
+                    name: mainNameOccurence,
+                    middlename: mainMiddlenameOccurence,
+                    lastname: mainLastnameOccurence,
+                    exact: exactMainOccurence,
+                    total: totalMain,
+                  },
+                  spouse: {
+                    name: spouseNameOccurence,
+                    middlename: spouseMiddlenameOccurence,
+                    lastname: spouseLastnameOccurence,
+                    exact: exactSpouseOccurence,
+                    total: totalSpouse,
+                  },
+                },
+              })
+            );
+            resolve();
+          } catch {
+            res.end(
+              JSON.stringify({ success: false, message: "Error: " + err })
+            );
+          }
+        }
         if (mode == "get-total") {
           try {
             let farmer = await Livelihood.countDocuments({

@@ -136,7 +136,10 @@ export default ({ data, visible, setVisible, callback }) => {
         mode: "profile-update",
       });
 
-      if (res2?.data.success) message.success(res2?.data.message);
+      if (res2?.data.success) {
+        message.success(res2?.data.message);
+        window.location.href = "/";
+      }
     }
   };
 
@@ -442,15 +445,13 @@ export default ({ data, visible, setVisible, callback }) => {
                 </Tag>
               ))}
             </div>
-            {/* <Button
+            <Button
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => setOpenModalPicture(true)}
             >
               Change profile picture
-            </Button> */}
-            <Button style={{ width: "100%", marginBottom: 5 }}>
-              Edit Profile
             </Button>
+
             <Button
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => {
