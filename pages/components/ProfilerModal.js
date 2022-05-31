@@ -14,8 +14,10 @@ import {
   DatePicker,
   Upload,
   Empty,
-  notification,
+  Table,
+  Popconfirm,
   message,
+  notification,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
@@ -25,6 +27,9 @@ import {
   CheckCircleOutlined,
   PlusOutlined,
   UserOutlined,
+  UploadOutlined,
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 
 import TimelineDisplay from "../assets/js/TimelineDisplay";
@@ -44,6 +49,8 @@ export default ({ data, visible, setVisible, callback }) => {
   const [loggerModal, setLoggerModal] = useState(false);
   const [timeline, setTimeline] = useState([]);
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
+  const [form3] = Form.useForm();
   const [files, setFiles] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [profile, setProfile] = useState();
@@ -59,11 +66,38 @@ export default ({ data, visible, setVisible, callback }) => {
   const [openBrgyModal, setOpenBrgyModal] = useState(false);
   const [brgyFile, setBrgyFile] = useState();
 
+  const [updateModal, setUpdateModal] = useState(false);
+  const [viewInFull, setViewInFull] = useState(false);
+  const [openCrops, setOpenCrops] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editData, setEditData] = useState({});
   const color = {
     Farmer: "green",
     Farmworker: "cyan",
     Fisherfolk: "blue",
   };
+
+  const column = [
+    {
+      title: "Crops",
+      render: (_, row) => row?.crops,
+    },
+    {
+      title: "Start",
+      align: "center",
+      render: (_, row) => moment(row?.startDate).format("MMM DD, YYYY"),
+    },
+    {
+      title: "End",
+      align: "center",
+      render: (_, row) => moment(row?.endDate).format("MMM DD, YYYY"),
+    },
+    {
+      title: "Cond.",
+      align: "center",
+      render: (_, row) => "Temporary unavailable",
+    },
+  ];
 
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -205,6 +239,189 @@ export default ({ data, visible, setVisible, callback }) => {
 
   return (
     <>
+      <Modal
+        visible={openEdit}
+        onCancel={() => setOpenEdit(false)}
+        closable={false}
+        okText='Save'
+        onOk={form3.submit}
+      >
+        <Form
+          form={form3}
+          onFinish={async (val) => {
+            let res = await axios.put("/api/livelihood", {
+              payload: {
+                crop: val.crops,
+                startDate: val.date[0],
+                endDate: val.date[1],
+                key: editData.key,
+                id: data?._id,
+                mode: "update-crops",
+              },
+            });
+
+            if (res?.data.success) {
+              message.success("Updated successfully");
+              setOpenEdit(false);
+              setViewInFull(false);
+              setVisible(false);
+              callback();
+            }
+          }}
+        >
+          <Form.Item
+            name='crops'
+            label='Crops'
+            initialValue={editData.crops}
+            rules={[{ required: true, message: "This field is blank." }]}
+          >
+            <Input style={{ width: 200 }} />
+          </Form.Item>
+          <Form.Item
+            name='date'
+            label='Date Range'
+            initialValue={[
+              moment(editData?.startDate),
+              moment(editData?.endDate),
+            ]}
+            rules={[{ required: true, message: "This field is blank." }]}
+          >
+            <DatePicker.RangePicker format='MMM DD, YYYY' />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        visible={openCrops}
+        onCancel={() => setOpenCrops(false)}
+        closable={false}
+        onOk={form2.submit}
+      >
+        <Form
+          form={form2}
+          onFinish={async (val) => {
+            let res = await axios.post("/api/livelihood", {
+              payload: {
+                crop: val.crops,
+                startDate: val.date[0],
+                endDate: val.date[1],
+                id: data?._id,
+              },
+              mode: "add-to-crops",
+            });
+
+            if (res?.data.success) {
+              message.success("Added successfully");
+              setOpenCrops(false);
+              setViewInFull(false);
+              setVisible(false);
+              callback();
+            }
+          }}
+          labelCol={{ span: 8 }}
+        >
+          <Form.Item
+            name='crops'
+            label='Crops'
+            rules={[{ required: true, message: "This field is blank." }]}
+          >
+            <Input style={{ width: 200 }} />
+          </Form.Item>
+          <Form.Item
+            name='date'
+            label='Date Range'
+            rules={[{ required: true, message: "This field is blank." }]}
+          >
+            <DatePicker.RangePicker format='MMM DD, YYYY' />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        visible={viewInFull}
+        onCancel={() => setViewInFull(false)}
+        closable={false}
+        width={750}
+        footer={null}
+      >
+        <Button
+          style={{ float: "right", marginBottom: 10 }}
+          type='primary'
+          onClick={() => setOpenCrops(true)}
+        >
+          Add
+        </Button>
+        <Table
+          columns={[
+            ...column,
+            {
+              title: "Function",
+              align: "center",
+              render: (_, row) => (
+                <>
+                  <Button
+                    type='primary'
+                    onClick={() => {
+                      setOpenEdit(true);
+                      setEditData(row);
+                    }}
+                    ghost
+                  >
+                    <EditOutlined />
+                  </Button>
+                  <Popconfirm
+                    title='Are you sure to delete this crop?'
+                    onConfirm={async () => {
+                      let res = await axios.get("/api/livelihood", {
+                        params: {
+                          mode: "delete-crops",
+                          id: data?._id,
+                          key: row?.key,
+                        },
+                      });
+
+                      if (res?.data.success) {
+                        message.success("Successfully Removed.");
+                        setOpenCrops(false);
+                        setViewInFull(false);
+                        setVisible(false);
+                        callback();
+                      }
+                    }}
+                    okText='Yes'
+                    cancelText='No'
+                  >
+                    <Button danger>
+                      <DeleteOutlined />
+                    </Button>
+                  </Popconfirm>
+                </>
+              ),
+            },
+          ]}
+          dataSource={data?.cropUpdate}
+          pagination={false}
+          scroll={{ y: 400 }}
+        />
+      </Modal>
+      <Modal
+        visible={updateModal}
+        onCancel={() => setUpdateModal(false)}
+        closable={false}
+        footer={null}
+        title='Log History'
+      >
+        {loader == "fetch" ? (
+          <Spin style={{ textAlign: "center", width: "100%" }} />
+        ) : (
+          <TimelineDisplay data={timeline} />
+        )}
+        <Button
+          type='primary'
+          style={{ width: "100%", marginBottom: 5 }}
+          onClick={() => setLoggerModal(true)}
+        >
+          Add to Logs
+        </Button>
+      </Modal>
       <Modal
         visible={openBrgyModal}
         onCancel={() => setOpenBrgyModal(false)}
@@ -388,16 +605,15 @@ export default ({ data, visible, setVisible, callback }) => {
               <Space direction='horizontal'>
                 <Button
                   style={{ width: "100%", marginBottom: 5 }}
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => setUpdateModal(true)}
                 >
-                  Upload File
+                  Logs
                 </Button>
                 <Button
-                  type='primary'
                   style={{ width: "100%", marginBottom: 5 }}
-                  onClick={() => setLoggerModal(true)}
+                  onClick={() => setOpenModal(true)}
                 >
-                  Add to Logs
+                  <UploadOutlined /> Upload File
                 </Button>
               </Space>
             </div>
@@ -509,7 +725,7 @@ export default ({ data, visible, setVisible, callback }) => {
               VISIT TODAY
             </Button>
           </Col>
-          <Col span={8}>
+          <Col span={7}>
             <Space
               direction='vertical'
               size='small'
@@ -554,20 +770,18 @@ export default ({ data, visible, setVisible, callback }) => {
               </Typography.Text>
             </Space>
           </Col>
-          <Col span={8}>
-            {loader == "fetch" ? (
-              <Spin style={{ textAlign: "center", width: "100%" }} />
-            ) : (
-              <TimelineDisplay data={timeline} />
-            )}
+          <Col span={9}>
+            <Table
+              pagination={false}
+              scroll={{ y: 250 }}
+              columns={column}
+              dataSource={data?.cropUpdate}
+            />
             <Button
-              style={{
-                marginLeft: "50%",
-                marginTop: 10,
-                transform: "translateX(-50%)",
-              }}
+              style={{ float: "right", marginTop: 10 }}
+              onClick={() => setViewInFull(true)}
             >
-              View full logs
+              View in full size
             </Button>
           </Col>
         </Row>

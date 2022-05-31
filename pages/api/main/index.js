@@ -56,22 +56,6 @@ export default async function handler(req, res) {
               "spouse.name": { $ne: undefined },
             });
 
-            console.log({
-              main: {
-                name: mainNameOccurence,
-                middlename: mainMiddlenameOccurence,
-                lastname: mainLastnameOccurence,
-                exact: exactMainOccurence,
-                total: totalMain,
-              },
-              spouse: {
-                name: spouseNameOccurence,
-                middlename: spouseMiddlenameOccurence,
-                lastname: spouseLastnameOccurence,
-                exact: exactSpouseOccurence,
-                total: totalSpouse,
-              },
-            });
             res.status(200).end(
               JSON.stringify({
                 success: true,
@@ -187,7 +171,6 @@ export default async function handler(req, res) {
           const { id } = req.query;
           await Program.find({ _id: id })
             .then((data) => {
-              console.log(data);
               res.status(200).end(
                 JSON.stringify({
                   success: true,

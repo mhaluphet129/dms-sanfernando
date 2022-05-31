@@ -145,6 +145,9 @@ let livelihoodSchema = new mongoose.Schema(
     civil: {
       type: String,
     },
+    cropUpdate: {
+      type: Array,
+    },
     profile: profileSchema,
     spouse: spouseSchema,
     hasCoopOrAssoc: memberSchema,

@@ -50,6 +50,10 @@ export default ({ visible, setVisible, cb }) => {
   const [mainAnalysic, setMainAnalysis] = useState({});
   const [spouseAnalysic, setSpouseAnalysis] = useState({});
   const [anaylizing, setAnalyzing] = useState(false);
+  const [name, setName] = useState("");
+  const [middlename, setMiddlename] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [analysisType, setAnalysisType] = useState("");
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -293,9 +297,9 @@ export default ({ visible, setVisible, cb }) => {
       let res = await axios.get("/api/main", {
         params: {
           mode: "analysis",
-          name: spouseName,
-          middlename: spouseMiddlename,
-          lastname: spouseSurname,
+          name: analysisType == "spouse" ? spouseName : name,
+          middlename: analysisType == "spouse" ? spouseMiddlename : middlename,
+          lastname: analysisType == "spouse" ? spouseSurname : lastname,
         },
       });
 
@@ -313,6 +317,7 @@ export default ({ visible, setVisible, cb }) => {
         onCancel={() => setOpenScanModal(false)}
         width={700}
         closable={false}
+        footer={null}
       >
         <Card loading={anaylizing} title='Main'>
           <Row gutter={[16, 16]}>
@@ -867,17 +872,53 @@ export default ({ visible, setVisible, cb }) => {
                       name='surname'
                       required={[{ required: true }]}
                     >
-                      <Input placeholder='Surname' allowClear />
+                      <Input
+                        placeholder='Surname'
+                        onChange={(e) => setLastname(e.target.value)}
+                        allowClear
+                      />
                     </Form.Item>
                     <Form.Item
                       label='Firstname'
                       name='firstname'
                       required={[{ required: true }]}
                     >
-                      <Input placeholder='Firstname' allowClear />
+                      <Input
+                        placeholder='Firstname'
+                        onChange={(e) => setName(e.target.value)}
+                        allowClear
+                      />
                     </Form.Item>
                     <Form.Item label='Middle Name' name='middlename'>
-                      <Input placeholder='Middle Name' allowClear />
+                      <Input
+                        placeholder='Middle Name'
+                        onChange={(e) => setMiddlename(e.target.value)}
+                        allowClear
+                      />
+                    </Form.Item>
+                    <Form.Item label=' '>
+                      <Button
+                        disabled={
+                          name == "" || middlename == "" || lastname == ""
+                        }
+                        onClick={() => {
+                          if (
+                            name == "" ||
+                            middlename == "" ||
+                            lastname == ""
+                          ) {
+                            message.warning(
+                              "Complete the name before scanning."
+                            );
+                            return;
+                          }
+                          setAnalysisType("main");
+                          setOpenScanModal(true);
+                        }}
+                        type='primary'
+                      >
+                        Analyze Name
+                      </Button>
                     </Form.Item>
                   </Space>
                 </Input.Group>
@@ -1078,6 +1119,7 @@ export default ({ visible, setVisible, cb }) => {
                           message.warning("Complete the name before scanning.");
                           return;
                         }
+                        setAnalysisType("spouse");
                         setOpenScanModal(true);
                       }}
                       type='primary'

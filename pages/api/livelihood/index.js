@@ -2,6 +2,7 @@ import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
 import Log from "../../../database/model/Log";
 import Farmland from "../../../database/model/Farmland";
+import keygenerator from "../../assets/js/KeyGenerator";
 import moment from "moment";
 
 export default async function handler(req, res) {
@@ -13,6 +14,27 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         let { mode } = req.query;
 
+        if (mode == "delete-crops") {
+          const { id, key } = req.query;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $pull: {
+                cropUpdate: {
+                  key,
+                },
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(JSON.stringify({ success: true }));
+              resolve();
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+            });
+        }
         if (mode == "fetch-commodity-report-data") {
           const { brgy, commodity, commodityType } = req.query;
 
@@ -466,6 +488,31 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         const { mode } = req.body;
 
+        if (mode == "add-to-crops") {
+          const { crop, startDate, endDate, id } = req.body.payload;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id },
+            {
+              $push: {
+                cropUpdate: {
+                  crops: crop,
+                  startDate,
+                  endDate,
+                  key: keygenerator(10),
+                },
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(JSON.stringify({ success: true }));
+              resolve();
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+            });
+        }
+
         if (mode == "add") {
           let newLivelihood = Livelihood(req.body.payload.newLivelihood);
           await Farmland.insertMany([...req.body.payload.arrayFarm])
@@ -584,6 +631,28 @@ export default async function handler(req, res) {
       return new Promise(async (resolve, reject) => {
         const { mode } = req.body.payload;
 
+        if (mode == "update-crops") {
+          const { crop, startDate, endDate, key, id } = req.body.payload;
+
+          await Livelihood.findOneAndUpdate(
+            { _id: id, "cropUpdate.key": key },
+            {
+              $set: {
+                "cropUpdate.$.crops": crop,
+                "cropUpdate.$.startDate": startDate,
+                "cropUpdate.$.endDate": endDate,
+                "cropUpdate.$.key": key,
+              },
+            }
+          )
+            .then(() => {
+              res.status(200).end(JSON.stringify({ success: true }));
+              resolve();
+            })
+            .catch((error) => {
+              res.end(JSON.stringify(error));
+            });
+        }
         if (mode == "set-imgs") {
           const { id, images } = req.body.payload;
           const { filenames, profile } = images;
