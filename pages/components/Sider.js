@@ -70,28 +70,17 @@ export default ({ setPage }) => {
         >
           Program
         </Menu.Item>
-        <Menu.SubMenu key='logs' title='Logs' icon={<LoginOutlined />}>
-          <Menu.Item
-            key='log1'
-            onClick={() => {
-              setPage({
-                children: <VisitHistory />,
-              });
-            }}
-          >
-            Visit History
-          </Menu.Item>
-          <Menu.Item
-            key='log2'
-            onClick={() => {
-              setPage({
-                children: <EventHistory />,
-              });
-            }}
-          >
-            Event History
-          </Menu.Item>
-        </Menu.SubMenu>
+        <Menu.Item
+          key='log1'
+          onClick={() => {
+            setPage({
+              children: <VisitHistory />,
+            });
+          }}
+          icon={<LoginOutlined />}
+        >
+          Visit History
+        </Menu.Item>
         {role == "superadmin" ? (
           <Menu.Item
             key='2'

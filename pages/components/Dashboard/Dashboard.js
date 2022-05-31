@@ -40,13 +40,11 @@ ChartJS.register(
 );
 
 export default () => {
-  const [type, setType] = useState("Farmer");
   const [loader, setLoader] = useState("");
   const [data, setData] = useState();
   const [newData, setNewData] = useState();
   const [barData, setBarData] = useState([]);
   const [totalLandArea, setTotalLandArea] = useState(0);
-  const [totalarea, setTotalArea] = useState(0);
   const [openFarmLandInfo, setOpenFarmlandInfo] = useState(false);
   const [loc, setLoc] = useState();
   const [farmInfo, setFarmInfo] = useState([]);
@@ -327,15 +325,19 @@ export default () => {
               let total = _.reduce((p, n) => p + n.farmobj?.totalArea, 0);
               return (
                 <>
-                  <Table.Summary.Row>
+                  <Table.Summary.Row
+                    style={{ background: "rgba(100,100,100,0.05)" }}
+                  >
                     <Table.Summary.Cell index={0} align='center'>
-                      Total
+                      <strong>Total</strong>
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={1} align='center'>
-                      <Typography.Text>{total}</Typography.Text>
+                      <Typography.Text style={{ fontWeight: 900 }}>
+                        {total}
+                      </Typography.Text>
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={2} align='center'>
-                      <Typography.Text>
+                      <Typography.Text style={{ fontWeight: 900 }}>
                         {_.length > 0 ? "100%" : "0%"}
                       </Typography.Text>
                     </Table.Summary.Cell>
@@ -504,15 +506,19 @@ export default () => {
                   setTotalLandArea(total);
                   return (
                     <>
-                      <Table.Summary.Row>
+                      <Table.Summary.Row
+                        style={{ background: "rgba(100,100,100,0.05)" }}
+                      >
                         <Table.Summary.Cell index={0} align='center'>
-                          Total
+                          <strong> Total</strong>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={1} align='center'>
-                          <Typography.Text>{total}</Typography.Text>
+                          <Typography.Text style={{ fontWeight: 900 }}>
+                            {total}
+                          </Typography.Text>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={2} align='center'>
-                          <Typography.Text>
+                          <Typography.Text style={{ fontWeight: 900 }}>
                             {data?.farmlandSummary.length > 0 ? "100%" : "0%"}
                           </Typography.Text>
                         </Table.Summary.Cell>
@@ -531,7 +537,6 @@ export default () => {
           {/* For Farmer Bargraph */}
           <Col span={24}>
             <Card>
-              <Button>View Table List of barangay</Button>
               <Bar options={options} data={farmerdata} />
             </Card>
           </Col>

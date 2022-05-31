@@ -19,22 +19,20 @@ export default () => {
   const [form] = Form.useForm();
 
   const handleLogin = async (val) => {
-    let payload = {};
-    if (val.superpassword) {
-      payload = {
-        type: "superadmin",
-        pass: val.superpassword,
-      };
-    } else {
-      payload = {
+    if (
+      (val.username?.length > 0 && val.username?.trim() == "") ||
+      val.username == undefined
+    ) {
+      message.error("Username is empty.");
+      return;
+    }
+    let { data } = await axios.post("/api/auth", {
+      payload: {
         type: "admin",
         username: val.username,
         password: val.password,
         email: val.username,
-      };
-    }
-    let { data } = await axios.post("/api/auth", {
-      payload,
+      },
     });
 
     if (data.success) {
@@ -174,7 +172,7 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input.Password />
             </Form.Item>
             <Form.Item
               label='Confirm Password'
@@ -186,7 +184,7 @@ export default () => {
                 },
               ]}
             >
-              <Input type='password' />
+              <Input.Password />
             </Form.Item>
           </Form>
         </Modal>
@@ -213,85 +211,14 @@ export default () => {
             }}
             onFinish={handleLogin}
           >
-            <Form.Item
-              label='username'
-              name='username'
-              rules={[
-                {
-                  required: type == "admin" ? true : false,
-                  message: "Please input your Username!",
-                },
-              ]}
-            >
+            <Form.Item label='username' name='username'>
               <Input />
             </Form.Item>
 
-            <Form.Item
-              label='password'
-              name='password'
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
-              ]}
-            >
+            <Form.Item label='password' name='password'>
               <Input.Password />
             </Form.Item>
 
-            {/* <Tabs activeKey={type} onChange={setType} type='card'>
-              <Tabs.TabPane key='admin' tab='Admin'>
-                <Form.Item
-                  name='username'
-                  rules={[
-                    {
-                      required: type == "admin" ? true : false,
-                      message: "Please input your Username!",
-                    },
-                  ]}
-                >
-                  <Input prefix={<UserOutlined />} size='large' />
-                </Form.Item>
-                <Form.Item name='password'>
-                  <Input
-                    prefix={<LockOutlined />}
-                    type='password'
-                    size='large'
-                  />
-                </Form.Item>
-              </Tabs.TabPane>
-              <Tabs.TabPane key='superadmin' tab='Super Admin'>
-                <LockOutlined
-                  style={{
-                    display: "flex",
-                    fontSize: 30,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 10,
-                  }}
-                />
-                <Form.Item
-                  name='superpassword'
-                  colon={false}
-                  rules={[
-                    {
-                      required: type == "superadmin" ? true : false,
-                      message: "Please input your password!",
-                    },
-                  ]}
-                >
-                  <Input
-                    type='password'
-                    size='large'
-                    style={{
-                      letterSpacing: 10,
-                      width: "100%",
-                      textAlign: "center",
-                    }}
-                  />
-                </Form.Item>
-              </Tabs.TabPane>
-            </Tabs> */}
             <Form.Item>
               <Button
                 type='primary'

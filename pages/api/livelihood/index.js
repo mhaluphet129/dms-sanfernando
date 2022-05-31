@@ -16,60 +16,203 @@ export default async function handler(req, res) {
         if (mode == "fetch-commodity-report-data") {
           const { brgy, commodity, commodityType } = req.query;
 
-          let _query = {
-            $match: {
-              crops: {
-                $elemMatch: {
-                  farmtype: commodityType,
-                  crop: commodity,
-                },
-              },
-              location: brgy,
-            },
-          };
-
           let query = [
             {
-              $project: {
-                obj: {
-                  $filter: {
-                    input: "$crops",
-                    as: "crops",
-                    cond: { $eq: ["$$crops.crop", commodity] },
-                  },
-                },
-                _id: 0,
-                totalArea: 1,
-                location: 1,
-              },
+              $unwind: "$crops",
             },
             {
-              $unwind: "$obj",
+              $project: {
+                crops: 1,
+                _id: 0,
+                totalArea: 1,
+              },
             },
             {
               $group: {
-                _id: "$location",
-                qty: { $sum: "$totalArea" },
-                unit: { $first: "$obj.unit" },
-                commodityType: { $first: "$obj.farmtype" },
-                commodityName: { $first: "$obj.crop" },
+                _id: "$crops.crop",
+                qty: { $push: "$totalArea" },
+                unit: { $push: "$crops.unit" },
+                type: { $push: "$crops.farmtype" },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                data: {
+                  $zip: {
+                    inputs: ["$type", "$qty", "$unit"],
+                  },
+                },
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $sort: {
+                _id: 1,
               },
             },
           ];
 
-          if (brgy == "all") delete _query.$match.location;
-          if (commodity == "all") delete _query.$match.crops.$elemMatch.crop;
-          if (commodityType == "all")
-            delete _query.$match.crops.$elemMatch.farmtype;
-          if (!(commodity == "all" && commodityType == "all" && brgy == "all"))
-            query.unshift(_query);
+          if (brgy != "all" && commodity != "all" && commodityType != "all") {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        farmtype: commodityType,
+                        crop: commodity,
+                      },
+                    },
+                    location: brgy,
+                  },
+                },
+              ]
+            );
+          } else if (
+            commodity == "all" &&
+            commodityType == "all" &&
+            brgy == "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $group: {
+                    _id: null,
+                    data: { $push: "$$ROOT" },
+                  },
+                },
+                {
+                  $unwind: "$data",
+                },
+                {
+                  $replaceRoot: {
+                    newRoot: "$data",
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy != "all" &&
+            commodity == "all" &&
+            commodityType == "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    location: brgy,
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy != "all" &&
+            commodity != "all" &&
+            commodityType == "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        crop: commodity,
+                      },
+                    },
+                    location: brgy,
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy == "all" &&
+            commodity != "all" &&
+            commodityType != "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        farmtype: commodityType,
+                        crop: commodity,
+                      },
+                    },
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy == "all" &&
+            commodity == "all" &&
+            commodityType != "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        farmtype: commodityType,
+                      },
+                    },
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy == "all" &&
+            commodity != "all" &&
+            commodityType == "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        crop: commodity,
+                      },
+                    },
+                  },
+                },
+              ]
+            );
+          } else if (
+            brgy != "all" &&
+            commodity == "all" &&
+            commodityType != "all"
+          ) {
+            query.unshift(
+              ...[
+                {
+                  $match: {
+                    crops: {
+                      $elemMatch: {
+                        farmtype: commodityType,
+                      },
+                    },
+                    location: brgy,
+                  },
+                },
+              ]
+            );
+          }
 
           let farmlands = await Farmland.aggregate(query).catch((err) => {
             res.end(
               JSON.stringify({ success: false, message: "Error: " + err })
             );
           });
-          console.log(_query);
+          // brgy, commodity, commodityType
+          if (commodity != "all")
+            farmlands = farmlands.filter((el) => el._id == commodity);
+          if (commodityType != "all")
+            farmlands = farmlands.filter((el) => el.data[0] == commodityType);
           res.status(200).end(
             JSON.stringify({
               success: true,
@@ -80,30 +223,32 @@ export default async function handler(req, res) {
         }
 
         if (mode == "get-commodity") {
-          let a = await Livelihood.aggregate([
+          let a = await Farmland.aggregate([
             {
-              $lookup: {
-                from: "farmlands",
-                let: { farmlandID: "$farmlandID" },
-                pipeline: [
-                  { $match: { $expr: { $in: ["$_id", "$$farmlandID"] } } },
-                ],
-                as: "farmobj",
+              $group: {
+                _id: null,
+                data: { $push: "$$ROOT" },
               },
             },
-
             {
-              $unwind: "$farmobj",
+              $unwind: "$data",
             },
             {
-              $unwind: "$farmobj.crops",
+              $replaceRoot: {
+                newRoot: "$data",
+              },
             },
             {
-              $replaceRoot: { newRoot: "$farmobj.crops" },
+              $unwind: "$crops",
+            },
+            {
+              $project: {
+                crops: 1,
+              },
             },
             {
               $group: {
-                _id: "$crop",
+                _id: "$crops.crop",
               },
             },
           ]).catch((err) => {
@@ -325,13 +470,6 @@ export default async function handler(req, res) {
           let newLivelihood = Livelihood(req.body.payload.newLivelihood);
           await Farmland.insertMany([...req.body.payload.arrayFarm])
             .then(async (e) => {
-              newLivelihood.timeline = [
-                {
-                  time: moment(),
-                  label: "This profile is newly added.",
-                },
-              ];
-
               let insertedIds = [];
 
               e?.forEach((el) => {
@@ -449,7 +587,6 @@ export default async function handler(req, res) {
         if (mode == "set-imgs") {
           const { id, images } = req.body.payload;
           const { filenames, profile } = images;
-          console.log(filenames, profile);
 
           // let set = { personalfiles: [], profileImage: "" };
           // if (filenames.length > 0) set.personalfiles = [...filenames];

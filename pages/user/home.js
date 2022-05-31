@@ -402,7 +402,6 @@ export default () => {
         onClose={() => setOpenAccountSettings(false)}
         setVisible={setOpenAccountSettings}
         data={personalData}
-        type={data?.role}
         // callback={() => setTrigger(trigger + 1)}
       />
       <Modal

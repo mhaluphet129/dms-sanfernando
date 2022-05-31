@@ -24,7 +24,7 @@ import TimelineDisplay from "../../assets/js/TimelineDisplay";
 
 import { UserOutlined } from "@ant-design/icons";
 
-export default ({ type, visibility, setVisible, onClose, data, callback }) => {
+export default ({ visibility, setVisible, onClose, data, callback }) => {
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
@@ -243,24 +243,22 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
               </Typography.Text>
             </div>
 
-            {type == "superadmin" && (
-              <>
-                <Button
-                  style={{ width: "100%", marginBottom: 5 }}
-                  onClick={() => setOpenUploadModal(true)}
-                >
-                  Upload/Change Picture
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: 5 }}
-                  onClick={() => setViewModalPass(true)}
-                >
-                  {data?.hasOwnProperty("password")
-                    ? "Change Password"
-                    : "Set Password"}
-                </Button>
-              </>
-            )}
+            <>
+              <Button
+                style={{ width: "100%", marginBottom: 5 }}
+                onClick={() => setOpenUploadModal(true)}
+              >
+                Upload/Change Picture
+              </Button>
+              <Button
+                style={{ width: "100%", marginBottom: 5 }}
+                onClick={() => setViewModalPass(true)}
+              >
+                {data?.hasOwnProperty("password")
+                  ? "Change Password"
+                  : "Set Password"}
+              </Button>
+            </>
             <Button
               style={{ width: "100%", marginBottom: 5 }}
               onClick={() => {
@@ -270,19 +268,16 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
               Timeline
             </Button>
 
-            {type == "superadmin" &&
-              JSON.parse(Cookie.get("user")).role != "superadmin" && (
-                <Popconfirm
-                  icon={null}
-                  title='Proceed to the operation?'
-                  okText='Yes'
-                  onConfirm={() => changeToSuperadmin()}
-                >
-                  <Button style={{ width: "100%" }}>
-                    Grant Super Admin access
-                  </Button>
-                </Popconfirm>
-              )}
+            <Popconfirm
+              icon={null}
+              title='Proceed to the operation?'
+              okText='Yes'
+              onConfirm={() => changeToSuperadmin()}
+            >
+              <Button style={{ width: "100%" }}>
+                Grant Super Admin access
+              </Button>
+            </Popconfirm>
           </Col>
           <Col span={14}>
             <Form>
@@ -294,7 +289,6 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
                       setIsEditing(true);
                     }}
                     value={name}
-                    disabled={type != "superadmin"}
                     className='customInput'
                   />
                 </FloatLabel>
@@ -307,7 +301,6 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
                       setIsEditing(true);
                     }}
                     value={lastname}
-                    disabled={type != "superadmin"}
                     className='customInput'
                   />
                 </FloatLabel>
@@ -321,7 +314,6 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
                     setIsEditing(true);
                   }}
                   value={username}
-                  disabled={type != "superadmin"}
                   className='customInput'
                 />
               </FloatLabel>
@@ -334,7 +326,6 @@ export default ({ type, visibility, setVisible, onClose, data, callback }) => {
                     setIsEditing(true);
                   }}
                   value={email}
-                  disabled={type != "superadmin"}
                   className='customInput'
                 />
               </FloatLabel>
