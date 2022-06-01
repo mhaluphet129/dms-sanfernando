@@ -331,7 +331,9 @@ export default ({ visible, setVisible, cb }) => {
                 marginBottom: 10,
               }}
             >
-              <span>{`${spouseName} ${spouseMiddlename}. ${spouseSurname}`}</span>
+              <span>{`${analysisType == "main" ? name : spouseName} ${
+                analysisType == "main" ? middlename : spouseMiddlename
+              }. ${analysisType == "main" ? lastname : spouseSurname}`}</span>
               <Progress
                 type='dashboard'
                 percent={(
@@ -481,7 +483,9 @@ export default ({ visible, setVisible, cb }) => {
                 marginBottom: 10,
               }}
             >
-              <span>{`${spouseName} ${spouseMiddlename}. ${spouseSurname}`}</span>
+              <span>{`${analysisType == "main" ? name : spouseName} ${
+                analysisType == "main" ? middlename : spouseMiddlename
+              }. ${analysisType == "main" ? lastname : spouseSurname}`}</span>
               <Progress
                 type='dashboard'
                 percent={(
@@ -645,7 +649,6 @@ export default ({ visible, setVisible, cb }) => {
         >
           <Step title='Part I' description='Personal Information' />
           <Step title='Part II' description='Farm Profile' />
-          <Step title='Finish' description='Review' />
         </Steps>
         <Divider />
         <Form
@@ -1617,67 +1620,6 @@ export default ({ visible, setVisible, cb }) => {
               </Col>
             </Row>
           </div>
-          {/* ID oh yeah */}
-          <div style={{ display: current != 2 ? "none" : null }}>
-            <Row>
-              {/* Upload ID Picture */}
-              <Col span={18} push={6}>
-                <Form layout='vertical'>
-                  <Input.Group>
-                    <Space>
-                      <Form.Item label='Upload ID Picture'>
-                        <Upload
-                          listType='picture-card'
-                          maxCount={1}
-                          accept='image/*'
-                          onChange={(e) => {
-                            setProfile(e.file);
-                          }}
-                          onRemove={(e, i) => setProfile()}
-                        >
-                          {Object.keys(profile || {}).length > 0
-                            ? null
-                            : uploadButton}
-                        </Upload>
-                      </Form.Item>
-                    </Space>
-                  </Input.Group>
-                </Form>
-              </Col>
-              <Col span={6} pull={18}>
-                <strong>ID Picture</strong>
-              </Col>
-            </Row>
-            <Row>
-              {/* Scanned Document */}
-              <Col span={18} push={6}>
-                <Form layout='vertical'>
-                  <Input.Group>
-                    <Space>
-                      <Form.Item label='Upload Scanned Documents'>
-                        <div>
-                          <Upload
-                            maxCount={5}
-                            accept='image/*'
-                            multiple
-                            onChange={(e) => setFiles(e.fileList)}
-                            onRemove={(e) => {
-                              setFiles(files.filter((el) => el.uid != e.uid));
-                            }}
-                          >
-                            <Button icon={<UploadOutlined />}>Upload</Button>
-                          </Upload>
-                        </div>
-                      </Form.Item>
-                    </Space>
-                  </Input.Group>
-                </Form>
-              </Col>
-              <Col span={6} pull={18}>
-                <strong>Scanned Document</strong>
-              </Col>
-            </Row>
-          </div>
 
           <div
             style={{
@@ -1691,16 +1633,16 @@ export default ({ visible, setVisible, cb }) => {
                   {current > 0 ? "Previous" : "Cancel"}
                 </Button>
               )}
-              {current < 2 && (
+              {current < 1 && (
                 <Button
                   type='primary'
                   onClick={handleNext}
                   style={{ width: 120 }}
                 >
-                  {current < 2 ? "Next" : "Add"}
+                  {current < 1 ? "Next" : null}
                 </Button>
               )}
-              {current == 2 && (
+              {current == 1 && (
                 <Button type='primary' htmlType='submit'>
                   Submit
                 </Button>
