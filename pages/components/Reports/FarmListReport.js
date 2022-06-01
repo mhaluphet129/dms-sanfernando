@@ -87,6 +87,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                               <Image
                                 preview={false}
                                 src='/logo.png'
+                                alt='logo'
                                 width={150}
                               />
                             </Col>

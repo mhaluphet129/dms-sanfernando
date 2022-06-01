@@ -191,7 +191,7 @@ export default () => {
         });
         setSearchNames((el2) => [...el2, obj]);
       }
-    } else console.log(data.message);
+    }
   };
 
   const runTimer = (searchKeyword) => {
@@ -209,10 +209,7 @@ export default () => {
         <div>
           <ul style={{ listStyle: "none" }}>
             <li>
-              <Typography.Text
-                type='secondary'
-                onClick={() => console.log(keyData)}
-              >
+              <Typography.Text type='secondary'>
                 System Key:{" "}
                 <Typography.Text keyboard>
                   {keyData?.length > 0 ? keyData[0].systemID : ""}
@@ -595,10 +592,11 @@ export default () => {
                 justifyContent: "center",
               }}
             >
-              <a href='/'>
+              <a href='/' aria-label='redirect to home'>
                 <Image
                   src='/header_logo.png'
                   style={{ marginLeft: -20 }}
+                  alt='header_logo'
                   preview={false}
                 />
               </a>

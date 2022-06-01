@@ -73,7 +73,6 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
       payload: obj,
     });
     let resp = res.data;
-    console.log(resp);
     if (resp.success) {
       notification["success"]({
         message: resp.message,

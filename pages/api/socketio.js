@@ -6,9 +6,7 @@ let socketsData = [];
 
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
-    console.log("Socket is already running");
   } else {
-    console.log("Socket is initializing");
     const io = new Server(res.socket.server);
     res.socket.server.io = io;
     io.on("connection", (socket) => {
@@ -22,7 +20,6 @@ const SocketHandler = (req, res) => {
 
       /* System and Device push channels */
 
-      console.log(socketsData);
       socket.on("push-new-system", (key) => {
         socketsData.push({ systemID: key, deviceID: null, connected: false });
         socket.broadcast.emit("update-system", socketsData);

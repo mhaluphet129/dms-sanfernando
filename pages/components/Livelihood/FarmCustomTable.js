@@ -112,7 +112,7 @@ export default ({ data, setData, viewOnly, selectedBarangay }) => {
                         {row.loc != "" ? row.loc : selectedBarangay}
                       </span>
                     </Typography.Text>
-                    <Typography.Text onClick={() => console.log(row)}>
+                    <Typography.Text>
                       Ownership Document:{" "}
                       <span style={{ fontWeight: 900 }}>
                         {row.docType || ""}

@@ -200,7 +200,7 @@ export default () => {
           }}
         >
           <div style={{ marginBottom: 10 }}>
-            <Image src='/logo.png' alt='me' width='180' height='64' />
+            <Image src='/logo.png' alt='logo' width='180' height='64' />
           </div>
           <Form
             style={{

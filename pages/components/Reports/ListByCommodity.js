@@ -79,6 +79,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                                 preview={false}
                                 src='/logo.png'
                                 width={150}
+                                alt='logo'
                               />
                             </Col>
                           </Row>
@@ -127,6 +128,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                                 preview={false}
                                 src='/imgs/DA_LOGO.png'
                                 width={150}
+                                alt='logo'
                               />
                             </Col>
                           </Row>

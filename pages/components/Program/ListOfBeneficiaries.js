@@ -45,7 +45,9 @@ export default ({
       title: "Name",
       render: (_, row) => (
         <Tooltip title='Click to view full profile.'>
-          <a>{titleText(`${row.name.name} ${row.name.lastName}`)}</a>
+          <a href='#' arial-label='full profile'>
+            {titleText(`${row.name.name} ${row.name.lastName}`)}
+          </a>
         </Tooltip>
       ),
     },
@@ -115,7 +117,7 @@ export default ({
           { value: `${el.name.name} ${el.name.lastName}`, id: el?._id },
         ]);
       });
-    } else console.log(data.message);
+    }
   };
 
   const runTimer = (searchKeyword) => {

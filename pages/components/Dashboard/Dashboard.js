@@ -355,10 +355,7 @@ export default () => {
             <Card>
               <Row gutter={[16, 16]}>
                 <Col span={12}>
-                  <Card
-                    style={{ height: 150, backgroundColor: "#bcd2d6" }}
-                    onClick={() => console.log(data?.cropsData)}
-                  >
+                  <Card style={{ height: 150, backgroundColor: "#bcd2d6" }}>
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.visitToday}
                     </Typography.Title>
