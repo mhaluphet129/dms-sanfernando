@@ -211,11 +211,11 @@ export default () => {
             }}
             onFinish={handleLogin}
           >
-            <Form.Item label='username' name='username'>
+            <Form.Item label='Username' name='username'>
               <Input />
             </Form.Item>
 
-            <Form.Item label='password' name='password'>
+            <Form.Item label='Password' name='password'>
               <Input.Password />
             </Form.Item>
 
