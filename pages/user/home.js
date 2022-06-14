@@ -80,6 +80,7 @@ export default () => {
   const [extraData, setExtraData] = useState();
   const [openAccountSettings, setOpenAccountSettings] = useState(false);
   const [personalData, setPersonalData] = useState({});
+  const [deviceStatus, openDeviceStatus] = useState(false);
   const [form] = Form.useForm();
 
   // report filtere
@@ -205,58 +206,15 @@ export default () => {
 
   const menu = () => (
     <Menu>
-      <Menu.Item key='0' style={{ marginTop: 10, marginBottom: 10 }}>
-        <div>
-          <ul style={{ listStyle: "none" }}>
-            <li>
-              <Typography.Text type='secondary'>
-                System Key:{" "}
-                <Typography.Text keyboard>
-                  {keyData?.length > 0 ? keyData[0].systemID : ""}
-                </Typography.Text>
-              </Typography.Text>
-            </li>
-            <li>
-              <Typography.Text type='secondary'>
-                Device ID:
-                <Typography.Text keyboard>
-                  {keyData?.length > 0 ? keyData[0].deviceID : ""}
-                </Typography.Text>
-              </Typography.Text>
-            </li>
-            <li>
-              <Typography.Text type='secondary'>
-                Status:{" "}
-                {keyData?.length > 0 && (
-                  <Tag
-                    color={
-                      keyData[0].connected
-                        ? "green"
-                        : keyData[0].deviceID == null
-                        ? "orange"
-                        : "red"
-                    }
-                  >
-                    {keyData?.length > 0 && keyData[0].connected
-                      ? "Connected"
-                      : keyData[0].deviceID == null
-                      ? "No connection"
-                      : "Not Connected"}
-                  </Tag>
-                )}
-              </Typography.Text>
-            </li>
-          </ul>
-        </div>
-      </Menu.Item>
-      <Menu.Item key='1' style={{ marginTop: 10, marginBottom: 10 }}>
-        <Typography.Text type='secondary'>
-          {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
-          {data.lastname &&
-            data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}{" "}
-          {`(${data?.role})`}
-        </Typography.Text>
-      </Menu.Item>
+      <Typography.Text
+        type='secondary'
+        style={{ marginTop: 20, marginBottom: 20, padding: 5 }}
+      >
+        {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
+        {data.lastname &&
+          data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}{" "}
+        {`(${data?.role})`}
+      </Typography.Text>
       <Menu.Item
         key='2'
         onClick={async () => {
@@ -275,10 +233,11 @@ export default () => {
       >
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
-      <Menu.Item key='3'>
-        <Typography.Text onClick={() => setOpenReport(true)}>
-          Generate Report
-        </Typography.Text>
+      <Menu.Item key='1' onClick={() => openDeviceStatus(true)}>
+        Show device status
+      </Menu.Item>
+      <Menu.Item key='3' onClick={() => setOpenReport(true)}>
+        <Typography.Text>Generate Report</Typography.Text>
       </Menu.Item>
       <Menu.Item
         key='4'
@@ -402,6 +361,57 @@ export default () => {
         // callback={() => setTrigger(trigger + 1)}
       />
       <Modal
+        visible={deviceStatus}
+        onCancel={() => openDeviceStatus(false)}
+        title=''
+        width={280}
+        footer={null}
+        closable={false}
+      >
+        <div>
+          <ul style={{ listStyle: "none" }}>
+            <li>
+              <Typography.Text type='secondary'>
+                System Key:{" "}
+                <Typography.Text keyboard>
+                  {keyData?.length > 0 ? keyData[0].systemID : ""}
+                </Typography.Text>
+              </Typography.Text>
+            </li>
+            <li>
+              <Typography.Text type='secondary'>
+                Device ID:
+                <Typography.Text keyboard>
+                  {keyData?.length > 0 ? keyData[0].deviceID : ""}
+                </Typography.Text>
+              </Typography.Text>
+            </li>
+            <li>
+              <Typography.Text type='secondary'>
+                Status:{" "}
+                {keyData?.length > 0 && (
+                  <Tag
+                    color={
+                      keyData[0].connected
+                        ? "green"
+                        : keyData[0].deviceID == null
+                        ? "orange"
+                        : "red"
+                    }
+                  >
+                    {keyData?.length > 0 && keyData[0].connected
+                      ? "Connected"
+                      : keyData[0].deviceID == null
+                      ? "No connection"
+                      : "Not Connected"}
+                  </Tag>
+                )}
+              </Typography.Text>
+            </li>
+          </ul>
+        </div>
+      </Modal>
+      <Modal
         title='Report Maker'
         visible={openReport}
         width={250}
@@ -434,6 +444,7 @@ export default () => {
             });
 
             if (res?.data.success) {
+              console.log(res?.data.data);
               setExtraData(res?.data.data);
               setOpenGenerator("fetch-commodity-report-data");
             }

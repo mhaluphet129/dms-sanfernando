@@ -12,6 +12,9 @@ let LogsSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
     barangay: {
       type: String,
     },

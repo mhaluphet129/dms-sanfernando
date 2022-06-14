@@ -93,9 +93,21 @@ export default ({ data, visible, setVisible, callback }) => {
       render: (_, row) => moment(row?.endDate).format("MMM DD, YYYY"),
     },
     {
-      title: "Cond.",
+      title: "Condition",
       align: "center",
-      render: (_, row) => "Temporary unavailable",
+      render: (_, row) => (
+        <Tag
+          color={
+            moment(row?.endDate).diff(moment(), "days") > 0
+              ? "success"
+              : "processing"
+          }
+        >
+          {moment(row?.endDate).diff(moment(), "days") > 0
+            ? "Planted"
+            : "Harvested"}
+        </Tag>
+      ),
     },
   ];
 
@@ -356,7 +368,7 @@ export default ({ data, visible, setVisible, callback }) => {
               title: "Function",
               align: "center",
               render: (_, row) => (
-                <>
+                <Space>
                   <Button
                     type='primary'
                     onClick={() => {
@@ -393,7 +405,7 @@ export default ({ data, visible, setVisible, callback }) => {
                       <DeleteOutlined />
                     </Button>
                   </Popconfirm>
-                </>
+                </Space>
               ),
             },
           ]}

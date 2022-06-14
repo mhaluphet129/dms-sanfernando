@@ -233,3 +233,29 @@ export default () => {
       </>
     );
 };
+
+// 3003 - Password required
+// 3004 - Credentials invalid
+// 3006 - Permissions insufficient
+// 3009 - Name required
+// 3010 - Type required
+// 3011 - Type invalid
+// 3012 - Name taken
+// 3030 - Description required
+// 3048 - Address line 1 required
+// 3049 - Address line 2 required
+// 3001 - Email required
+// 3074 - Email taken
+// 3002 - Email invalid
+// 3075 - Mobile required
+// 3076 - Mobile taken
+// 3077 - Mobile invalid
+// 3081 - Old password invalid (min: 6, max: 64 characters)
+// 3082 - New password required
+// 3083 - New password invalid (min: 6, max: 64 characters)
+// 3084 - Old password and new password identical
+// 3085 - Old password required
+// 3086 - Password invalid (min:6, max: 64 characters)
+// 3088 - Old password incorrect
+// 2048 - First name required
+// 2049 - Last name required

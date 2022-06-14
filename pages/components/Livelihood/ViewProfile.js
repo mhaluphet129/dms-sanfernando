@@ -1432,8 +1432,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           <Col span={18} push={6}>
             <Space direction='vertical'>
               <Typography.Text type='secondary'>
-                {/* here */}
-                Personal Files: <br />
+                <br />
                 <Image.PreviewGroup>
                   <Space style={{ display: "flex" }}>
                     {info?.personalfiles &&
@@ -1450,7 +1449,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
             </Space>
           </Col>
           <Col span={6} pull={18}>
-            <strong>ID Picture and Scanned Documents</strong>
+            <strong>Personal Files</strong>
           </Col>
         </Row>
       </div>

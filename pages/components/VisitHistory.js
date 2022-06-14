@@ -12,11 +12,15 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+import ProfilerModal from "./ProfilerModal";
 
 export default () => {
   const [loader, setLoader] = useState("");
   const [logs, setLogs] = useState();
   const [totalToday, setTotalToday] = useState(0);
+  const [openProfile, setOpenProfile] = useState(false);
+  const [profileData, setProfileData] = useState();
+
   const columns = [
     {
       title: "Date and Time",
@@ -27,7 +31,24 @@ export default () => {
       title: "Name",
       render: (_, row) => (
         <Tooltip title='Click to view full profile.'>
-          <Button type='link'>{row?.name}</Button>
+          <Button
+            type='link'
+            onClick={async () => {
+              let res = await axios.get("/api/main", {
+                params: {
+                  mode: "qr",
+                  id: row.userId,
+                },
+              });
+
+              if (res?.data.success) {
+                setProfileData(res?.data.data[0]);
+                setOpenProfile(true);
+              }
+            }}
+          >
+            {row?.name}
+          </Button>
         </Tooltip>
       ),
     },
@@ -63,6 +84,12 @@ export default () => {
 
   return (
     <>
+      <ProfilerModal
+        visible={openProfile}
+        setVisible={setOpenProfile}
+        data={profileData}
+        callback={() => null}
+      />
       <Row gutter={[16, 16]}>
         <Col span={18}>
           <Table

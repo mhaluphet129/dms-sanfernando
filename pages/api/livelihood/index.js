@@ -235,10 +235,28 @@ export default async function handler(req, res) {
             farmlands = farmlands.filter((el) => el._id == commodity);
           if (commodityType != "all")
             farmlands = farmlands.filter((el) => el.data[0] == commodityType);
+
+          let data = farmlands.reduce((acc, obj) => {
+            const key = obj["_id"];
+            if (!acc[key]) {
+              acc[key] = [];
+            }
+            acc[key].push(obj);
+            return acc;
+          }, {});
+          let arr = [];
+          for (let key in data) {
+            let total = data[key].reduce((p, n) => p + n.data[1], 0);
+            arr.push({
+              _id: key,
+              data: [data[key][0].data[0], total, data[key][0].data[2]],
+            });
+          }
+
           res.status(200).end(
             JSON.stringify({
               success: true,
-              data: farmlands,
+              data: arr,
             })
           );
           resolve();
@@ -407,6 +425,7 @@ export default async function handler(req, res) {
             .then(() => {
               let newVisit = Log({
                 name,
+                userId: id,
                 barangay,
                 type,
               });
@@ -447,6 +466,7 @@ export default async function handler(req, res) {
                 _id: {
                   name: "$name.name",
                   lastname: "$name.lastName",
+                  _id: "$_id",
                 },
                 farmlandID: {
                   $push: "$farmlandID",

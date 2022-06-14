@@ -65,7 +65,7 @@ export default ({
     },
     {
       title: "Type",
-
+      align: "center",
       render: (_, row) => (
         <Space direction='vertical'>
           {row?.profile?.type.map((el, i) => (
@@ -78,6 +78,7 @@ export default ({
     },
     {
       title: "Action",
+      align: "center",
       key: "action",
       render: (_, row) => (
         <Popconfirm

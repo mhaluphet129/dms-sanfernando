@@ -26,6 +26,7 @@ import {
 import { Bar, Pie } from "react-chartjs-2";
 import jason from "../../assets/json/index";
 import titleText from "../../assets/js/TitleText";
+import ProfilerModal from "../ProfilerModal";
 
 import axios from "axios";
 import moment from "moment";
@@ -51,6 +52,8 @@ export default () => {
   const [total, setTotal] = useState(0);
   const [max, setMax] = useState(10);
   const [weatherData, setWeatherData] = useState();
+  const [modalData, setModalData] = useState();
+  const [openModal, setOpenModal] = useState(false);
 
   const options = {
     responsive: true,
@@ -102,7 +105,11 @@ export default () => {
   const colums2 = [
     {
       title: "Name",
-      render: (_, row) => titleText(`${row?._id.name} ${row?._id.lastname}`),
+      render: (_, row) => (
+        <Typography.Link>
+          {titleText(`${row?._id.name} ${row?._id.lastname}`)}
+        </Typography.Link>
+      ),
     },
     {
       title: "Land area (HA)",
@@ -299,6 +306,12 @@ export default () => {
 
   return (
     <>
+      <ProfilerModal
+        data={modalData}
+        visible={openModal}
+        setVisible={setOpenModal}
+        callback={() => null}
+      />
       <Modal
         visible={openFarmLandInfo}
         onCancel={() => setOpenFarmlandInfo(false)}
@@ -309,18 +322,30 @@ export default () => {
       >
         <Card
           loading={loader == "load-farm"}
-          title={
-            <Typography.Text>
-              <span style={{ fontWeight: 900 }}>{loc}</span> Farmland
-              Information
-            </Typography.Text>
-          }
+          title={<Typography.Text>{loc} Farmland Information</Typography.Text>}
         >
           <Table
             columns={colums2}
             dataSource={farmInfo}
             pagination={false}
             rowKey={(row) => row._id.name}
+            onRow={(data, index) => {
+              return {
+                onClick: async () => {
+                  let res = await axios.get("/api/main", {
+                    params: {
+                      mode: "qr",
+                      id: data._id._id,
+                    },
+                  });
+
+                  if (res?.data.success) {
+                    setModalData(res?.data.data[0]);
+                    setOpenModal(true);
+                  }
+                },
+              };
+            }}
             summary={(_) => {
               let total = _.reduce((p, n) => p + n.farmobj?.totalArea, 0);
               return (
@@ -506,15 +531,15 @@ export default () => {
                       <Table.Summary.Row
                         style={{ background: "rgba(100,100,100,0.05)" }}
                       >
-                        <Table.Summary.Cell index={0} align='center'>
+                        <Table.Summary.Cell index={0}>
                           <strong> Total</strong>
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={1} align='center'>
+                        <Table.Summary.Cell index={1}>
                           <Typography.Text style={{ fontWeight: 900 }}>
                             {total}
                           </Typography.Text>
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={2} align='center'>
+                        <Table.Summary.Cell index={2}>
                           <Typography.Text style={{ fontWeight: 900 }}>
                             {data?.farmlandSummary.length > 0 ? "100%" : "0%"}
                           </Typography.Text>
