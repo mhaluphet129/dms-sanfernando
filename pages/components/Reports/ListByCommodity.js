@@ -8,12 +8,8 @@ import {
   Typography,
   Space,
   Image,
-  Divider,
 } from "antd";
 import { useReactToPrint } from "react-to-print";
-import moment from "moment";
-
-import TitleText from "../../assets/js/TitleText";
 
 class PDF extends React.Component {
   render() {
@@ -50,7 +46,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
     {
       title: "Total Farmers",
       align: "center",
-      render: (_, row) => "test",
+      render: (_, row) => row?.data[3],
     },
   ];
 

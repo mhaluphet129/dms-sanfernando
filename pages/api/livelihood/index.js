@@ -249,7 +249,12 @@ export default async function handler(req, res) {
             let total = data[key].reduce((p, n) => p + n.data[1], 0);
             arr.push({
               _id: key,
-              data: [data[key][0].data[0], total, data[key][0].data[2]],
+              data: [
+                data[key][0].data[0],
+                total,
+                data[key][0].data[2],
+                data[key].length,
+              ],
             });
           }
 

@@ -444,7 +444,6 @@ export default () => {
             });
 
             if (res?.data.success) {
-              console.log(res?.data.data);
               setExtraData(res?.data.data);
               setOpenGenerator("fetch-commodity-report-data");
             }
