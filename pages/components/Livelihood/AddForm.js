@@ -348,7 +348,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((mainAnalysic.exact / mainAnalysic.total) * 100 > 75)
+                  if ((mainAnalysic.exact / mainAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -384,7 +384,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((mainAnalysic.name / mainAnalysic.total) * 100 > 75)
+                  if ((mainAnalysic.name / mainAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -420,7 +420,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((mainAnalysic.middlename / mainAnalysic.total) * 100 > 75)
+                  if ((mainAnalysic.middlename / mainAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -456,7 +456,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((mainAnalysic.lastname / mainAnalysic.total) * 100 > 75)
+                  if ((mainAnalysic.lastname / mainAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -500,7 +500,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((spouseAnalysic.exact / spouseAnalysic.total) * 100 > 75)
+                  if ((spouseAnalysic.exact / spouseAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -536,7 +536,7 @@ export default ({ visible, setVisible, cb }) => {
                     : "normal"
                 }
                 format={() => {
-                  if ((spouseAnalysic.name / spouseAnalysic.total) * 100 > 75)
+                  if ((spouseAnalysic.name / spouseAnalysic.total) * 100 > 0)
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
                         <WarningOutlined />
@@ -575,7 +575,7 @@ export default ({ visible, setVisible, cb }) => {
                 format={() => {
                   if (
                     (spouseAnalysic.middlename / spouseAnalysic.total) * 100 >
-                    75
+                    0
                   )
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>
@@ -614,7 +614,7 @@ export default ({ visible, setVisible, cb }) => {
                 format={() => {
                   if (
                     (spouseAnalysic.lastname / spouseAnalysic.total) * 100 >
-                    75
+                    0
                   )
                     return (
                       <Typography.Text style={{ color: "#ffcc00" }}>

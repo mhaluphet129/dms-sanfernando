@@ -43,6 +43,7 @@ export default ({ visible, setVisible, pushData, selectedBarangay }) => {
   const [docStatus, setDocStatus] = useState();
   const [doc, docChange] = useState(false);
   const [docname, setDocname] = useState("");
+  const [requiredDocNum, setRequiredDocNum] = useState(true);
 
   const [data, setData] = useState({
     loc: "",
@@ -329,11 +330,11 @@ export default ({ visible, setVisible, pushData, selectedBarangay }) => {
               return;
             }
 
-            if (docStatus) {
+            if (docStatus && requiredDocNum) {
               message.warn("Document number is invalid.");
               return;
             }
-            if (docStatus == undefined) {
+            if (docStatus == undefined && requiredDocNum) {
               message.warn("Please check your document number validity first.");
               return;
             }
@@ -389,6 +390,7 @@ export default ({ visible, setVisible, pushData, selectedBarangay }) => {
                       width: 250,
                     }}
                     onChange={(e) => {
+                      if (e == "Forestal Area") setRequiredDocNum(false);
                       setDocname(e);
                       setDocStatus();
                       setData((el) => ({
