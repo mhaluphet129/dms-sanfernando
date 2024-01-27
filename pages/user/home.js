@@ -35,7 +35,7 @@ import jason from "../assets/json";
 import AdminModal from "../components/Admin/AdminModal";
 
 import { UserOutlined } from "@ant-design/icons";
-import TitleText from "../assets/js/TitleText";
+import TitleText from "../../utilities/TitleText";
 const { Content, Header } = Layout;
 let socket;
 
@@ -207,7 +207,7 @@ export default () => {
   const menu = () => (
     <Menu>
       <Typography.Text
-        type='secondary'
+        type="secondary"
         style={{ marginTop: 20, marginBottom: 20, padding: 5 }}
       >
         {data.name && data.name.charAt(0).toUpperCase() + data.name.slice(1)}{" "}
@@ -216,7 +216,7 @@ export default () => {
         {`(${data?.role})`}
       </Typography.Text>
       <Menu.Item
-        key='2'
+        key="2"
         onClick={async () => {
           let res = await axios.get("/api/admin", {
             params: {
@@ -233,14 +233,14 @@ export default () => {
       >
         <Typography.Text>Account Settings</Typography.Text>
       </Menu.Item>
-      <Menu.Item key='1' onClick={() => openDeviceStatus(true)}>
+      <Menu.Item key="1" onClick={() => openDeviceStatus(true)}>
         Show device status
       </Menu.Item>
-      <Menu.Item key='3' onClick={() => setOpenReport(true)}>
+      <Menu.Item key="3" onClick={() => setOpenReport(true)}>
         <Typography.Text>Generate Report</Typography.Text>
       </Menu.Item>
       <Menu.Item
-        key='4'
+        key="4"
         onClick={() => {
           socket.emit("remove-system", Cookies.get("key"));
           Cookies.remove("user");
@@ -250,7 +250,7 @@ export default () => {
           window.location.href = "/user/login";
         }}
       >
-        <Typography.Text type='danger'>Logout</Typography.Text>
+        <Typography.Text type="danger">Logout</Typography.Text>
       </Menu.Item>
     </Menu>
   );
@@ -363,7 +363,7 @@ export default () => {
       <Modal
         visible={deviceStatus}
         onCancel={() => openDeviceStatus(false)}
-        title=''
+        title=""
         width={280}
         footer={null}
         closable={false}
@@ -371,7 +371,7 @@ export default () => {
         <div>
           <ul style={{ listStyle: "none" }}>
             <li>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 System Key:{" "}
                 <Typography.Text keyboard>
                   {keyData?.length > 0 ? keyData[0].systemID : ""}
@@ -379,7 +379,7 @@ export default () => {
               </Typography.Text>
             </li>
             <li>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Device ID:
                 <Typography.Text keyboard>
                   {keyData?.length > 0 ? keyData[0].deviceID : ""}
@@ -387,7 +387,7 @@ export default () => {
               </Typography.Text>
             </li>
             <li>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Status:{" "}
                 {keyData?.length > 0 && (
                   <Tag
@@ -412,12 +412,12 @@ export default () => {
         </div>
       </Modal>
       <Modal
-        title='Report Maker'
+        title="Report Maker"
         visible={openReport}
         width={250}
         onCancel={() => setOpenReport(false)}
         closable={false}
-        okText='Generate'
+        okText="Generate"
         onOk={async () => {
           if (typeOfReport == "list-farmer") {
             let res = await axios.get("/api/livelihood", {
@@ -453,29 +453,29 @@ export default () => {
         <Spin spinning={loader == "fetch-comm"}>
           <Form>
             <Form.Item
-              name='type'
-              label='Type of report'
+              name="type"
+              label="Type of report"
               labelCol={{ span: 24 }}
             >
               <Select
                 style={{ width: 200 }}
                 onChange={(e) => setTypeOfReport(e)}
               >
-                <Select.Option value='list-farmer'>
+                <Select.Option value="list-farmer">
                   Listing of farmer
                 </Select.Option>
-                <Select.Option value='comm-list'>Commodity List</Select.Option>
+                <Select.Option value="comm-list">Commodity List</Select.Option>
               </Select>
             </Form.Item>
             {typeOfReport == "list-farmer" && (
               <>
-                <Form.Item label='Barangay' labelCol={{ span: 24 }}>
+                <Form.Item label="Barangay" labelCol={{ span: 24 }}>
                   <Select
                     style={{ width: 200 }}
                     onChange={(e) => setBarangay(e)}
-                    defaultValue='all'
+                    defaultValue="all"
                   >
-                    <Select.Option key='all'>All</Select.Option>
+                    <Select.Option key="all">All</Select.Option>
                     {jason.barangays.map((el) => (
                       <Select.Option key={el}>{el}</Select.Option>
                     ))}
@@ -485,37 +485,37 @@ export default () => {
             )}
             {typeOfReport == "comm-list" && (
               <>
-                <Form.Item label='Barangay' labelCol={{ span: 24 }}>
+                <Form.Item label="Barangay" labelCol={{ span: 24 }}>
                   <Select
                     style={{ width: 200 }}
                     onChange={(e) => setBarangay(e)}
-                    defaultValue='all'
+                    defaultValue="all"
                   >
-                    <Select.Option key='all'>All</Select.Option>
+                    <Select.Option key="all">All</Select.Option>
                     {jason.barangays.map((el) => (
                       <Select.Option key={el}>{el}</Select.Option>
                     ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label='Commodity' labelCol={{ span: 24 }}>
+                <Form.Item label="Commodity" labelCol={{ span: 24 }}>
                   <Select
                     style={{ width: 200 }}
                     onChange={(e) => setCommodity(e)}
-                    defaultValue='all'
+                    defaultValue="all"
                   >
-                    <Select.Option key='all'>All</Select.Option>
+                    <Select.Option key="all">All</Select.Option>
                     {availableCommodity.map(({ _id }) => (
                       <Select.Option key={_id}>{_id}</Select.Option>
                     ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label='Commodity Type' labelCol={{ span: 24 }}>
+                <Form.Item label="Commodity Type" labelCol={{ span: 24 }}>
                   <Select
                     style={{ width: 200 }}
                     onChange={(e) => setCommodityType(e)}
-                    defaultValue='all'
+                    defaultValue="all"
                   >
-                    <Select.Option key='all'>All</Select.Option>
+                    <Select.Option key="all">All</Select.Option>
                     {jason.commodity.map((el) => (
                       <Select.Option key={el}>{el}</Select.Option>
                     ))}
@@ -602,11 +602,11 @@ export default () => {
                 justifyContent: "center",
               }}
             >
-              <a href='/' aria-label='redirect to home'>
+              <a href="/" aria-label="redirect to home">
                 <Image
-                  src='/header_logo.png'
+                  src="/header_logo.png"
                   style={{ marginLeft: -20 }}
-                  alt='header_logo'
+                  alt="header_logo"
                   preview={false}
                 />
               </a>
@@ -638,7 +638,7 @@ export default () => {
                 autoFocus
               >
                 <Input.Search
-                  size='large'
+                  size="large"
                   placeholder="Type 'program:' to search program."
                 />
               </AutoComplete>
@@ -654,7 +654,7 @@ export default () => {
             >
               <Typography.Title
                 style={{ marginTop: 15, marginLeft: -40 }}
-                className='clock'
+                className="clock"
                 level={3}
               >
                 <Clock />
@@ -673,7 +673,7 @@ export default () => {
                   />
                 ) : (
                   <Avatar
-                    size='large'
+                    size="large"
                     style={{ marginLeft: "auto", cursor: "pointer" }}
                   >
                     {data.name && data.name[0].toUpperCase()}

@@ -18,9 +18,9 @@ import Cookie from "js-cookie";
 import moment from "moment";
 import axios from "axios";
 
-import FloatLabel from "../../assets/js/FloatLabel";
-import Label01 from "../../assets/js/Labels";
-import TimelineDisplay from "../../assets/js/TimelineDisplay";
+import FloatLabel from "../../../utilities/FloatLabel";
+import Label01 from "../../../utilities/Labels";
+import TimelineDisplay from "../../../utilities/TimelineDisplay";
 
 import { UserOutlined } from "@ant-design/icons";
 

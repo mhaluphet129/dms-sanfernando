@@ -20,7 +20,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import Profiler from "../ProfilerModal";
 import AddForm from "./AddForm";
 
-import titleText from "../../assets/js/TitleText";
+import titleText from "../../../utilities/TitleText";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

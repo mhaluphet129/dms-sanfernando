@@ -2,7 +2,7 @@ import dbConnect from "../../../database/dbConnect";
 import Livelihood from "../../../database/model/Livelihood";
 import Log from "../../../database/model/Log";
 import Farmland from "../../../database/model/Farmland";
-import keygenerator from "../../assets/js/KeyGenerator";
+import keygenerator from "../../../utilities/KeyGenerator";
 import moment from "moment";
 
 export default async function handler(req, res) {

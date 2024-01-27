@@ -25,8 +25,8 @@ import {
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 import jason from "../../assets/json/index";
-import titleText from "../../assets/js/TitleText";
-import { tableTitleInjector } from "../../assets/js/text_injector";
+import titleText from "../../../utilities/TitleText";
+import { tableTitleInjector } from "../../../utilities/text_injector";
 import ProfilerModal from "../ProfilerModal";
 
 import axios from "axios";

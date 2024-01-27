@@ -32,14 +32,14 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 
-import TimelineDisplay from "../assets/js/TimelineDisplay";
+import TimelineDisplay from "../../utilities/TimelineDisplay";
 import ViewProfile from "./Livelihood/ViewProfile";
-import TitleText from "../assets/js/TitleText";
+import TitleText from "../../utilities/TitleText";
 
 import QRCode from "qrcode";
 import parse from "html-react-parser";
 
-import { getBase64 } from "../assets/js/utilities";
+import { getBase64 } from "../../utilities/utilities";
 
 export default ({ data, visible, setVisible, callback }) => {
   const [profileVisible, setProfileVisible] = useState();
@@ -255,7 +255,7 @@ export default ({ data, visible, setVisible, callback }) => {
         visible={openEdit}
         onCancel={() => setOpenEdit(false)}
         closable={false}
-        okText='Save'
+        okText="Save"
         onOk={form3.submit}
       >
         <Form
@@ -282,23 +282,23 @@ export default ({ data, visible, setVisible, callback }) => {
           }}
         >
           <Form.Item
-            name='crops'
-            label='Crops'
+            name="crops"
+            label="Crops"
             initialValue={editData.crops}
             rules={[{ required: true, message: "This field is blank." }]}
           >
             <Input style={{ width: 200 }} />
           </Form.Item>
           <Form.Item
-            name='date'
-            label='Date Range'
+            name="date"
+            label="Date Range"
             initialValue={[
               moment(editData?.startDate),
               moment(editData?.endDate),
             ]}
             rules={[{ required: true, message: "This field is blank." }]}
           >
-            <DatePicker.RangePicker format='MMM DD, YYYY' />
+            <DatePicker.RangePicker format="MMM DD, YYYY" />
           </Form.Item>
         </Form>
       </Modal>
@@ -332,18 +332,18 @@ export default ({ data, visible, setVisible, callback }) => {
           labelCol={{ span: 8 }}
         >
           <Form.Item
-            name='crops'
-            label='Crops'
+            name="crops"
+            label="Crops"
             rules={[{ required: true, message: "This field is blank." }]}
           >
             <Input style={{ width: 200 }} />
           </Form.Item>
           <Form.Item
-            name='date'
-            label='Date Range'
+            name="date"
+            label="Date Range"
             rules={[{ required: true, message: "This field is blank." }]}
           >
-            <DatePicker.RangePicker format='MMM DD, YYYY' />
+            <DatePicker.RangePicker format="MMM DD, YYYY" />
           </Form.Item>
         </Form>
       </Modal>
@@ -356,7 +356,7 @@ export default ({ data, visible, setVisible, callback }) => {
       >
         <Button
           style={{ float: "right", marginBottom: 10 }}
-          type='primary'
+          type="primary"
           onClick={() => setOpenCrops(true)}
         >
           Add
@@ -370,7 +370,7 @@ export default ({ data, visible, setVisible, callback }) => {
               render: (_, row) => (
                 <Space>
                   <Button
-                    type='primary'
+                    type="primary"
                     onClick={() => {
                       setOpenEdit(true);
                       setEditData(row);
@@ -380,7 +380,7 @@ export default ({ data, visible, setVisible, callback }) => {
                     <EditOutlined />
                   </Button>
                   <Popconfirm
-                    title='Are you sure to delete this crop?'
+                    title="Are you sure to delete this crop?"
                     onConfirm={async () => {
                       let res = await axios.get("/api/livelihood", {
                         params: {
@@ -398,8 +398,8 @@ export default ({ data, visible, setVisible, callback }) => {
                         callback();
                       }
                     }}
-                    okText='Yes'
-                    cancelText='No'
+                    okText="Yes"
+                    cancelText="No"
                   >
                     <Button danger>
                       <DeleteOutlined />
@@ -419,7 +419,7 @@ export default ({ data, visible, setVisible, callback }) => {
         onCancel={() => setUpdateModal(false)}
         closable={false}
         footer={null}
-        title='Log History'
+        title="Log History"
       >
         {loader == "fetch" ? (
           <Spin style={{ textAlign: "center", width: "100%" }} />
@@ -427,7 +427,7 @@ export default ({ data, visible, setVisible, callback }) => {
           <TimelineDisplay data={timeline} />
         )}
         <Button
-          type='primary'
+          type="primary"
           style={{ width: "100%", marginBottom: 5 }}
           onClick={() => setLoggerModal(true)}
         >
@@ -438,7 +438,7 @@ export default ({ data, visible, setVisible, callback }) => {
         visible={openBrgyModal}
         onCancel={() => setOpenBrgyModal(false)}
         closable={false}
-        title='Barangay Clearance'
+        title="Barangay Clearance"
         footer={null}
         destroyOnClose
       >
@@ -451,7 +451,7 @@ export default ({ data, visible, setVisible, callback }) => {
           }}
         >
           {data?.brgyImage ? (
-            <Image src={data?.brgyImage} width='100%' />
+            <Image src={data?.brgyImage} width="100%" />
           ) : (
             <Empty />
           )}
@@ -459,7 +459,7 @@ export default ({ data, visible, setVisible, callback }) => {
           <Upload
             onChange={(e) => setBrgyFile(e.file)}
             disabled={brgyFile != undefined}
-            accept='image/*'
+            accept="image/*"
           >
             <Button
               style={{ width: 200, marginTop: 5 }}
@@ -478,14 +478,14 @@ export default ({ data, visible, setVisible, callback }) => {
         visible={openModalPicture}
         onCancel={() => setOpenModalPicture(false)}
         closable={false}
-        okText='Upload'
+        okText="Upload"
         onOk={handleUpload2}
       >
         <Upload
           onChange={(e) => setProfile(e.file)}
-          listType='picture-card'
+          listType="picture-card"
           onPreview={handlePreview}
-          accept='image/*'
+          accept="image/*"
         >
           {!profile ? uploadButton : null}
         </Upload>
@@ -494,18 +494,18 @@ export default ({ data, visible, setVisible, callback }) => {
         visible={openModal}
         onCancel={() => setOpenModal(false)}
         closable={false}
-        okText='Upload'
+        okText="Upload"
         onOk={handleUpload}
       >
         <Upload
           fileList={files}
           onPreview={handlePreview}
-          listType='picture-card'
+          listType="picture-card"
           onChange={(e) => {
             setFiles(e.fileList);
             setOpenModal(true);
           }}
-          accept='image/*'
+          accept="image/*"
           multiple
         >
           {files.length > 10 ? null : uploadButton}
@@ -518,7 +518,7 @@ export default ({ data, visible, setVisible, callback }) => {
         onCancel={() => setPreviewVisible(false)}
       >
         <img
-          alt='example'
+          alt="example"
           style={{
             width: "100%",
           }}
@@ -527,7 +527,7 @@ export default ({ data, visible, setVisible, callback }) => {
       </Modal>
       <Modal
         visible={viewQRVisible}
-        title='View QR'
+        title="View QR"
         footer={null}
         onCancel={() => setViewQRVisible(false)}
         width={200}
@@ -554,11 +554,11 @@ export default ({ data, visible, setVisible, callback }) => {
         </Typography.Text>
       </Modal>
       <Modal
-        title='Logs'
+        title="Logs"
         visible={loggerModal}
         onCancel={() => setLoggerModal(false)}
         closable={false}
-        okText='Add'
+        okText="Add"
         onOk={form.submit}
       >
         <Form
@@ -586,11 +586,11 @@ export default ({ data, visible, setVisible, callback }) => {
             }
           }}
         >
-          <Form.Item label='Message' name='message'>
+          <Form.Item label="Message" name="message">
             <Input.TextArea autoSize={{ minRows: 5, maxRows: 5 }} />
           </Form.Item>
-          <Form.Item label='Date' initialValue={moment()} name='date'>
-            <DatePicker defaultValue={moment()} format='MM-DD-YYYY' />
+          <Form.Item label="Date" initialValue={moment()} name="date">
+            <DatePicker defaultValue={moment()} format="MM-DD-YYYY" />
           </Form.Item>
         </Form>
       </Modal>
@@ -614,7 +614,7 @@ export default ({ data, visible, setVisible, callback }) => {
             </Tag>
 
             <div style={{ float: "right" }}>
-              <Space direction='horizontal'>
+              <Space direction="horizontal">
                 <Button
                   style={{ width: "100%", marginBottom: 5 }}
                   onClick={() => setUpdateModal(true)}
@@ -705,8 +705,8 @@ export default ({ data, visible, setVisible, callback }) => {
               View / Update BARANGAY CLEARANCE
             </Button>
             <Button
-              type='dashed'
-              size='large'
+              type="dashed"
+              size="large"
               style={{
                 backgroundColor: "#70e040",
                 color: "#fff",
@@ -739,11 +739,11 @@ export default ({ data, visible, setVisible, callback }) => {
           </Col>
           <Col span={7}>
             <Space
-              direction='vertical'
-              size='small'
+              direction="vertical"
+              size="small"
               style={{ display: "flex" }}
             >
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Name: <br />
                 <Typography.Text strong>
                   {TitleText(
@@ -756,7 +756,7 @@ export default ({ data, visible, setVisible, callback }) => {
                 </Typography.Text>
               </Typography.Text>
 
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Address: <br />
                 <Typography.Text strong>
                   {TitleText(
@@ -764,11 +764,11 @@ export default ({ data, visible, setVisible, callback }) => {
                   )}
                 </Typography.Text>
               </Typography.Text>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Contact Number: <br />
                 <Typography.Text strong>0{data?.contactNum}</Typography.Text>
               </Typography.Text>
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 In case of emergency: <br />
                 <Typography.Text strong>
                   {data?.emergency?.name || "Not set"}

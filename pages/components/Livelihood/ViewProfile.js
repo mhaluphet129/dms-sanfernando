@@ -24,7 +24,7 @@ import moment from "moment";
 import { UserOutlined } from "@ant-design/icons";
 
 import FarmCustomTable from "./FarmCustomTable";
-import TitleText from "../../assets/js/TitleText";
+import TitleText from "../../../utilities/TitleText";
 
 import jason from "../../assets/json";
 import axios from "axios";
@@ -164,7 +164,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Tag key={i}>{el}</Tag>
       ))}
       {crops?.length == 0 && (
-        <Typography.Text type='secondary' italic>
+        <Typography.Text type="secondary" italic>
           No Data
         </Typography.Text>
       )}
@@ -175,7 +175,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Tag key={i}>{el}</Tag>
       ))}
       {livestock?.length == 0 && (
-        <Typography.Text type='secondary' italic>
+        <Typography.Text type="secondary" italic>
           No Data
         </Typography.Text>
       )}
@@ -186,7 +186,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Tag key={i}>{el}</Tag>
       ))}
       {poultry?.length == 0 && (
-        <Typography.Text type='secondary' italic>
+        <Typography.Text type="secondary" italic>
           No Data
         </Typography.Text>
       )}
@@ -408,8 +408,8 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 />
               )}
               <Space
-                direction='vertical'
-                size='small'
+                direction="vertical"
+                size="small"
                 style={{ display: "flex" }}
               >
                 <Typography.Text strong>
@@ -422,7 +422,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   )}
                 </Typography.Text>
                 <Typography.Text strong>
-                  <Space direction='vertical'>
+                  <Space direction="vertical">
                     {info?.profile?.type.map((el, i) => (
                       <Tag key={i} color={color[el]}>
                         {el}
@@ -446,10 +446,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         </Row>
         <Divider />
       </div>
-      <Steps size='small' current={current} progressDot onChange={handleChange}>
-        <Step title='Part I' description='Personal Information' />
-        <Step title='Part II' description='Farm Profile' />
-        <Step title='Part III' description='Scanned Documents' />
+      <Steps size="small" current={current} progressDot onChange={handleChange}>
+        <Step title="Part I" description="Personal Information" />
+        <Step title="Part II" description="Farm Profile" />
+        <Step title="Part III" description="Scanned Documents" />
       </Steps>
       <Divider />
 
@@ -457,31 +457,31 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Name and Gender */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "name" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Surname: <br />
                     <Input
-                      placeholder='Surname'
+                      placeholder="Surname"
                       value={sname}
                       onChange={(e) => setSname(e.target.value)}
                     />
                   </Typography.Text>
 
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Name: <br />
                     <Input
-                      placeholder='Name'
+                      placeholder="Name"
                       value={fname}
                       onChange={(e) => setFname(e.target.value)}
                     />
                   </Typography.Text>
 
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Middlename: <br />
                     <Input
-                      placeholder='Middlename'
+                      placeholder="Middlename"
                       value={mname}
                       onChange={(e) => setMname(e.target.value)}
                     />
@@ -491,19 +491,19 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     defaultValue={info?.gender}
                     onChange={(e) => setGname(e)}
                   >
-                    <Select.Option value='male'>Male</Select.Option>
-                    <Select.Option value='female'>Female</Select.Option>
+                    <Select.Option value="male">Male</Select.Option>
+                    <Select.Option value="female">Female</Select.Option>
                   </Select>
                 </>
               ) : (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Full Name: <br />
                     <Typography.Text strong>
                       {TitleText(`${sname}, ${fname} ${mname}`)}
                     </Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Gender: <br />
                     <Typography.Text strong>
                       {TitleText(`${gname}`)}
@@ -512,7 +512,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 </>
               )}
               {type == "name" && (
-                <Button type='primary' onClick={() => handleSave("name")}>
+                <Button type="primary" onClick={() => handleSave("name")}>
                   Save
                 </Button>
               )}
@@ -544,10 +544,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Address Details */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "address" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Barangay: <br />
                     <Select
                       defaultValue={barangay}
@@ -558,17 +558,17 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                       ))}
                     </Select>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Street: <br />
                     <Input
-                      placeholder='Set street'
+                      placeholder="Set street"
                       value={street}
                       onChange={(e) => setStreet(e.target.value)}
                     />
                   </Typography.Text>
                   {type == "address" && (
                     <Button
-                      type='primary'
+                      type="primary"
                       onClick={() => handleSave("address")}
                     >
                       Save
@@ -576,7 +576,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   )}
                 </>
               ) : (
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Barangay:{"  "}
                   <Typography.Text strong>{barangay}</Typography.Text>
                   <br />
@@ -612,10 +612,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           <Col span={18} push={6}>
             {type == "contact" ? (
               <>
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Contact Number: <br />
                   <InputNumber
-                    addonBefore='+63'
+                    addonBefore="+63"
                     maxLength={10}
                     controls={false}
                     value={contact}
@@ -623,13 +623,13 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   />
                 </Typography.Text>
                 {type == "contact" && (
-                  <Button type='primary' onClick={() => handleSave("contact")}>
+                  <Button type="primary" onClick={() => handleSave("contact")}>
                     Save
                   </Button>
                 )}
               </>
             ) : (
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 Contact Number: <br />
                 <Typography.Text strong>0{contact}</Typography.Text>
               </Typography.Text>
@@ -658,19 +658,19 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Birth */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "birth" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Date of Birth: <br />
                     <DatePicker
-                      format='MMMM DD, YYYY'
+                      format="MMMM DD, YYYY"
                       defaultValue={moment(info?.birth.dateOfBirth)}
                       disabledDate={(_) => _ && _ > moment().endOf("day")}
                       onChange={(e) => setDateBirth(e)}
                     />
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Place of Birth: <br />
                     <Input
                       value={placeBirth}
@@ -678,20 +678,20 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     />
                   </Typography.Text>
                   {type == "birth" && (
-                    <Button type='primary' onClick={() => handleSave("birth")}>
+                    <Button type="primary" onClick={() => handleSave("birth")}>
                       Save
                     </Button>
                   )}
                 </>
               ) : (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Date of Birth: <br />
                     <Typography.Text strong>
                       {moment(dateBirth).format("MMMM DD, YYYY")}
                     </Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Place of Birth: <br />
                     <Typography.Text strong>{placeBirth}</Typography.Text>
                   </Typography.Text>
@@ -724,53 +724,53 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Status */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "status" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Civil Status: <br />
                     <Select
                       defaultValue={civil}
                       onChange={(e) => setCivil(e)}
                       style={{ width: 150 }}
                     >
-                      <Select.Option value='Single'>Single</Select.Option>
-                      <Select.Option value='Married'>Married</Select.Option>
-                      <Select.Option value='Widowed'>Widowed</Select.Option>
-                      <Select.Option value='Separated'>Separated</Select.Option>
+                      <Select.Option value="Single">Single</Select.Option>
+                      <Select.Option value="Married">Married</Select.Option>
+                      <Select.Option value="Widowed">Widowed</Select.Option>
+                      <Select.Option value="Separated">Separated</Select.Option>
                     </Select>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Name of Spouse: <br />
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Surname: <br />
                       <Input
-                        placeholder='Surname'
+                        placeholder="Surname"
                         value={spouseLastname}
                         disabled={civil == "Single"}
                         onChange={(e) => setSlname(e.target.value)}
                       />
                     </Typography.Text>
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Name: <br />
                       <Input
-                        placeholder='Name'
+                        placeholder="Name"
                         value={spouseName}
                         disabled={civil == "Single"}
                         onChange={(e) => setSfname(e.target.value)}
                       />
                     </Typography.Text>
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Middlename: <br />
                       <Input
-                        placeholder='Middlename'
+                        placeholder="Middlename"
                         value={spouseMiddlename}
                         disabled={civil == "Single"}
                         onChange={(e) => setSmname(e.target.value)}
                       />
                     </Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Religion: <br />
                     <Input
                       value={religion}
@@ -778,18 +778,18 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     />
                   </Typography.Text>
                   {type == "status" && (
-                    <Button type='primary' onClick={() => handleSave("status")}>
+                    <Button type="primary" onClick={() => handleSave("status")}>
                       Save
                     </Button>
                   )}
                 </>
               ) : (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Civil Status: <br />
                     <Typography.Text strong>{civil}</Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Name of Spouse: <br />
                     <Typography.Text
                       type={civil != "Married" ? "secondary" : null}
@@ -802,7 +802,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                         : "Not Applicable"}
                     </Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Religion: <br />
                     <Typography.Text strong>
                       {religion ? (
@@ -845,35 +845,35 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Education */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "education" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Highest Formal Education <br />
                     <Select
                       defaultValue={info?.highestEducation}
                       onChange={(e) => setEducation(e)}
                       style={{ width: 150 }}
                     >
-                      <Select.Option value='None'>None</Select.Option>
-                      <Select.Option value='Elementary'>
+                      <Select.Option value="None">None</Select.Option>
+                      <Select.Option value="Elementary">
                         Elementary
                       </Select.Option>
-                      <Select.Option value='High School'>
+                      <Select.Option value="High School">
                         High School
                       </Select.Option>
-                      <Select.Option value='Vocational'>
+                      <Select.Option value="Vocational">
                         Vocational
                       </Select.Option>
-                      <Select.Option value='College'>College</Select.Option>
-                      <Select.Option value='Post Graduate'>
+                      <Select.Option value="College">College</Select.Option>
+                      <Select.Option value="Post Graduate">
                         Post Graduate
                       </Select.Option>
                     </Select>
                   </Typography.Text>
                   {type == "education" && (
                     <Button
-                      type='primary'
+                      type="primary"
                       onClick={() => handleSave("education")}
                     >
                       Save
@@ -881,7 +881,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   )}
                 </>
               ) : (
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Highest Formal Education <br />
                   <Typography.Text strong>{education}</Typography.Text>
                 </Typography.Text>
@@ -914,7 +914,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
           <Col span={18} push={6}>
             {type == "other" ? (
               <>
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Person With Disability (PWD)?{"   "}
                   <Select
                     style={{ width: 75 }}
@@ -926,7 +926,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   </Select>
                 </Typography.Text>
                 <br />
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   4P's Beneficiary?{"   "}
                   <Select
                     style={{ width: 75 }}
@@ -938,7 +938,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   </Select>
                 </Typography.Text>
                 <br />
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Member of Indigenous Group?{"   "}
                   <Select
                     style={{ width: 75 }}
@@ -949,14 +949,14 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     <Select.Option value={false}>No</Select.Option>
                   </Select>
                   <Input
-                    placeholder='Indigenous Group'
+                    placeholder="Indigenous Group"
                     value={ipName}
                     disabled={!isIP}
                     onChange={(e) => setIpName(e.target.value)}
                   />
                 </Typography.Text>
                 <br />
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   With Government ID?{"   "}
                   <Select
                     style={{ width: 75 }}
@@ -967,14 +967,14 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     <Select.Option value={false}>No</Select.Option>
                   </Select>
                   <Input
-                    placeholder='ID number'
+                    placeholder="ID number"
                     disabled={!hasID}
                     value={idNum}
                     onChange={(e) => setIdNum(e.target.value)}
                   />
                 </Typography.Text>
                 <br />
-                <Typography.Text type='secondary'>
+                <Typography.Text type="secondary">
                   Member of any Farmer Association/Cooperation?{"   "}
                   <Select
                     style={{ width: 75 }}
@@ -985,14 +985,14 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                     <Select.Option value={false}>No</Select.Option>
                   </Select>
                   <Input
-                    placeholder='Specify'
+                    placeholder="Specify"
                     disabled={!hasCoop}
                     value={coopName}
                     onChange={(e) => setCoopName(e.target.value)}
                   />
                 </Typography.Text>
                 {type == "other" && (
-                  <Button type='primary' onClick={() => handleSave("other")}>
+                  <Button type="primary" onClick={() => handleSave("other")}>
                     Save
                   </Button>
                 )}
@@ -1041,20 +1041,20 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* In Case of Emergency */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
+            <Space direction="vertical">
               {type == "emergency" ? (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Person to Contact <br />
                     <Input
                       value={emergencyName}
                       onChange={(e) => setEmergencyName(e.target.value)}
                     />
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Contact Number <br />
                     <InputNumber
-                      addonBefore='+63'
+                      addonBefore="+63"
                       maxLength={10}
                       controls={false}
                       value={emergencyNum}
@@ -1063,7 +1063,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   </Typography.Text>
                   {type == "emergency" && (
                     <Button
-                      type='primary'
+                      type="primary"
                       onClick={() => handleSave("emergency")}
                     >
                       Save
@@ -1072,11 +1072,11 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 </>
               ) : (
                 <>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Person to Contact <br />
                     <Typography.Text strong>{emergencyName}</Typography.Text>
                   </Typography.Text>
-                  <Typography.Text type='secondary'>
+                  <Typography.Text type="secondary">
                     Contact Number <br />
                     <Typography.Text strong>0{emergencyNum}</Typography.Text>
                   </Typography.Text>
@@ -1122,10 +1122,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                       Crops, please specify:
                     </Checkbox>
                     <Select
-                      className='customInput'
-                      mode='tags'
+                      className="customInput"
+                      mode="tags"
                       style={{ width: 500, marginLeft: 55 }}
-                      placeholder='Enter crops'
+                      placeholder="Enter crops"
                       value={crops}
                       onChange={(e) => setCrops(e)}
                       disabled={!cropsCheck}
@@ -1143,10 +1143,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                       Livestock, please specify:
                     </Checkbox>
                     <Select
-                      className='customInput'
-                      mode='tags'
+                      className="customInput"
+                      mode="tags"
                       style={{ width: 500, marginLeft: 55 }}
-                      placeholder='Enter livestock'
+                      placeholder="Enter livestock"
                       value={livestock}
                       onChange={(e) => setLivestock((c) => [...c, e])}
                       disabled={!livestockCheck}
@@ -1164,11 +1164,11 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                       Poultry, please specify:
                     </Checkbox>
                     <Select
-                      className='customInput'
-                      mode='tags'
+                      className="customInput"
+                      mode="tags"
                       size={4}
                       style={{ width: 500, marginLeft: 55 }}
-                      placeholder='Enter poultry'
+                      placeholder="Enter poultry"
                       value={poultry}
                       onChange={(e) => setPoultry((c) => [...c, e])}
                       disabled={!poultryCheck}
@@ -1177,17 +1177,17 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   </Col>
                 </Row>
                 {type == "farmer" && (
-                  <Button type='primary' onClick={() => handleSave("farmer")}>
+                  <Button type="primary" onClick={() => handleSave("farmer")}>
                     Save
                   </Button>
                 )}
               </>
             ) : (
-              <Space direction='horizontal'>
+              <Space direction="horizontal">
                 <List
-                  size='small'
+                  size="small"
                   header={
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Type of Farming Activity:
                     </Typography.Text>
                   }
@@ -1235,25 +1235,25 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
               <>
                 <Input.Group>
                   <Space>
-                    <span label='Kind of Work'>
+                    <span label="Kind of Work">
                       <Checkbox.Group onChange={(e) => setFarmworker(e)}>
                         <Row>
-                          <Checkbox value='Land Preparation' key={1}>
+                          <Checkbox value="Land Preparation" key={1}>
                             Land Preparation
                           </Checkbox>
                         </Row>
                         <Row>
-                          <Checkbox value='Planting/Transplanting' key={2}>
+                          <Checkbox value="Planting/Transplanting" key={2}>
                             Planting/Transplanting
                           </Checkbox>
                         </Row>
                         <Row>
-                          <Checkbox value='Cultivation' key={3}>
+                          <Checkbox value="Cultivation" key={3}>
                             Cultivation
                           </Checkbox>
                         </Row>
                         <Row>
-                          <Checkbox value='Harvesting' key={4}>
+                          <Checkbox value="Harvesting" key={4}>
                             Harvesting
                           </Checkbox>
                         </Row>
@@ -1261,10 +1261,10 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                           <Col>
                             Others, please specify:
                             <Select
-                              className='customInput'
-                              mode='tags'
+                              className="customInput"
+                              mode="tags"
                               style={{ width: 500, marginLeft: 35 }}
-                              placeholder='Specify...'
+                              placeholder="Specify..."
                               onChange={(e) => setFarmworkerExtra(e)}
                               allowClear
                             />
@@ -1276,7 +1276,7 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 </Input.Group>
                 {type == "farmworker" && (
                   <Button
-                    type='primary'
+                    type="primary"
                     onClick={() => handleSave("farmworker")}
                   >
                     Save
@@ -1284,11 +1284,11 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                 )}
               </>
             ) : (
-              <Space direction='horizontal'>
+              <Space direction="horizontal">
                 <List
-                  size='small'
+                  size="small"
                   header={
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Kind of Work:
                     </Typography.Text>
                   }
@@ -1335,27 +1335,27 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                       }}
                     >
                       <Row>
-                        <Checkbox value='Fish Capture' key={1}>
+                        <Checkbox value="Fish Capture" key={1}>
                           Fish Capture
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Processing' key={2}>
+                        <Checkbox value="Fish Processing" key={2}>
                           Fish Processing
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Fish Vending' key={3}>
+                        <Checkbox value="Fish Vending" key={3}>
                           Fish Vending
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Aquaculture' key={4}>
+                        <Checkbox value="Aquaculture" key={4}>
                           Aquaculture
                         </Checkbox>
                       </Row>
                       <Row>
-                        <Checkbox value='Gleaning' key={5}>
+                        <Checkbox value="Gleaning" key={5}>
                           Gleaning
                         </Checkbox>
                       </Row>
@@ -1363,8 +1363,8 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                         <Col>
                           Others, please specify:
                           <Select
-                            className='customInput'
-                            mode='tags'
+                            className="customInput"
+                            mode="tags"
                             style={{ width: 500, marginLeft: 35 }}
                             onChange={(e) => setFisherfolkExtra(e)}
                             allowClear
@@ -1375,17 +1375,17 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
                   </Space>
                 </Input.Group>
                 {type == "fishfolk" && (
-                  <Button type='primary' onClick={() => handleSave("fishfolk")}>
+                  <Button type="primary" onClick={() => handleSave("fishfolk")}>
                     Save
                   </Button>
                 )}
               </>
             ) : (
-              <Space direction='horizontal'>
+              <Space direction="horizontal">
                 <List
-                  size='small'
+                  size="small"
                   header={
-                    <Typography.Text type='secondary'>
+                    <Typography.Text type="secondary">
                       Type of Fishing Activity:
                     </Typography.Text>
                   }
@@ -1430,8 +1430,8 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
         <Row>
           {/* Upload ID Picture */}
           <Col span={18} push={6}>
-            <Space direction='vertical'>
-              <Typography.Text type='secondary'>
+            <Space direction="vertical">
+              <Typography.Text type="secondary">
                 <br />
                 <Image.PreviewGroup>
                   <Space style={{ display: "flex" }}>
@@ -1467,12 +1467,12 @@ export default ({ profileVisible, setProfileVisible, info, programs }) => {
             </Button>
           )}
           {current < 2 && (
-            <Button type='primary' onClick={handleNext}>
+            <Button type="primary" onClick={handleNext}>
               {current < 2 ? "Next Page" : null}
             </Button>
           )}
           {current == 2 && (
-            <Button type='primary' htmlType='submit'>
+            <Button type="primary" htmlType="submit">
               Finish
             </Button>
           )}

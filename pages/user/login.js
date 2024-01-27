@@ -7,7 +7,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import Image from "next/image";
 
-import keyGenerator from "../assets/js/KeyGenerator";
+import keyGenerator from "../../utilities/KeyGenerator";
 import QRScanner from "../components/QRwithCamera";
 let socket;
 
@@ -127,8 +127,8 @@ export default () => {
             labelCol={{ span: 7 }}
           >
             <Form.Item
-              label='Name'
-              name='name'
+              label="Name"
+              name="name"
               rules={[
                 {
                   required: true,
@@ -139,8 +139,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Lastname'
-              name='lastname'
+              label="Lastname"
+              name="lastname"
               rules={[
                 {
                   required: true,
@@ -151,8 +151,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Username'
-              name='username'
+              label="Username"
+              name="username"
               rules={[
                 {
                   required: true,
@@ -163,8 +163,8 @@ export default () => {
               <Input />
             </Form.Item>
             <Form.Item
-              label='Password'
-              name='password'
+              label="Password"
+              name="password"
               rules={[
                 {
                   required: true,
@@ -175,8 +175,8 @@ export default () => {
               <Input.Password />
             </Form.Item>
             <Form.Item
-              label='Confirm Password'
-              name='confirm'
+              label="Confirm Password"
+              name="confirm"
               rules={[
                 {
                   required: true,
@@ -200,7 +200,7 @@ export default () => {
           }}
         >
           <div style={{ marginBottom: 10 }}>
-            <Image src='/logo.png' alt='logo' width='180' height='64' />
+            <Image src="/logo.png" alt="logo" width="180" height="64" />
           </div>
           <Form
             style={{
@@ -211,19 +211,19 @@ export default () => {
             }}
             onFinish={handleLogin}
           >
-            <Form.Item label='Username' name='username'>
+            <Form.Item label="Username" name="username">
               <Input />
             </Form.Item>
 
-            <Form.Item label='Password' name='password'>
+            <Form.Item label="Password" name="password">
               <Input.Password />
             </Form.Item>
 
             <Form.Item>
               <Button
-                type='primary'
+                type="primary"
                 style={{ width: "100%" }}
-                htmlType='submit'
+                htmlType="submit"
               >
                 Log In
               </Button>

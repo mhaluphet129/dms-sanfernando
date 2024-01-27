@@ -4,8 +4,8 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import io from "socket.io-client";
 import Cookie from "js-cookie";
 
-import Prompt from "../assets/js/Prompt";
-import keyGenerator from "../assets/js/KeyGenerator";
+import Prompt from "../../utilities/Prompt";
+import keyGenerator from "../../utilities/KeyGenerator";
 let socket;
 
 export default () => {
@@ -53,11 +53,11 @@ export default () => {
   return (
     <>
       <Prompt cb={() => socket.emit("get-key", { deviceID: genKey })} />
-      <div class='row'>
-        <div class='col'>
-          <div style={{ width: "100%" }} id='reader'></div>
+      <div class="row">
+        <div class="col">
+          <div style={{ width: "100%" }} id="reader"></div>
           <Card
-            title='Device status Information'
+            title="Device status Information"
             extra={[
               <Button
                 danger={
@@ -93,14 +93,14 @@ export default () => {
             <Typography.Text>
               <br />
               System key:{" "}
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 {keyData?.length > 0 ? keyData[0].systemID : "null"}
               </Typography.Text>
             </Typography.Text>
             <br />
             <Typography.Text>
               Device Id:{" "}
-              <Typography.Text type='secondary'>
+              <Typography.Text type="secondary">
                 {keyData?.length > 0 ? keyData[0]?.deviceID : "null"}
               </Typography.Text>
             </Typography.Text>

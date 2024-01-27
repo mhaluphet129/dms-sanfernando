@@ -13,7 +13,7 @@ import {
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 
-import TitleText from "../../assets/js/TitleText";
+import TitleText from "../../../utilities/TitleText";
 
 class PDF extends React.Component {
   render() {
@@ -70,37 +70,54 @@ export default ({ visible, setVisible, data, barangay, name }) => {
           <Drawer
             visible={visible}
             onClose={() => setVisible("")}
-            height='100%'
-            placement='bottom'
+            height="100%"
+            placement="bottom"
+            style={{
+              width: 900,
+              marginLeft: "50%",
+              transform: "translateX(-50%)",
+            }}
+            extra={[
+              <Button onClick={handlePrint} key="btn-1">
+                Print
+              </Button>,
+            ]}
           >
-            <Row className='pagebreak'>
+            <Row className="pagebreak">
               <Col span={24}>
-                <Button onClick={handlePrint}>Print</Button>
                 <PDF
                   ref={ref}
                   children={
                     <>
                       <Row>
                         <Col span={7}>
-                          <Row justify='space-around'>
+                          <Row justify="space-around">
                             <Col>
                               <Image
                                 preview={false}
-                                src='/logo.png'
-                                alt='logo'
+                                src="/logo.png"
+                                alt="logo"
                                 width={150}
+                                style={{
+                                  marginTop: 50,
+                                }}
                               />
                             </Col>
                           </Row>
                         </Col>
-                        <Col span={10}>
+                        <Col
+                          span={10}
+                          style={{
+                            marginTop: 20,
+                          }}
+                        >
                           <Space
                             style={{
                               width: "100%",
                               alignItems: "center",
                               fontWeight: 900,
                             }}
-                            direction='vertical'
+                            direction="vertical"
                           >
                             <Typography.Text style={{ color: "#757575" }}>
                               Republic of the Philippines
@@ -131,20 +148,32 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                           </Space>
                         </Col>
                         <Col span={7}>
-                          <Row justify='space-around'>
+                          <Row justify="space-around">
                             <Col>
                               <Image
                                 preview={false}
-                                src='/imgs/DA_LOGO.png'
+                                src="/imgs/DA_LOGO.png"
                                 width={150}
                               />
                             </Col>
                           </Row>
                         </Col>
-                        <Col offset={3} span={3}>
+                        <Col
+                          offset={3}
+                          span={3}
+                          style={{
+                            marginTop: 35,
+                          }}
+                        >
                           <strong>MUNICIPALITY</strong>
                         </Col>
-                        <Col offset={2} span={15}>
+                        <Col
+                          offset={2}
+                          span={15}
+                          style={{
+                            marginTop: 35,
+                          }}
+                        >
                           SAN FERNANDO
                         </Col>
                         <Col offset={3} span={3}>
@@ -153,7 +182,7 @@ export default ({ visible, setVisible, data, barangay, name }) => {
                         <Col offset={2} span={15}>
                           {barangay?.toUpperCase()}
                         </Col>
-                        <Col span={18} offset={3}>
+                        <Col span={22} offset={1}>
                           <Table
                             dataSource={data}
                             columns={columns}

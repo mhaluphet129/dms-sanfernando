@@ -11,7 +11,7 @@ import {
 } from "antd";
 import moment from "moment";
 
-import TitleText from "../../assets/js/TitleText";
+import TitleText from "../../../utilities/TitleText";
 import EditProgram from "./EditProgram";
 
 export default ({ viewModal, setViewModal, modalData, cb }) => {
@@ -56,28 +56,28 @@ export default ({ viewModal, setViewModal, modalData, cb }) => {
         }
       >
         <Form style={{ lineHeight: 3 }}>
-          <Typography.Text type='secondary'>Name of Program: </Typography.Text>
+          <Typography.Text type="secondary">Name of Program: </Typography.Text>
           <Typography.Text strong>
             {TitleText(`${modalData?.name}`)}
           </Typography.Text>
           <br />
-          <Typography.Text type='secondary'>Date Created: </Typography.Text>
+          <Typography.Text type="secondary">Date Created: </Typography.Text>
           <Typography.Text strong>
             {moment(modalData?.createdAt).format("MMMM DD, YYYY")}
           </Typography.Text>
           <br />
-          <Typography.Text type='secondary'>Status: </Typography.Text>
+          <Typography.Text type="secondary">Status: </Typography.Text>
           <Typography.Text strong>
             <Badge status={modalData?.status ? "success" : "error"} />
             {modalData?.status ? "Active" : "Inactive"}
           </Typography.Text>
           <br />
-          <Typography.Text type='secondary'>
+          <Typography.Text type="secondary">
             Program In-charge:{" "}
           </Typography.Text>
           <Typography.Text strong>{modalData?.inCharge}</Typography.Text>
           <br />
-          <Typography.Text type='secondary'>Description: </Typography.Text>
+          <Typography.Text type="secondary">Description: </Typography.Text>
           <br />
           <Row style={{ lineHeight: 2 }}>
             <Col span={22} offset={1}>
