@@ -9,5 +9,5 @@ export default () => {
       setDate(new Date());
     }, 1000);
   }, []);
-  return <strong>{moment(date).format("HH:MM a")}</strong>;
+  return <strong>{moment(date).format("hh:mm a")}</strong>;
 };
