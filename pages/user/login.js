@@ -38,26 +38,20 @@ export default () => {
 
     if (data.success) {
       if (data.mode == "validated") {
-        let obj = {
-          _id: data?.user?._id,
-          password: data?.user?.password,
-          lastname: data?.user?.lastname,
-          name: data?.user?.name,
-          username: data?.user?.username,
-          email: data?.user?.email,
-          role: data?.user?.role,
-          profile: data?.user?.profile,
-        };
-
         let key = keyGenerator(5);
         //Cookieeee, wanna bite ? :3
-        Cookies.set("user", JSON.stringify(obj));
+
+        delete data.user.password;
+        delete data.user._id;
+        delete data.user.timeline;
+
         Cookies.set("loggedIn", "true");
         Cookies.set("key", key);
+        Cookies.set("user", JSON.stringify(data.user));
 
         socket.emit("push-new-system", key);
         message.success(data.message);
-        window.location.href = "/";
+        window.location.reload();
       }
       if (data.mode == "admin-no-pass") {
         setModalEmail(data.email);

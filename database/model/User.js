@@ -29,6 +29,7 @@ let UserSchema = new mongoose.Schema(
       type: String,
       default: "admin",
       required: true,
+      enum: ["admin", "superadmin"],
     },
     timeline: {
       type: Array,

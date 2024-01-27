@@ -245,7 +245,7 @@ export default () => {
           socket.emit("remove-system", Cookies.get("key"));
           Cookies.remove("user");
           Cookies.remove("key");
-          Cookies.set("loggedIn", "false");
+          Cookies.remove("loggedIn");
 
           window.location.href = "/user/login";
         }}
