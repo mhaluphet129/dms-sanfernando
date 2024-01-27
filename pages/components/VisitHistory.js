@@ -30,9 +30,9 @@ export default () => {
     {
       title: "Name",
       render: (_, row) => (
-        <Tooltip title='Click to view full profile.'>
+        <Tooltip title="Click to view full profile.">
           <Button
-            type='link'
+            type="link"
             onClick={async () => {
               let res = await axios.get("/api/main", {
                 params: {
@@ -109,13 +109,25 @@ export default () => {
             <Typography.Title level={2}>
               {loader == "fetch-log" ? "-" : totalToday}
             </Typography.Title>
-            <Typography.Text>No. of Visits Today</Typography.Text>
+            <Typography.Text
+              style={{
+                fontSize: "1.25em",
+              }}
+            >
+              No. of Visits Today
+            </Typography.Text>
           </Card>
           <Card style={{ height: 150, marginTop: 10 }}>
             <Typography.Title level={2}>
               {loader == "fetch-log" ? "-" : logs?.length}
             </Typography.Title>
-            <Typography.Text>Total visits</Typography.Text>
+            <Typography.Text
+              style={{
+                fontSize: "1.25em",
+              }}
+            >
+              Total visits
+            </Typography.Text>
           </Card>
         </Col>
       </Row>

@@ -42,10 +42,10 @@ export default ({ data, loader, setTrigger }) => {
   const columns = [
     {
       title: "Name",
-      width: 180,
+      width: 150,
       render: (_, row) => (
         <Button
-          type='link'
+          type="link"
           onClick={async () => {
             setOpenModal(true);
             setRowData(row);
@@ -92,10 +92,10 @@ export default ({ data, loader, setTrigger }) => {
           />
           <Space>
             <Button
-              type='primary'
+              type="primary"
               onClick={() => confirm()}
               icon={<SearchOutlined />}
-              size='small'
+              size="small"
               style={{
                 width: 90,
               }}
@@ -104,7 +104,7 @@ export default ({ data, loader, setTrigger }) => {
             </Button>
             <Button
               onClick={() => clearFilters()}
-              size='small'
+              size="small"
               style={{
                 width: 110,
               }}
@@ -146,7 +146,7 @@ export default ({ data, loader, setTrigger }) => {
         >
           <Input
             ref={searchInput}
-            placeholder='Search barangay'
+            placeholder="Search barangay"
             value={selectedKeys[0]}
             onChange={(e) =>
               setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -160,10 +160,10 @@ export default ({ data, loader, setTrigger }) => {
           />
           <Space>
             <Button
-              type='primary'
+              type="primary"
               onClick={() => confirm()}
               icon={<SearchOutlined />}
-              size='small'
+              size="small"
               style={{
                 width: 90,
               }}
@@ -172,7 +172,7 @@ export default ({ data, loader, setTrigger }) => {
             </Button>
             <Button
               onClick={() => clearFilters()}
-              size='small'
+              size="small"
               style={{
                 width: 110,
               }}
@@ -207,9 +207,8 @@ export default ({ data, loader, setTrigger }) => {
     },
     {
       title: "Livelihood",
-      width: 100,
       render: (_, row) => (
-        <Space direction='vertical'>
+        <Space>
           {row?.profile?.type.map((el, i) => (
             <Tag key={i} color={color[el]}>
               {el}
@@ -332,7 +331,7 @@ export default ({ data, loader, setTrigger }) => {
         callback={() => setTrigger(Math.random() * 100)}
       />
       <Row>
-        <Col span={15}>
+        <Col span={16}>
           <Table
             columns={columns}
             dataSource={data}
@@ -358,12 +357,20 @@ export default ({ data, loader, setTrigger }) => {
             }}
           />
         </Col>
-        <Col span={8} offset={1}>
+        <Col span={7} offset={1}>
           <Card>
             <Space>
-              <Space direction='vertical'>
+              <Space direction="vertical">
                 <Card
-                  title={<span>{titleText(`${activeTab}`)}</span>}
+                  title={
+                    <span
+                      style={{
+                        fontSize: "1.25em",
+                      }}
+                    >
+                      {titleText(`${activeTab}`)}
+                    </span>
+                  }
                   style={{ width: 325 }}
                   tabList={[
                     {
@@ -387,7 +394,7 @@ export default ({ data, loader, setTrigger }) => {
                       options={{
                         plugins: {
                           legend: {
-                            position: "right",
+                            position: "bottom",
                           },
                         },
                         responsive: true,

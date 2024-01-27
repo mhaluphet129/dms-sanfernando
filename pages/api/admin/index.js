@@ -209,7 +209,7 @@ export default async function handler(req, res) {
             .then(async (data) => {
               let newVisit = Log({
                 type: "event",
-                description: req.body.payload.addtimeline.label,
+                description: req.body.payload.addtimeline.label.join(""),
               });
               let _obj = {
                 _id: data?._id,

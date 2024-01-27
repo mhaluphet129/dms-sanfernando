@@ -26,6 +26,7 @@ import {
 import { Bar, Pie } from "react-chartjs-2";
 import jason from "../../assets/json/index";
 import titleText from "../../assets/js/TitleText";
+import { tableTitleInjector } from "../../assets/js/text_injector";
 import ProfilerModal from "../ProfilerModal";
 
 import axios from "axios";
@@ -61,6 +62,10 @@ export default () => {
       title: {
         display: true,
         text: "Total Profile Registered per Barangay - San Fernando",
+        font: {
+          size: "25px",
+          family: "Sans-Serif",
+        },
       },
       legend: {
         position: "top",
@@ -84,23 +89,44 @@ export default () => {
       title: "Barangay",
       render: (_, row) => (
         <Typography.Link
-          href='#'
-          type='link'
+          href="#"
+          type="link"
           onClick={() => {
             setOpenFarmlandInfo(true);
             setLoc(row?._id);
+          }}
+          style={{
+            fontSize: "1.25em",
           }}
         >
           {row?._id}
         </Typography.Link>
       ),
     },
-    { title: "Hectare(s)", dataIndex: "total", key: "hectare", align: "start" },
+    {
+      title: "Hectare(s)",
+      align: "start",
+      render: (_, row) => (
+        <span
+          style={{
+            fontSize: "1.25em",
+          }}
+        >
+          {row?.total}
+        </span>
+      ),
+    },
     {
       title: "% ratio",
-      render: (_, row) => `${((row?.total / totalLandArea) * 100).toFixed(2)}%`,
+      render: (_, row) => (
+        <span
+          style={{
+            fontSize: "1.25em",
+          }}
+        >{`${((row?.total / totalLandArea) * 100).toFixed(2)}%`}</span>
+      ),
     },
-  ];
+  ].map((e) => tableTitleInjector(e));
 
   const colums2 = [
     {
@@ -353,15 +379,15 @@ export default () => {
                   <Table.Summary.Row
                     style={{ background: "rgba(100,100,100,0.05)" }}
                   >
-                    <Table.Summary.Cell index={0} align='center'>
+                    <Table.Summary.Cell index={0} align="center">
                       <strong>Total</strong>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={1} align='center'>
+                    <Table.Summary.Cell index={1} align="center">
                       <Typography.Text style={{ fontWeight: 900 }}>
                         {total}
                       </Typography.Text>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} align='center'>
+                    <Table.Summary.Cell index={2} align="center">
                       <Typography.Text style={{ fontWeight: 900 }}>
                         {_.length > 0 ? "100%" : "0%"}
                       </Typography.Text>
@@ -384,7 +410,9 @@ export default () => {
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.visitToday}
                     </Typography.Title>
-                    <Typography.Text>No. of Visitor Today</Typography.Text>
+                    <Typography.Text style={{ fontSize: "1.25em" }}>
+                      No. of Visitor Today
+                    </Typography.Text>
                   </Card>
                 </Col>
                 <Col span={12}>
@@ -397,14 +425,14 @@ export default () => {
                     <Typography.Title level={2}>
                       {loader == "fetch" ? "-" : data?.totalLivelihood}
                     </Typography.Title>
-                    <Typography.Text>
+                    <Typography.Text style={{ fontSize: "1.25em" }}>
                       Total no. of Registered Profiles
                     </Typography.Text>
                     <br />
                     <Typography.Text>
-                      <Typography.Text strong>
+                      <strong style={{ fontSize: "1.25em" }}>
                         {loader == "fetch" ? 0 : data?.totalLivelihood}{" "}
-                      </Typography.Text>
+                      </strong>
                       New Profile Registered Today
                     </Typography.Text>
                   </Card>
@@ -416,18 +444,19 @@ export default () => {
                       backgroundColor: "rgb(128,172,199,0.5)",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
                     }}
                   >
-                    <Typography.Title level={1} style={{ textAlign: "center" }}>
+                    <Typography.Title level={1}>
                       {loader == "fetch" ? "-" : data?.totalPrograms}
                     </Typography.Title>
-                    <Typography.Text>Total no. of Programs</Typography.Text>
+                    <Typography.Text style={{ fontSize: "1.25em" }}>
+                      Total no. of Programs
+                    </Typography.Text>
                     <br />
                     <Typography.Text>
-                      <Typography.Text strong>
+                      <strong>
                         {loader == "fetch" ? 0 : data?.totalProgramsActive}
-                      </Typography.Text>{" "}
+                      </strong>{" "}
                       Active Programs
                     </Typography.Text>
                   </Card>
@@ -448,7 +477,7 @@ export default () => {
                             weatherData && weatherData?.weather[0].icon
                           }.png`}
                           size={100}
-                          shape='square'
+                          shape="square"
                         />
                       </Col>
                       <Col span={12}>
@@ -497,8 +526,8 @@ export default () => {
                     </Row>
                     {weatherData == undefined ? (
                       <Alert
-                        message='No Internet Connection'
-                        type='error'
+                        message="No Internet Connection"
+                        type="error"
                         style={{
                           display: "flex",
                           justifyContent: "center",
@@ -516,13 +545,21 @@ export default () => {
           <Col span={8}>
             <Card style={{ height: 425 }}>
               <Table
-                size='small'
+                size="small"
                 scroll={{ y: 300 }}
                 columns={columns}
                 pagination={false}
                 dataSource={data?.farmlandSummary}
                 rowKey={(row) => row._id}
-                title={() => <strong>Farmlands Information</strong>}
+                title={() => (
+                  <strong
+                    style={{
+                      fontSize: "1.25em",
+                    }}
+                  >
+                    Farmlands Information
+                  </strong>
+                )}
                 summary={(_) => {
                   let total = _.reduce((p, n) => p + n.total, 0);
                   setTotalLandArea(total);
@@ -574,11 +611,15 @@ export default () => {
                   options={{
                     plugins: {
                       legend: {
-                        position: "right",
+                        position: "bottom",
                       },
                       title: {
                         display: true,
                         text: "Farmers Crop Information",
+                        font: {
+                          size: "18px",
+                          family: "Sans-Serif",
+                        },
                       },
                     },
                     responsive: true,
@@ -620,11 +661,15 @@ export default () => {
                   options={{
                     plugins: {
                       legend: {
-                        position: "right",
+                        position: "bottom",
                       },
                       title: {
                         display: true,
                         text: "Farmers Livestock Information",
+                        font: {
+                          size: "18px",
+                          family: "Sans-Serif",
+                        },
                       },
                     },
                     responsive: true,
@@ -664,11 +709,15 @@ export default () => {
                   options={{
                     plugins: {
                       legend: {
-                        position: "right",
+                        position: "bottom",
                       },
                       title: {
                         display: true,
                         text: "Farmers Poultry Information",
+                        font: {
+                          size: "18px",
+                          family: "Sans-Serif",
+                        },
                       },
                     },
                     responsive: true,

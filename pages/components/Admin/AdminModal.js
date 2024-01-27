@@ -193,7 +193,7 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
         onCancel={() => setOpenUploadModal(false)}
         onOk={handleUpload}
       >
-        <Upload onChange={({ file }) => setFile(file)} accept='image/*'>
+        <Upload onChange={({ file }) => setFile(file)} accept="image/*">
           <Button>UPLOAD</Button>
         </Upload>
       </Modal>
@@ -208,11 +208,11 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
           disabled: !isEditing,
         }}
         width={700}
-        title='View Admin'
-        okText='Save'
+        title="View Admin"
+        okText="Save"
         destroyOnClose
       >
-        <Row justify='space-around' gutter={[16, 16]}>
+        <Row justify="space-around" gutter={[16, 16]}>
           <Col span={10}>
             <Badge.Ribbon
               text={data?.role == "superadmin" ? "Super Admin" : "admin"}
@@ -233,7 +233,7 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
             </Badge.Ribbon>
             <div style={{ textAlign: "center" }}>
               <Typography.Text
-                type='secondary'
+                type="secondary"
                 style={{
                   fontSize: 13,
                 }}
@@ -246,12 +246,14 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
               <Button
                 style={{ width: "100%", marginBottom: 5 }}
                 onClick={() => setOpenUploadModal(true)}
+                size="large"
               >
                 Upload/Change Picture
               </Button>
               <Button
                 style={{ width: "100%", marginBottom: 5 }}
                 onClick={() => setViewModalPass(true)}
+                size="large"
               >
                 {data?.hasOwnProperty("password")
                   ? "Change Password"
@@ -263,69 +265,70 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
               onClick={() => {
                 setViewTimeline(true);
               }}
+              size="large"
             >
               Timeline
             </Button>
 
             <Popconfirm
               icon={null}
-              title='Proceed to the operation?'
-              okText='Yes'
+              title="Proceed to the operation?"
+              okText="Yes"
               onConfirm={() => changeToSuperadmin()}
             >
-              <Button style={{ width: "100%" }}>
+              <Button style={{ width: "100%" }} size="large">
                 Grant Super Admin access
               </Button>
             </Popconfirm>
           </Col>
           <Col span={14}>
             <Form>
-              <Form.Item name='name'>
-                <FloatLabel label='name' bool={name?.length != 0}>
+              <Form.Item name="name">
+                <FloatLabel label="name" bool={name?.length != 0}>
                   <Input
                     onChange={(e) => {
                       setName(e.target.value);
                       setIsEditing(true);
                     }}
                     value={name}
-                    className='customInput'
+                    className="customInput"
                   />
                 </FloatLabel>
               </Form.Item>
-              <Form.Item name='lastname'>
-                <FloatLabel label='lastname' bool={lastname?.length != 0}>
+              <Form.Item name="lastname">
+                <FloatLabel label="lastname" bool={lastname?.length != 0}>
                   <Input
                     onChange={(e) => {
                       setLastname(e.target.value);
                       setIsEditing(true);
                     }}
                     value={lastname}
-                    className='customInput'
+                    className="customInput"
                   />
                 </FloatLabel>
               </Form.Item>
             </Form>
-            <Form.Item name='username'>
-              <FloatLabel label='username' bool={username?.length != 0}>
+            <Form.Item name="username">
+              <FloatLabel label="username" bool={username?.length != 0}>
                 <Input
                   onChange={(e) => {
                     setUsername(e.target.value);
                     setIsEditing(true);
                   }}
                   value={username}
-                  className='customInput'
+                  className="customInput"
                 />
               </FloatLabel>
             </Form.Item>
-            <Form.Item name='email'>
-              <FloatLabel label='Email' bool={email?.length != 0}>
+            <Form.Item name="email">
+              <FloatLabel label="Email" bool={email?.length != 0}>
                 <Input
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setIsEditing(true);
                   }}
                   value={email}
-                  className='customInput'
+                  className="customInput"
                 />
               </FloatLabel>
             </Form.Item>
@@ -335,7 +338,7 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
 
       {/* will separate this soon hehehe */}
       <Modal
-        title='Admins Timeline/History'
+        title="Admins Timeline/History"
         visible={viewTimeline}
         onCancel={() => setViewTimeline(false)}
         footer={<Button onClick={() => setViewTimeline(false)}>Close</Button>}
@@ -346,35 +349,35 @@ export default ({ visibility, setVisible, onClose, data, callback }) => {
         <TimelineDisplay data={data?.timeline} />
       </Modal>
       <Modal
-        title='Change your password'
+        title="Change your password"
         visible={viewModalPass}
         onCancel={() => setViewModalPass(false)}
-        okText='Change'
+        okText="Change"
         okButtonProps={{ disabled: !currentPass && !newPass && !newPass2 }}
         onOk={handleChangePass}
         destroyOnClose
       >
         {data?.hasOwnProperty("password") ? (
-          <FloatLabel label='Current Password' value={currentPass}>
+          <FloatLabel label="Current Password" value={currentPass}>
             <Input
-              type='password'
+              type="password"
               onChange={(el) => setCurrentPass(el.target.value)}
-              className='customInput'
+              className="customInput"
             />
           </FloatLabel>
         ) : null}
-        <FloatLabel label='New Password' value={newPass}>
+        <FloatLabel label="New Password" value={newPass}>
           <Input
-            type='password'
+            type="password"
             onChange={(el) => setNewPass(el.target.value)}
-            className='customInput'
+            className="customInput"
           />
         </FloatLabel>
-        <FloatLabel label='Repeat New Password' value={newPass2}>
+        <FloatLabel label="Repeat New Password" value={newPass2}>
           <Input
-            type='password'
+            type="password"
             onChange={(el) => setNewPass2(el.target.value)}
-            className='customInput'
+            className="customInput"
           />
         </FloatLabel>
       </Modal>

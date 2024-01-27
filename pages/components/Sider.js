@@ -30,14 +30,20 @@ export default ({ setPage }) => {
   return (
     <Sider
       collapsible
-      theme='light'
+      theme="light"
       style={{
         marginTop: 65,
       }}
     >
-      <Menu defaultSelectedKeys={["1"]} mode='inline'>
+      <Menu
+        defaultSelectedKeys={["1"]}
+        mode="inline"
+        style={{
+          fontSize: "1.25em",
+        }}
+      >
         <Menu.Item
-          key='1'
+          key="1"
           onClick={() => {
             setPage({
               children: <Dashboard />,
@@ -49,7 +55,7 @@ export default ({ setPage }) => {
         </Menu.Item>
 
         <Menu.Item
-          key='3'
+          key="3"
           onClick={() => {
             setPage({
               children: <Farmers />,
@@ -60,7 +66,7 @@ export default ({ setPage }) => {
           Profiles
         </Menu.Item>
         <Menu.Item
-          key='4'
+          key="4"
           onClick={() => {
             setPage({
               children: <ProgramList />,
@@ -71,7 +77,7 @@ export default ({ setPage }) => {
           Program
         </Menu.Item>
         <Menu.Item
-          key='log1'
+          key="log1"
           onClick={() => {
             setPage({
               children: <VisitHistory />,
@@ -83,7 +89,7 @@ export default ({ setPage }) => {
         </Menu.Item>
         {role == "superadmin" ? (
           <Menu.Item
-            key='2'
+            key="2"
             onClick={() =>
               setPage({
                 children: <Admin />,
