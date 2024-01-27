@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Tag, Typography, message } from "antd";
 
 import axios from "axios";
@@ -9,7 +9,7 @@ import AdminAddForm from "./AdminForm";
 import AdminList from "./AdminList";
 import AdminModal from "./AdminModal";
 
-export default () => {
+const Admin = () => {
   const [totalAdmin, setTotalAdmin] = useState(0);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState();
@@ -17,6 +17,7 @@ export default () => {
   const [trigger, setTrigger] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [SAData, setSAData] = useState();
+  const [type, setType] = useState();
 
   const fetch = async (role) => {
     const { data } = await axios.get("/api/admin", {
@@ -31,12 +32,9 @@ export default () => {
       });
   };
 
-  let type;
-  try {
-    type = JSON.parse(Cookie.get("user")).role;
-  } catch {
-    message.error("There is an error on Cookies.");
-  }
+  useEffect(() => {
+    setType(JSON.parse(Cookie.get("user")).role);
+  }, []);
 
   return (
     <>
@@ -71,7 +69,7 @@ export default () => {
           />
         </Col>
         <Col span={8}>
-          <Row justify='space-around' gutter={[16, 16]}>
+          <Row justify="space-around" gutter={[16, 16]}>
             <Col span={23}>
               <Card
                 onClick={() => {
@@ -80,10 +78,10 @@ export default () => {
                 hoverable
               >
                 <Card.Meta
-                  title='Admin'
+                  title="Admin"
                   description={
-                    <Typography.Text type='secondary'>
-                      Total: <Tag color='volcano'>{totalAdmin}</Tag>
+                    <Typography.Text type="secondary">
+                      Total: <Tag color="volcano">{totalAdmin}</Tag>
                     </Typography.Text>
                   }
                 />
@@ -98,3 +96,5 @@ export default () => {
     </>
   );
 };
+
+export default Admin;

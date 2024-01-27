@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { Form, Tabs, Input, Button, Modal, message, Checkbox } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
-import { isBrowser } from "react-device-detect";
+import { Form, Input, Button, Modal, message } from "antd";
+import { MobileView, BrowserView } from "react-device-detect";
 import axios from "axios";
 import io from "socket.io-client";
 import Image from "next/image";
 
 import keyGenerator from "../../utilities/KeyGenerator";
 import QRScanner from "../components/QRwithCamera";
+
+import { ArrowRightOutlined } from "@ant-design/icons";
+
 let socket;
 
 export default () => {
-  const [type, setType] = useState("admin");
   const [isConnected, setIsConnected] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
   const [openModal, setOpenModal] = useState("");
@@ -75,22 +76,11 @@ export default () => {
     });
   }, []);
 
-  //return a view
-  if (!isBrowser) {
-    if (!JSON.parse(Cookies.get("redirectedToQR") || false)) {
-      Cookies.set("redirectedToQR", "true");
-      if (window.location.href != "https://192.168.254.113:3001/")
-        window.location.href = "https://192.168.254.113:3001/";
-    } else Cookies.remove("redirectedToQR");
-
-    return (
-      <QRScanner setIsConnected={setIsConnected} isConnected={isConnected} />
-    );
-  } else
-    return (
-      <>
+  return (
+    <>
+      <BrowserView>
         <Modal
-          visible={openModal}
+          open={openModal}
           title={`Setup account for email '${modalEmail}'`}
           onCancel={() => setOpenModal(false)}
           onOk={form.submit}
@@ -199,39 +189,51 @@ export default () => {
             background: "#eee",
           }}
         >
-          <div style={{ marginBottom: 10 }}>
-            <Image src="/logo.png" alt="logo" width="180" height="64" />
-          </div>
           <Form
             style={{
               width: 400,
               padding: 30,
               boxShadow: "0 0 7px 1px gray",
               background: "#fff",
+              borderRadius: 12,
             }}
             onFinish={handleLogin}
           >
+            <div
+              style={{
+                marginBottom: 10,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Image src="/logo.png" alt="logo" width="180" height="64" />
+            </div>
             <Form.Item label="Username" name="username">
-              <Input />
+              <Input size="large" />
             </Form.Item>
 
             <Form.Item label="Password" name="password">
-              <Input.Password />
+              <Input.Password size="large" />
             </Form.Item>
 
-            <Form.Item>
+            <Form.Item noStyle>
               <Button
                 type="primary"
                 style={{ width: "100%" }}
                 htmlType="submit"
+                size="large"
               >
-                Log In
+                Log In <ArrowRightOutlined />
               </Button>
             </Form.Item>
           </Form>
         </div>
-      </>
-    );
+      </BrowserView>
+      <MobileView>
+        <QRScanner setIsConnected={setIsConnected} isConnected={isConnected} />
+      </MobileView>
+    </>
+  );
 };
 
 // 3003 - Password required

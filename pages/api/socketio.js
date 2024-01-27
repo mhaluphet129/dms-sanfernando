@@ -1,6 +1,4 @@
-import { Server } from "Socket.IO";
-
-/* Lets do the channeling */
+import { Server } from "socket.io";
 
 let socketsData = [];
 

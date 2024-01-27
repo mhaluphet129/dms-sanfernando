@@ -1,8 +1,17 @@
-require("dotenv").config();
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      dns: false,
+      tls: false,
+      process: require.resolve("process/browser"),
+    };
 
-module.exports = {
-  env: {
-    mongoDbUrl: process.env.databaseUrl,
+    return config;
   },
-  distDir: "build",
 };
+
+module.exports = nextConfig;

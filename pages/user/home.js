@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Clock from "react-digital-clock";
+import Clock from "../../utilities/clock";
 import {
   Layout,
   Typography,
