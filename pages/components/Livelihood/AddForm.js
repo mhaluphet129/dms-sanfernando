@@ -15,18 +15,13 @@ import {
   Table,
   Checkbox,
   InputNumber,
-  Upload,
   Typography,
   Card,
   Progress,
   message,
 } from "antd";
 
-import {
-  PlusOutlined,
-  UploadOutlined,
-  WarningOutlined,
-} from "@ant-design/icons";
+import { WarningOutlined } from "@ant-design/icons";
 
 import axios from "axios";
 import moment from "moment";
@@ -41,6 +36,11 @@ export default ({ visible, setVisible, cb }) => {
   const [files, setFiles] = useState([]);
   const [profile, setProfile] = useState({});
   const [selectedBarangay, setSelectedBarangay] = useState("");
+  const [sitio, setSitio] = useState("");
+  const [contactNum, setContactNum] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(null);
+  const [contactEmergency, setContactEmergency] = useState("");
+  const [emergencyName, setEmergencyName] = useState("");
 
   const [spouseName, setSpouseName] = useState("");
   const [spouseSurname, setSpouseLastname] = useState("");
@@ -54,12 +54,6 @@ export default ({ visible, setVisible, cb }) => {
   const [middlename, setMiddlename] = useState("");
   const [lastname, setLastname] = useState("");
   const [analysisType, setAnalysisType] = useState("");
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
   const [otherInfo, setOtherInfo] = useState({
     isPWD: false,
@@ -181,7 +175,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='Indigenous Group'
+          placeholder="Indigenous Group"
           disabled={!otherInfo.isIP.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -219,7 +213,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='ID number'
+          placeholder="ID number"
           disabled={!otherInfo.hasID.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -257,7 +251,7 @@ export default ({ visible, setVisible, cb }) => {
       ),
       Specify: (
         <Input
-          placeholder='Specify'
+          placeholder="Specify"
           disabled={!otherInfo.isMember.status}
           onChange={(e) =>
             setOtherInfo((el) => ({
@@ -280,9 +274,26 @@ export default ({ visible, setVisible, cb }) => {
   };
 
   const handleNext = () => {
-    if (current < 2) {
-      if (current == 1) {
+    if (current == 0) {
+      if (
+        [
+          name,
+          lastname,
+          selectedBarangay,
+          sitio,
+          contactNum,
+          dateOfBirth,
+          maritalStatus,
+          contactEmergency,
+          emergencyName,
+        ].some((e) => [null, ""].includes(e))
+      ) {
+        message.error("Please check your form. Some required input is blank.");
+        return;
       }
+    }
+
+    if (current < 2) {
       setCurrent(current + 1);
     } else alert("add me");
   };
@@ -310,6 +321,7 @@ export default ({ visible, setVisible, cb }) => {
       } else message.error(res?.data.message);
     }
   }, [openScanModal]);
+
   return (
     <>
       <Modal
@@ -319,7 +331,7 @@ export default ({ visible, setVisible, cb }) => {
         closable={false}
         footer={null}
       >
-        <Card loading={anaylizing} title='Main'>
+        <Card loading={anaylizing} title="Main">
           <Row gutter={[16, 16]}>
             <Col
               span={24}
@@ -335,7 +347,7 @@ export default ({ visible, setVisible, cb }) => {
                 analysisType == "main" ? middlename : spouseMiddlename
               }. ${analysisType == "main" ? lastname : spouseSurname}`}</span>
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (mainAnalysic.exact / mainAnalysic.total) *
                   100
@@ -371,7 +383,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (mainAnalysic.name / mainAnalysic.total) *
                   100
@@ -407,7 +419,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (mainAnalysic.middlename / mainAnalysic.total) *
                   100
@@ -443,7 +455,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (mainAnalysic.lastname / mainAnalysic.total) *
                   100
@@ -471,7 +483,7 @@ export default ({ visible, setVisible, cb }) => {
             </Col>
           </Row>
         </Card>
-        <Card loading={anaylizing} title='Spouse' style={{ marginTop: 10 }}>
+        <Card loading={anaylizing} title="Spouse" style={{ marginTop: 10 }}>
           <Row gutter={[16, 16]}>
             <Col
               span={24}
@@ -487,7 +499,7 @@ export default ({ visible, setVisible, cb }) => {
                 analysisType == "main" ? middlename : spouseMiddlename
               }. ${analysisType == "main" ? lastname : spouseSurname}`}</span>
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (spouseAnalysic.exact / spouseAnalysic.total) *
                   100
@@ -523,7 +535,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (spouseAnalysic.name / spouseAnalysic.total) *
                   100
@@ -559,7 +571,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (spouseAnalysic.middlename / spouseAnalysic.total) *
                   100
@@ -599,7 +611,7 @@ export default ({ visible, setVisible, cb }) => {
               }}
             >
               <Progress
-                type='dashboard'
+                type="dashboard"
                 percent={(
                   (spouseAnalysic.lastname / spouseAnalysic.total) *
                   100
@@ -642,17 +654,17 @@ export default ({ visible, setVisible, cb }) => {
         destroyOnClose
       >
         <Steps
-          size='small'
+          size="small"
           current={current}
-          type='navigation'
+          type="navigation"
           onChange={handleChange}
         >
-          <Step title='Part I' description='Personal Information' />
-          <Step title='Part II' description='Farm Profile' />
+          <Step title="Part I" description="Personal Information" />
+          <Step title="Part II" description="Farm Profile" />
         </Steps>
         <Divider />
         <Form
-          layout='vertical'
+          layout="vertical"
           onFinish={async (val) => {
             let flagError = 0;
 
@@ -694,7 +706,7 @@ export default ({ visible, setVisible, cb }) => {
             // }
 
             if (flagError) {
-              message.warn("Please input all required fields");
+              message.warning("Please input all required fields");
               return;
             }
 
@@ -871,45 +883,39 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Surname'
-                      name='surname'
+                      label="Surname"
+                      name="surname"
                       required={[{ required: true }]}
                     >
                       <Input
-                        placeholder='Surname'
+                        placeholder="Surname"
                         onChange={(e) => setLastname(e.target.value)}
                         allowClear
                       />
                     </Form.Item>
                     <Form.Item
-                      label='Firstname'
-                      name='firstname'
+                      label="Firstname"
+                      name="firstname"
                       required={[{ required: true }]}
                     >
                       <Input
-                        placeholder='Firstname'
+                        placeholder="Firstname"
                         onChange={(e) => setName(e.target.value)}
                         allowClear
                       />
                     </Form.Item>
-                    <Form.Item label='Middle Name' name='middlename'>
+                    <Form.Item label="Middle Name" name="middlename">
                       <Input
-                        placeholder='Middle Name'
+                        placeholder="Middle Name"
                         onChange={(e) => setMiddlename(e.target.value)}
                         allowClear
                       />
                     </Form.Item>
-                    <Form.Item label=' '>
+                    <Form.Item label=" ">
                       <Button
-                        disabled={
-                          name == "" || middlename == "" || lastname == ""
-                        }
+                        disabled={name == "" || lastname == ""}
                         onClick={() => {
-                          if (
-                            name == "" ||
-                            middlename == "" ||
-                            lastname == ""
-                          ) {
+                          if (name == "" || lastname == "") {
                             message.warning(
                               "Complete the name before scanning."
                             );
@@ -918,7 +924,7 @@ export default ({ visible, setVisible, cb }) => {
                           setAnalysisType("main");
                           setOpenScanModal(true);
                         }}
-                        type='primary'
+                        type="primary"
                       >
                         Analyze Name
                       </Button>
@@ -928,15 +934,14 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Gender'
+                      label="Gender"
                       style={{ marginLeft: 5, width: 150 }}
-                      name='gender'
-                      required={[{ required: true }]}
-                      initialValue='male'
+                      name="gender"
+                      initialValue="male"
                     >
                       <Select>
-                        <Select.Option value='male'>Male</Select.Option>
-                        <Select.Option value='female'>Female</Select.Option>
+                        <Select.Option value="male">Male</Select.Option>
+                        <Select.Option value="female">Female</Select.Option>
                       </Select>
                     </Form.Item>
                   </Space>
@@ -945,10 +950,9 @@ export default ({ visible, setVisible, cb }) => {
               <Col span={6} pull={18}>
                 <strong>Name and Gender</strong>
                 <br />
-                <span style={{ color: "#ff0a0a" }}>*</span>
-                <Typography.Text type='secondary'>
-                  {" "}
-                  means this field is required.
+                <Typography.Text type="secondary">
+                  <span style={{ color: "#ff0a0a" }}>*</span> means this field
+                  is required.
                 </Typography.Text>
               </Col>
             </Row>
@@ -960,8 +964,8 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Barangay'
-                      name='barangay'
+                      label="Barangay"
+                      name="barangay"
                       required={[{ required: true }]}
                     >
                       <Select
@@ -974,11 +978,14 @@ export default ({ visible, setVisible, cb }) => {
                       </Select>
                     </Form.Item>
                     <Form.Item
-                      label='Street/Sitio/Subdv.'
-                      name='street'
+                      label="Street/Sitio/Subdv."
+                      name="street"
                       required={[{ required: true }]}
                     >
-                      <Input allowClear />
+                      <Input
+                        onChange={(e) => setSitio(e.target.value)}
+                        allowClear
+                      />
                     </Form.Item>
                   </Space>
                 </Input.Group>
@@ -996,14 +1003,15 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Contact Number'
-                      name='contactnum'
+                      label="Contact Number"
+                      name="contactnum"
                       required={[{ required: true }]}
                     >
                       <InputNumber
-                        addonBefore='+63'
+                        addonBefore="+63"
                         maxLength={10}
                         controls={false}
+                        onChange={(e) => setContactNum(e)}
                       />
                     </Form.Item>
                   </Space>
@@ -1021,17 +1029,18 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Date of Birth'
-                      name='dateofbirth'
+                      label="Date of Birth"
+                      name="dateofbirth"
                       required={[{ required: true }]}
                     >
                       <DatePicker
-                        format='MMMM DD, YYYY'
+                        format="MMMM DD, YYYY"
                         disabledDate={(_) => _ && _ > moment().endOf("day")}
                         style={{ marginRight: 5 }}
+                        onChange={(e) => setDateOfBirth(e)}
                       />
                     </Form.Item>
-                    <Form.Item label='Place of Birth' name='placeofbirth'>
+                    <Form.Item label="Place of Birth" name="placeofbirth">
                       <Input allowClear />
                     </Form.Item>
                   </Space>
@@ -1049,9 +1058,9 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Civil Status'
+                      label="Civil Status"
                       style={{ marginRight: 5 }}
-                      name='status'
+                      name="status"
                       required={[{ required: true }]}
                     >
                       <Select
@@ -1059,50 +1068,42 @@ export default ({ visible, setVisible, cb }) => {
                         style={{ width: 150 }}
                         onChange={(e) => setMaritalStatus(e)}
                       >
-                        <Select.Option value='Single'>Single</Select.Option>
-                        <Select.Option value='Married'>Married</Select.Option>
-                        <Select.Option value='Widowed'>Widowed</Select.Option>
-                        <Select.Option value='Separated'>
+                        <Select.Option value="Single">Single</Select.Option>
+                        <Select.Option value="Married">Married</Select.Option>
+                        <Select.Option value="Widowed">Widowed</Select.Option>
+                        <Select.Option value="Separated">
                           Separated
                         </Select.Option>
                       </Select>
                     </Form.Item>
 
-                    <Form.Item label='Religion' name='religion'>
+                    <Form.Item label="Religion" name="religion">
                       <Input allowClear />
                     </Form.Item>
                   </Space>
                 </Input.Group>
                 <Input.Group>
                   <Space>
-                    <Form.Item
-                      label='Spouse Name'
-                      name='spousesurname'
-                      required={[{ required: true }]}
-                    >
+                    <Form.Item label="Spouse Name" name="spousesurname">
                       <Input
                         disabled={maritalStatus.toLowerCase() != "married"}
-                        placeholder='Surname'
+                        placeholder="Surname"
                         onChange={(e) => setSpouseLastname(e.target.value)}
                         allowClear
                       />
                     </Form.Item>
-                    <Form.Item name='spousename' label=' '>
+                    <Form.Item name="spousename" label=" ">
                       <Input
                         disabled={maritalStatus.toLowerCase() != "married"}
-                        placeholder='Name'
+                        placeholder="Name"
                         onChange={(e) => setSpouseName(e.target.value)}
                         allowClear
                       />
                     </Form.Item>
-                    <Form.Item
-                      name='spousemiddlename'
-                      label=' '
-                      required={[{ required: true }]}
-                    >
+                    <Form.Item name="spousemiddlename" label=" ">
                       <Input
                         disabled={maritalStatus.toLowerCase() != "married"}
-                        placeholder='Middlename'
+                        placeholder="Middlename"
                         onChange={(e) => setSpouseMiddlename(e.target.value)}
                         allowClear
                       />
@@ -1125,7 +1126,7 @@ export default ({ visible, setVisible, cb }) => {
                         setAnalysisType("spouse");
                         setOpenScanModal(true);
                       }}
-                      type='primary'
+                      type="primary"
                     >
                       Analyze Name
                     </Button>
@@ -1144,24 +1145,24 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Highest Formal Education'
+                      label="Highest Formal Education"
                       style={{ marginRight: 5 }}
-                      name='education'
-                      initialValue='None'
+                      name="education"
+                      initialValue="None"
                     >
-                      <Select value='None' style={{ width: 200 }}>
-                        <Select.Option value='None'>None</Select.Option>
-                        <Select.Option value='Elementary'>
+                      <Select value="None" style={{ width: 200 }}>
+                        <Select.Option value="None">None</Select.Option>
+                        <Select.Option value="Elementary">
                           Elementary
                         </Select.Option>
-                        <Select.Option value='High School'>
+                        <Select.Option value="High School">
                           High School
                         </Select.Option>
-                        <Select.Option value='Vocational'>
+                        <Select.Option value="Vocational">
                           Vocational
                         </Select.Option>
-                        <Select.Option value='College'>College</Select.Option>
-                        <Select.Option value='Post Graduate'>
+                        <Select.Option value="College">College</Select.Option>
+                        <Select.Option value="Post Graduate">
                           Post Graduate
                         </Select.Option>
                       </Select>
@@ -1201,21 +1202,25 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      label='Person to Contact'
-                      name='personToContact'
+                      label="Person to Contact"
+                      name="personToContact"
                       required={[{ required: true }]}
                     >
-                      <Input allowClear />
+                      <Input
+                        onChange={(e) => setEmergencyName(e.target.value)}
+                        allowClear
+                      />
                     </Form.Item>
                     <Form.Item
-                      label='Contact Number'
-                      name='emergencyContact'
+                      label="Contact Number"
+                      name="emergencyContact"
                       required={[{ required: true }]}
                     >
                       <InputNumber
-                        addonBefore='+63'
+                        addonBefore="+63"
                         maxLength={10}
                         controls={false}
+                        onChange={(e) => setContactEmergency(e)}
                       />
                     </Form.Item>
                   </Space>
@@ -1234,14 +1239,14 @@ export default ({ visible, setVisible, cb }) => {
                 <Input.Group>
                   <Space>
                     <Form.Item
-                      name='type'
-                      label='Type of livelihood'
+                      name="type"
+                      label="Type of livelihood"
                       required={[{ required: true }]}
                     >
                       <Checkbox.Group>
                         <Checkbox
                           key={1}
-                          value='Farmer'
+                          value="Farmer"
                           onChange={(e) =>
                             setOtherInfo((el) => ({
                               ...el,
@@ -1255,7 +1260,7 @@ export default ({ visible, setVisible, cb }) => {
                         </Checkbox>
                         <Checkbox
                           key={2}
-                          value='Farmworker'
+                          value="Farmworker"
                           onChange={(e) =>
                             setOtherInfo((el) => ({
                               ...el,
@@ -1269,7 +1274,7 @@ export default ({ visible, setVisible, cb }) => {
                         </Checkbox>
                         <Checkbox
                           key={3}
-                          value='Fisherfolk'
+                          value="Fisherfolk"
                           onChange={(e) =>
                             setOtherInfo((el) => ({
                               ...el,
@@ -1297,13 +1302,13 @@ export default ({ visible, setVisible, cb }) => {
               <Col span={18} push={6}>
                 <Input.Group>
                   <Space>
-                    <Form.Item label='Type of Farming Activity'>
+                    <Form.Item label="Type of Farming Activity">
                       <Checkbox.Group disabled={!otherInfo.farmer.status}>
                         <Row>
                           <Col>
                             <Checkbox
                               key={1}
-                              value='crops'
+                              value="crops"
                               onChange={(e) => {
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1331,10 +1336,10 @@ export default ({ visible, setVisible, cb }) => {
                               Crops, please specify:
                             </Checkbox>
                             <Select
-                              className='customInput'
-                              mode='tags'
-                              style={{ width: 500, marginLeft: 55 }}
-                              placeholder='Enter crops'
+                              className="customInput"
+                              mode="tags"
+                              style={{ width: 180 }}
+                              placeholder="Enter crops"
                               onChange={(e) =>
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1359,7 +1364,7 @@ export default ({ visible, setVisible, cb }) => {
                           <Col>
                             <Checkbox
                               key={1}
-                              value='livestocks'
+                              value="livestocks"
                               onChange={(e) =>
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1375,10 +1380,10 @@ export default ({ visible, setVisible, cb }) => {
                               Livestock, please specify:
                             </Checkbox>
                             <Select
-                              className='customInput'
-                              mode='tags'
-                              style={{ width: 500, marginLeft: 55 }}
-                              placeholder='Enter livestock'
+                              className="customInput"
+                              mode="tags"
+                              style={{ width: 180 }}
+                              placeholder="Enter livestock"
                               onChange={(e) =>
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1403,7 +1408,7 @@ export default ({ visible, setVisible, cb }) => {
                           <Col>
                             <Checkbox
                               key={1}
-                              value='poultry'
+                              value="poultry"
                               onChange={(e) =>
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1419,11 +1424,11 @@ export default ({ visible, setVisible, cb }) => {
                               Poultry, please specify:
                             </Checkbox>
                             <Select
-                              className='customInput'
-                              mode='tags'
+                              className="customInput"
+                              mode="tags"
                               size={4}
-                              style={{ width: 500, marginLeft: 55 }}
-                              placeholder='Enter poultry'
+                              style={{ width: 180 }}
+                              placeholder="Enter poultry"
                               onChange={(e) =>
                                 setOtherInfo((el) => ({
                                   ...el,
@@ -1460,7 +1465,7 @@ export default ({ visible, setVisible, cb }) => {
               <Col span={18} push={6}>
                 <Input.Group>
                   <Space>
-                    <Form.Item label='Kind of Work'>
+                    <Form.Item label="Kind of Work">
                       <Checkbox.Group
                         onChange={(e) => {
                           setOtherInfo((el) => ({
@@ -1473,51 +1478,44 @@ export default ({ visible, setVisible, cb }) => {
                         }}
                         disabled={!otherInfo.farmworker.status}
                       >
-                        <Row>
-                          <Checkbox value='Land Preparation' key={1}>
-                            Land Preparation
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Planting/Transplanting' key={2}>
-                            Planting/Transplanting
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Cultivation' key={3}>
-                            Cultivation
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Harvesting' key={4}>
-                            Harvesting
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Col>
-                            Others, please specify:
-                            <Select
-                              className='customInput'
-                              mode='tags'
-                              style={{ width: 500, marginLeft: 35 }}
-                              placeholder='Specify...'
-                              disabled={!otherInfo.farmworker.status}
-                              onChange={(e) => {
-                                setOtherInfo((el) => ({
-                                  ...el,
-                                  farmworker: {
-                                    status: true,
-                                    data: [
-                                      ...(el.farmworker?.data || []),
-                                      e[e.length - 1],
-                                    ],
-                                  },
-                                }));
-                              }}
-                              allowClear
-                            />
-                          </Col>
-                        </Row>
+                        <Space direction="vertical">
+                          {[
+                            "Land Preparation",
+                            "Planting/Transplanting",
+                            "Cultivation",
+                            "Harvesting",
+                          ].map((e, i) => (
+                            <div>
+                              <Checkbox value={e} key={i} /> {e}
+                            </div>
+                          ))}
+
+                          <Row>
+                            <Col>
+                              Others, please specify:{" "}
+                              <Select
+                                className="customInput"
+                                mode="tags"
+                                style={{ width: 150 }}
+                                placeholder="Specify..."
+                                disabled={!otherInfo.farmworker.status}
+                                onChange={(e) => {
+                                  setOtherInfo((el) => ({
+                                    ...el,
+                                    farmworker: {
+                                      status: true,
+                                      data: [
+                                        ...(el.farmworker?.data || []),
+                                        e[e.length - 1],
+                                      ],
+                                    },
+                                  }));
+                                }}
+                                allowClear
+                              />
+                            </Col>
+                          </Row>
+                        </Space>
                       </Checkbox.Group>
                     </Form.Item>
                   </Space>
@@ -1534,7 +1532,7 @@ export default ({ visible, setVisible, cb }) => {
               <Col span={18} push={6}>
                 <Input.Group>
                   <Space>
-                    <Form.Item label='Type of Fishing Activity'>
+                    <Form.Item label="Type of Fishing Activity">
                       <Checkbox.Group
                         disabled={!otherInfo.fisherfolk.status}
                         onChange={(e) => {
@@ -1547,56 +1545,44 @@ export default ({ visible, setVisible, cb }) => {
                           }));
                         }}
                       >
-                        <Row>
-                          <Checkbox value='Fish Capture' key={1}>
-                            Fish Capture
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Fish Processing' key={2}>
-                            Fish Processing
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Fish Vending' key={3}>
-                            Fish Vending
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Aquaculture' key={4}>
-                            Aquaculture
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Checkbox value='Gleaning' key={5}>
-                            Gleaning
-                          </Checkbox>
-                        </Row>
-                        <Row>
-                          <Col>
-                            Others, please specify:
-                            <Select
-                              className='customInput'
-                              mode='tags'
-                              style={{ width: 500, marginLeft: 35 }}
-                              placeholder='Enter crops'
-                              disabled={!otherInfo.fisherfolk.status}
-                              onChange={(e) =>
-                                setOtherInfo((el) => ({
-                                  ...el,
-                                  fisherfolk: {
-                                    status: true,
-                                    data: [
-                                      ...(el.fisherfolk?.data || []),
-                                      e[e.length - 1],
-                                    ],
-                                  },
-                                }))
-                              }
-                              allowClear
-                            />
-                          </Col>
-                        </Row>
+                        <Space direction="vertical">
+                          {[
+                            "Fish Capture",
+                            "Fish Processing",
+                            "Fish Vending",
+                            "Aquaculture",
+                            "Gleaning",
+                          ].map((e, i) => (
+                            <div>
+                              <Checkbox value={e} key={i} /> {e}
+                            </div>
+                          ))}
+                          <Row>
+                            <Col>
+                              Others, please specify:{" "}
+                              <Select
+                                className="customInput"
+                                mode="tags"
+                                style={{ width: 150 }}
+                                placeholder="Enter crops"
+                                disabled={!otherInfo.fisherfolk.status}
+                                onChange={(e) =>
+                                  setOtherInfo((el) => ({
+                                    ...el,
+                                    fisherfolk: {
+                                      status: true,
+                                      data: [
+                                        ...(el.fisherfolk?.data || []),
+                                        e[e.length - 1],
+                                      ],
+                                    },
+                                  }))
+                                }
+                                allowClear
+                              />
+                            </Col>
+                          </Row>
+                        </Space>
                       </Checkbox.Group>
                     </Form.Item>
                   </Space>
@@ -1629,21 +1615,22 @@ export default ({ visible, setVisible, cb }) => {
           >
             <Space>
               {current > 0 && (
-                <Button onClick={handlePrev}>
+                <Button onClick={handlePrev} size="large">
                   {current > 0 ? "Previous" : "Cancel"}
                 </Button>
               )}
               {current < 1 && (
                 <Button
-                  type='primary'
+                  type="primary"
                   onClick={handleNext}
                   style={{ width: 120 }}
+                  size="large"
                 >
                   {current < 1 ? "Next" : null}
                 </Button>
               )}
               {current == 1 && (
-                <Button type='primary' htmlType='submit'>
+                <Button type="primary" htmlType="submit" size="large">
                   Submit
                 </Button>
               )}
